@@ -1,0 +1,68 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient List</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn"> 
+                        <a class="btn btn-primary" routerLink="/patient-register">Add Patient</a>  
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <!--<div class="row">
+                        <div class="panel-header">
+                            <div class="col-sm-4">
+                                <div class="dataTables_length">
+                                    <a class="btn btn-default buttons-copy btn-sm" tabindex="0"><span>Copy</span></a>
+                                    <a class="btn btn-default buttons-csv buttons-html5 btn-sm" tabindex="0"><span>CSV</span></a>
+                                    <a class="btn btn-default buttons-excel buttons-html5 btn-sm" tabindex="0"><span>Excel</span></a>
+                                    <a class="btn btn-default buttons-pdf buttons-html5 btn-sm" tabindex="0"><span>PDF</span></a>
+                                    <a class="btn btn-default buttons-print btn-sm" tabindex="0"><span>Print</span></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control"  [(ngModel)]="filterValue" (keyup)="applyFilter(filterValue)" placeholder="Search..">
+                            </div>
+                        </div>
+                    </div>-->
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                    </div>
+                </div>
+                <br>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="success">
+                            <tr>
+                                <th>File No</th>
+                                <th>Name</th>
+                                <th>Sex</th>
+                                <th>Date of Birth</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let p of patients | searchFilter : filterRecords">
+                                    <td>{{p.no}}</td>
+                                    <td>{{p.firstName+' '+p.middleName+' '+p.lastName}}</td>
+                                    <td>{{p.gender}}</td>
+                                    <td>{{p.dateOfBirth}}</td>
+                                </tr>
+                            </tbody>
+                        </table>    
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+</section> <!-- /.content -->

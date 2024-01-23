@@ -1,0 +1,58 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient History - Final Diagnosis</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a class="btn btn-primary btn-outline" *ngIf="consultationId != null" routerLink="/doctor-cracking"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" *ngIf="admissionId != null" routerLink="/doctor-inpatient"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/clinical-note-history">Clinical Notes</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/general-examination-history">General Examination</a>
+                    <!--<a class="btn btn-primary btn-outline" routerLink="/working-diagnosis-history">Working Diagnosis</a>-->
+                    <a class="btn btn-primary" routerLink="/final-diagnosis-history">Final Diagnosis</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/lab-test-history">Lab Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/radiology-history">Radiology Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/procedure-history">Procedures</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/prescription-history">Medications</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table-bordered table-striped table-small">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>Created At/By</td>
+                                        <td>Code</td>
+                                        <td>Diagnosis</td>
+                                        <td>Description</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let history of finalDiagnosises | searchFilter : filterRecords">
+                                        <td>{{history?.created}}</td>
+                                        <td>{{history?.diagnosisType?.code}}</td>
+                                        <td>{{history?.diagnosisType?.name}}</td>
+                                        <td>{{history?.description}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="table table-responsive table-bordered table-striped table-small">
+                                <tbody>
+                                    <tr></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->

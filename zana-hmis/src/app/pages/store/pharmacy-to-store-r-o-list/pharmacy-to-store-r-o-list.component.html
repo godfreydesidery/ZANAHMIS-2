@@ -1,0 +1,83 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Pharmacy To Store Requisition Order List | Store - {{selectedStoreName}}</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button class="btn btn-primary btn-outline" routerLink="/select-store"><i class="glyphicon glyphicon-chevron-left"></i> Back</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="id != null" (click)="returnOrder()"><span class="glyphicon glyphicon-arrow-left"></span>Return Order</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="id != null" (click)="rejectOrder()"><span class="glyphicon glyphicon-remove-sign"></span>Reject Order</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-4 jumbotron">
+                            <h4 class="text-primary">Order List</h4>
+                            <table class="table table-bordered">
+                                <thead style="position: sticky; top: 0;">
+                                    <tr class="table-dark">
+                                        <td><small>Order#</small></td>
+                                        <td><small>Order Date</small></td>
+                                        <td><small>Valid Until</small></td>
+                                        <td><small>Status</small></td>
+                                        <td><small>Select</small></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of pharmacyToStoreROs">
+                                        <td><small>{{p.no}}</small></td>
+                                        <td><small>{{p.orderDate | date}}</small></td>
+                                        <td><small>{{p.validUntil | date}}</small></td>
+                                        <td><small>{{p.status}}</small></td>
+                                        <td><span data-dismiss="modal" (click)="get(p.id)" style="cursor: pointer;"><small>[Select]</small></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-8">
+                            <div *ngIf="pharmacyToStoreRO != null">
+                                <h4 class="text-primary">Order</h4>
+                                <h5>Origin Pharmacy: {{pharmacyToStoreRO?.pharmacy?.name}}</h5>
+                                <h5>Designated Store: {{pharmacyToStoreRO?.store?.name}}</h5>
+                                <h5>Order#: {{pharmacyToStoreRO?.no}}</h5>
+                                <h5>Order Date: {{pharmacyToStoreRO?.orderDate | date}}</h5>
+                                <h5>Valid Until: {{pharmacyToStoreRO?.validUntil | date}}</h5>
+                                <h5>Status: {{pharmacyToStoreRO?.status}}</h5>
+                                <h5>Status Description: {{pharmacyToStoreRO?.statusDescription}}</h5>
+                                <h5>Created: {{pharmacyToStoreRO?.created}}</h5>
+                                <h5>Verified: {{pharmacyToStoreRO?.verified}}</h5>
+                                <h5>Approved: {{pharmacyToStoreRO?.approved}}</h5>
+                                <table class="table table-responsive table striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <td>Code</td>
+                                            <td>Name</td>
+                                            <td>Ordered Qty</td>
+                                            <td>Received Qty</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let d of pharmacyToStoreRO?.pharmacyToStoreRODetails | searchFilter : filterRecords">
+                                            <td>{{d.medicine.code}}</td>
+                                            <td>{{d.medicine.name}}</td>
+                                            <td>{{d.orderedQty}}</td>
+                                            <td>{{d.receivedQty}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <button class="btn btn-primary" *ngIf="pharmacyToStoreRO.pharmacyToStoreRODetails.length > 0 " (click)="createTransferOrder(id)">Transfer Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

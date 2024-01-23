@@ -1,0 +1,76 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Pharmacy - {{selectedPharmacyName}}</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading" *ngIf="selectedPharmacyName != ''">
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-outpatient-list">Outpatient List</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-inpatient-list">Inpatient List</button>
+                    <!--<button class="btn btn-primary btn-outline" routerLink="/pharmacy-outsider-list">Outsider List</button>--> 
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-medicine-stock-status">Stock Status</button> | 
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-store-r-o">Request From Store</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/store-to-pharmacy-r-n">Receive From Store</button> |
+
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-o-list"><i class="glyphicon glyphicon-list"></i>Order List from other Pharmacies</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-o">Request From other Pharmacy</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-n">Receive From other Pharmacy</button>
+
+
+
+                    
+                </div>
+                <div class="panel-body">
+                    
+                    <section class="content">
+                        <div class="row" style="margin-top: 5%;">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-6 jumbotron">
+                                <div class="row">
+                                    <div *ngIf="selectedPharmacyName != ''">
+                                        <div class="col-sm-12">
+                                            <h4>Selected Pharmacy: {{selectedPharmacyName}}</h4><br>
+                                            <br>
+                                            <h5>To switch pharmacy, please log in afresh</h5>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="selectedPharmacyName === ''">
+                                        <div class="col-sm-12">
+                                            <h2 class="text-primary">Please Select Pharmacy</h2>
+                                            <select class="form-control" [(ngModel)]="pharmacyName" style="font-size: x-large; height: 2cm;">
+                                                <option></option>
+                                                <option *ngFor="let pharmacy of pharmacies">{{pharmacy.name}}</option>
+                                            </select>
+                                            <hr>
+                                        </div>
+                                        
+                                        <div class="col-xs-6">
+                                            <button class="btn btn-primary form-control" *ngIf="pharmacyName != ''" (click)="selectPharmacy(pharmacyName)">Select</button>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <button class="btn btn-default form-control" *ngIf="pharmacyName != ''" (click)="clear()">Cancel</button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                         
+                    </section>
+
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->
+

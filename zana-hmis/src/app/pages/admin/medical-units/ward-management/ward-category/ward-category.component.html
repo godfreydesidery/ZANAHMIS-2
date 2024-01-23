@@ -1,0 +1,92 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Ward Category Register</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn"> 
+                        <button type="button" class="btn btn-success m-r-2 m-b-5" data-toggle="modal" data-target="#add-edit-modal" (click)="clear()">New WardCategory</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    
+                    <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>Name</td>
+                                    <td>Description</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let wardCategory of wardCategories | searchFilter : filterRecords">
+                                    <td>{{wardCategory.code}}</td>
+                                    <td>{{wardCategory.name}}</td>
+                                    <td>{{wardCategory.description}}</td>
+                                    <td><a (click)="getWardCategory(wardCategory.id)" data-toggle="modal" data-target="#add-edit-modal"><i class="glyphicon glyphicon-pencil"></i>Edit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="add-edit-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title" *ngIf="id === null">Add Ward Category</h1>
+                <h1 class="modal-title" *ngIf="id != null">Edit Ward Category</h1>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" [(ngModel)]="id">
+                        <div class="col-xs-12">
+                            <label>Ward Category Code*</label>
+                            <input type="text" class="form-control" [(ngModel)]="code">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Ward Category Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Description</label>
+                            <input type="text" class="form-control" [(ngModel)]="description">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" (click)="saveWardCategory()"><span *ngIf="id != null">Update</span><span *ngIf="id === null">Add</span></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    

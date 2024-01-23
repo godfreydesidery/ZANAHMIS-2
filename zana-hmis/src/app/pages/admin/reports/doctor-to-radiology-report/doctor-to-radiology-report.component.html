@@ -1,0 +1,99 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Doctor to Radiology Report</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <!--<button type="button" class="btn btn-success btn-outline" (click)="exportToSpreadsheet()"><i class="fa fa-file-excel-o"></i> Excel</button>-->
+                    <button type="button" class="btn btn-success btn-outline" (click)="print()"><i class="fa fa-print"></i> Print</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h4>Doctor Name</h4>
+                                    <div class="input-group">
+                                        <input type="text" name="q" class="form-control" [(ngModel)]="clinicianName" (ngModelChange)="loadCliniciansLike($event)" [readonly]="clinicianLocked" placeholder="Search Doctor...">
+                                        <span class="input-group-btn">
+                                            <button class="btn" (click)="clear()"><i class="fa fa-times-rectangle"></i></button>
+                                        </span>
+                                    </div>
+                                    <div class="row"  *ngIf="clinicians.length > 0">
+                                        <div class="col-sm-12">
+                                            <select class="form-control" multiple="multiple">
+                                                <option *ngFor="let pro of clinicians" (click)="getClinician(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.firstName}} {{pro?.middleName}} {{pro?.lastName}} </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row" *ngIf="clinicianId != null">
+                                <div class="col-sm-1">
+                                    <h4>From</h4>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="date" class="form-control" [(ngModel)]="startDate">
+                                </div>
+                                <div class="col-sm-1">
+                                    <h4>To</h4>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="date" class="form-control" [(ngModel)]="endDate">
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary btn-outline" (click)="loadRadiologyReport(startDate, endDate)">Run Report</button>
+                                </div>
+                                <div class="col-sm-1">
+                                    <button class="btn btn-primary btn-outline" (click)="clear()">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                            <hr>
+                            <table class="table table-responsive table-hover table-striped table-small">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>SN</td>
+                                        <td>Patient Name</td>
+                                        <td>Patient Phone</td>
+                                        <td>Registration#</td>
+                                        <td>Radiology</td>
+                                        <td>Payment Mode</td>
+                                        <td>Radiology Date</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let radiology of radiologies">
+                                        <td>{{radiology?.sn}}</td>
+                                        <td>{{radiology?.patient?.firstName}} {{radiology?.patient?.middleName}} {{radiology?.patient?.lastName}}</td>
+                                        <td>{{radiology?.patient?.phoneNo}}</td>
+                                        <td>{{radiology?.patient?.no}}</td>
+                                        <td>{{radiology?.radiologyType?.name}}</td>
+                                        <td>
+                                            <span *ngIf="radiology?.patientBill?.status ==='COVERED'">{{radiology?.insurancePlan?.name}}</span>
+                                            <span *ngIf="radiology?.patientBill?.status === 'VERIFIED' || radiology?.patientBill?.status === 'PAID' || radiology?.patientBill?.status === 'UNPAID'">Cash</span>
+                                        </td>
+                                        <td>{{radiology.createdAt | dateOnly}}</td>
+                                        <td>{{radiology?.status}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->

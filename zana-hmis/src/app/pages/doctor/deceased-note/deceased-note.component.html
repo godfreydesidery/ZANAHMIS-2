@@ -1,0 +1,51 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Deceased Note</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn-group"> 
+                        
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12 alert alert-primary" role="alert">
+                            <h3 class="text-primary" *ngIf="admission != null">Name: <b>{{admission?.patient?.firstName}} {{admission?.patient?.middleName}} {{admission?.patient?.lastName}}</b>, File No: <b>{{admission?.patient?.no}}</b>, <b>Date of Birth: {{admission.patient.dateOfBirth | date}} Age: {{admission.patient.dateOfBirth | age}}</b>, {{admission?.patient?.gender}}, {{admission.paymentType}} {{admission?.insurancePlan?.name}}</h3>
+                            <h3 class="text-primary" *ngIf="consultation != null">Name: <b>{{consultation?.patient?.firstName}} {{consultation?.patient?.middleName}} {{consultation?.patient?.lastName}}</b>, File No: <b>{{consultation?.patient?.no}}</b>, <b>Date of Birth: {{consultation.patient.dateOfBirth | date}} Age: {{consultation.patient.dateOfBirth | age}}</b>, {{consultation?.patient?.gender}}, {{consultation.paymentType}} {{consultation?.insurancePlan?.name}}</h3>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div><h4>Patient Summary*</h4></div>
+                                    <textarea class="form-control" [(ngModel)]="patientSummary"></textarea>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div><h4>Cause of Death*</h4></div>
+                                    <textarea class="form-control" [(ngModel)]="causeOfDeath"></textarea>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div><h4>Date*</h4></div>
+                                    <input type="date" class="form-control" [(ngModel)]="date">
+                                </div>
+                                <div class="col-sm-6">
+                                    <div><h4>Time*</h4></div>
+                                    <input type="time" class="form-control" [(ngModel)]="time">
+                                </div>
+                                <br>
+                                <button class="btn btn-primary pull-right" (click)="saveDeceasedNote()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> <!-- /.content -->

@@ -1,0 +1,67 @@
+<div class="login-wrapper" style="background-image: url('assets/images/login-bg.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover; height: 100%; width: 100%;">
+    <div>
+        <div class="row" style="margin-top: 10%;">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="panel panel-bd">
+                    <div class="panel-heading">
+                        <div class="view-header">
+                            <div class="row">
+                                <div class="col-xs-4"></div>
+                                <div class="col-xs-4">
+                                    <div class="header-icon">
+                                        <i class="pe-7s-unlock"></i>
+                                    </div>
+                                    <div>
+                                        <br>
+                                        <h3>Login</h3>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="header-title">
+                                        <h4 class="text-primary"><strong>Enter your Username and Password to login.</strong></h4>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-12" style="text-align: center;">
+                                <font color="blue" style="font-size: larger;">{{status}}</font>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="text-primary"><b>Username</b></h4>
+                                <input type="text" [(ngModel)]="username" placeholder="Username" title="Please enter you username" required="" value="" name="username" id="username" class="form-control" style="text-align: center; height: 10mm;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="text-primary"><b>Password</b></h4>
+                                <input type="password" [(ngModel)]="password" title="Please enter your password" placeholder="******" required="" value="" name="password" id="password" class="form-control" style="text-align: center; height: 10mm;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <hr>
+                            <div class="col-xs-3">
+                                <button class="btn btn-danger form-control" (click)="clearFields()" style="height: 10mm;" >Reset</button>
+                            </div>
+                            <div class="col-xs-12">
+                                <button class="btn btn-primary form-control" (click)="loginUser()" style="height: 10mm; margin-top: 3mm;">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+        
+    </div>
+</div>

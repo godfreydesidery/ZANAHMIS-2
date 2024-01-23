@@ -1,0 +1,66 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>List From Reception</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn-group"> 
+                        <a class="btn btn-primary" routerLink="/list-from-reception" style="margin: 1px;"> <i class="fa fa-list"></i>List From Reception</a>  
+                        <a class="btn btn-primary btn-outline" routerLink="/my-consultation" style="margin: 1px;"> <i class="fa fa-list"></i>My Consultations</a> 
+                        <a class="btn btn-primary btn-outline" routerLink="/doctor-inpatient-list" style="margin: 1px;"> <i class="fa fa-list"></i>Inpatient List</a> 
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                            <div class="row">
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="table-responsive" *ngIf="clinicianId != null">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="success">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Patient's File No</th>
+                                        <th>Payment Type</th>
+                                        <th>Dr. Name</th>
+                                        <th>Clinic</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let consultation of consultations | searchFilter : filterRecords">
+                                            <td>{{consultation.id}}</td>
+                                            <td>{{consultation.patient.firstName}} {{consultation.patient.middleName}} {{consultation.patient.lastName}}</td>
+                                            <td>{{consultation.patient.no}}</td>
+                                            <td>{{consultation.paymentType}}</td>
+                                            <td>{{consultation.clinician.nickname}}</td>
+                                            <td>{{consultation.clinic.name}}</td>
+                                            <td><a class="btn btn-success" (click)="postConsultation(consultation.id)">Attend</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>    
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->

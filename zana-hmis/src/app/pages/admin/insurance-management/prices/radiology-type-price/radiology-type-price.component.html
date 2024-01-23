@@ -1,0 +1,58 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Radiology Type Prices</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <h4 class="text-primary">Package: {{insurancePlanName}}</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>ID</td>
+                                    <td>Test</td>
+                                    <td>Price</td>
+                                    <td>Edit Price</td>
+                                    <td>Action</td>
+                                    <td>Coverage</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let l of radiologyTypePrices | searchFilter : filterRecords">
+                                    <td>{{l.radiologyType.id}}</td>
+                                    <td>{{l.radiologyType.name}}</td>
+                                    <td style="text-align: right;">{{l.price | currency:'':''}}</td>
+                                    <td><input type="text" class="form-control" [(ngModel)]="l.price" style="text-align: center;"></td>
+                                    <td><button class="btn btn-success" (click)="updateRadiologyTypePriceByInsurance(insurancePlanId, l?.radiologyType?.id, l.price)"><i class="glyphicon glyphicon-floppy-disk"></i>Save</button></td>
+                                    <td>
+                                        <div *ngIf="l?.radiologyTypeInsurancePlan?.covered != undefined">
+                                            <span *ngIf="l?.radiologyTypeInsurancePlan?.covered === true">COVERED <button (click)="changeRadiologyTypeCoverage(insurancePlanId, l?.radiologyTypeInsurancePlan?.radiologyType?.id, false)">Change</button></span>
+                                            <span *ngIf="l?.radiologyTypeInsurancePlan?.covered === false">NOT COVERED <button (click)="changeRadiologyTypeCoverage(insurancePlanId, l?.radiologyTypeInsurancePlan?.radiologyType?.id, true)">Change</button></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

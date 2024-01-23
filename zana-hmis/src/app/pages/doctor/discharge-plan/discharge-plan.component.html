@@ -1,0 +1,53 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Discharge Plan</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn-group"> 
+                        
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12 alert alert-primary" role="alert">
+                            <h3 class="text-primary">Name: <b>{{admission?.patient?.firstName}} {{admission?.patient?.middleName}} {{admission?.patient?.lastName}}</b>, File No: <b>{{admission?.patient?.no}}</b>, <b>Date of Birth: {{admission.patient.dateOfBirth | date}} Age: {{admission.patient.dateOfBirth | age}}</b>, {{admission?.patient?.gender}}, {{admission.paymentType}} {{admission?.insurancePlan?.name}}</h3>
+                        </div>
+                        <div class="col-sm-12">
+
+                            <div><h4>Brief History and Patient's Examination*</h4></div>
+                            <textarea class="form-control" [(ngModel)]="history"></textarea>
+                            <br>
+                            <div><h4>Investigation Done*</h4></div>
+                            <textarea class="form-control" [(ngModel)]="investigation"></textarea>
+                            <br>
+                            <div><h4>Inpatient Management*</h4></div>
+                            <textarea class="form-control"[(ngModel)]="management"></textarea>
+                            <br>
+                            <div><h4>Operation Done Note(If not, leave it empty)</h4></div>
+                            <textarea class="form-control"[(ngModel)]="operationNote"></textarea>
+                            <br>
+                            <div><h4>ICU Admission Note(If not, leave it empty)</h4></div>
+                            <textarea class="form-control"[(ngModel)]="icuAdmissionNote"></textarea>
+                            <br>
+                            <div><h4>General Recommendation and condition at discharge</h4></div>
+                            <textarea class="form-control"[(ngModel)]="generalRecommendation"></textarea>
+                            <br>
+                            <button class="btn btn-primary pull-right" (click)="saveDischargePlan()">Save</button>
+                        </div>
+                    </div>
+                     
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+</section> <!-- /.content -->

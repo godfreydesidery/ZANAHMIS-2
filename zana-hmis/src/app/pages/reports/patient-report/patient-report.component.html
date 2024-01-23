@@ -1,0 +1,90 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient Report</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button type="button" class="btn btn-success btn-outline" (click)="print()"><i class="fa fa-print"></i> Print</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-xs-8">
+                                            <h4 class="text-primary"><b>Search Patient(Enter 3 characters)Name, File No or Phone</b></h4>
+                                            <input type="text" class="form-control" [(ngModel)]="searchKey" (ngModelChange)="loadPatientsLike($event)" [readonly]="lockSearchKey" style="max-width: 15cm;" placeholder="Search...">
+                                            <div class="row" *ngIf="lockSearchKey === false && patients.length > 0">
+                                                <div class="col-sm-12">
+                                                    <select class="form-control" multiple="multiple" style="max-width: 15cm">
+                                                        <option *ngFor="let p of patients" (click)="getPatient(p.id)" style="height: 1cm; cursor: pointer; font-size: large;"><b>{{p.firstName}} {{p.middleName}} {{p.lastName}} | </b> FileNo: <b>{{p.no}}</b></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <br><br>
+                                            <button class="btn btn-deafult btn-outline" (click)="reset()">Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="id != null">
+                        <hr>
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h4>From</h4>
+                                    <input type="date" class="form-control" [(ngModel)]="from">
+                                </div>
+                                <div class="col-sm-3">
+                                    <h4>To</h4>
+                                    <input type="date" class="form-control" [(ngModel)]="to">
+                                </div>
+                                <div class="col-sm-3">
+                                    <br><br>
+                                    <button class="btn btn-primary" (click)="loadPatientBillsByDate(from, to)">Run Report</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table-striped table-small">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>Date</td>
+                                        <td>Service/Item</td>
+                                        <td>Qty</td>
+                                        <td>Amount</td>                                       
+                                        <td>Billed to</td>
+                                        <td>Bill Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let b of patientBills">
+                                        <td>{{b.createdAt | dateTime}}</td>
+                                        <td>{{b?.description}}</td>
+                                        <td>{{b?.qty}}</td>
+                                        <td style="text-align: right;"><span *ngIf="b?.status === 'COVERED'">Covered</span><span *ngIf="b?.status != 'COVERED'">{{b?.amount | currency:'':''}}</span></td>
+                                        <td><span *ngIf="b?.insurancePlan != null" >{{b?.insurancePlan?.name}}</span><span *ngIf="b?.insurancePlan === null" >Client</span></td>
+                                        <td>{{b?.status}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>
+     
+ </section> <!-- /.content -->

@@ -1,0 +1,156 @@
+<section class="content-header">
+    <div class="header-title">
+        <h1>Invoice</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-bd">
+                <div class="panel-heading">
+                    <button type="button" class="btn btn-success btn-outline" (click)="print()"><i class="fa fa-print"></i> Print</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <address>
+                                <strong>{{invoice?.patient?.firstName}} {{invoice?.patient?.middleName}} {{invoice?.patient?.lastName}}</strong><br>
+                                <div>{{invoice?.patient?.no}}</div>
+                                <div>{{invoice?.patient?.address}}</div>
+                                <div>{{invoice?.patient?.phoneNo}}</div>
+                                <br>
+                                <div>Paid: {{invoice?.amountPaid}}</div>
+                                <div>Allocated: {{invoice?.amountAllocated}}</div>
+                                <div>Due:</div>
+                            </address>
+                        </div>
+                        <div class="col-sm-6 text-left">
+                            <h1 class="m-t-0">Invoice# {{invoice?.no}}</h1>
+                            <div>Issued: {{invoice.createdAt | dateTime}}</div>
+                            <address>
+                                <div>Bill To</div>
+                                <div *ngIf="invoice.insurancePlan === null">
+                                    <address>
+                                        <strong>{{invoice?.patient?.firstName}} {{invoice?.patient?.middleName}} {{invoice?.patient?.lastName}}</strong><br>
+                                        <div>{{invoice?.patient?.no}}</div>
+                                        <div>{{invoice?.patient?.address}}</div>
+                                        <div>{{invoice?.patient?.phoneNo}}</div>
+                                    </address>
+                                </div>
+                                <div *ngIf="invoice.insurancePlan != null">
+                                    <div>Provider: {{invoice?.insurancePlan?.insuranceProvider?.name}}</div>
+                                    <div>Plan: {{invoice?.insurancePlan?.name}}</div>
+                                </div>
+                            </address>
+                        </div>
+                    </div> <hr>
+                    <div class="table-responsive m-b-20">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date-Time</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Check to Pay</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let detail of invoice.patientInvoiceDetails">
+                                    <td>{{detail.patientBill.createdAt | dateTime}}</td>
+                                    <td>{{detail?.patientBill?.description}}</td>
+                                    <td>{{detail?.patientBill?.qty}}</td>
+                                    <td style="text-align: right;">{{detail?.patientBill?.amount | currency:'':''}}</td>
+                                    <td>{{detail?.patientBill?.status}}</td>
+                                    <td><input type="checkbox" *ngIf="detail?.patientBill?.status === 'VERIFIED'" [(ngModel)]="detail.checked" (ngModelChange)="listBill(detail)"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr>
+                        <div class="row" *ngIf="bills.length > 0">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <div>Selected Bills Summary</div>
+                                <table class="table table-small">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let b of bills">
+                                            <td>{{b?.description}}</td>
+                                            <td style="text-align: right;">{{b?.amount | currency:'':''}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Total</th>
+                                            <th style="text-align: right;">{{total | currency:'':''}}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#confirm-payment-modal">Confirm Payment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="confirm-payment-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title">Confirm Payment</h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Total Amount</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="form-control" style="text-align: right;"><b>{{total | currency:'':''}}</b></span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Amount Received</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" [(ngModel)]="amountReceived" style="text-align: center;">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Change</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="form-control" style="text-align: right;"><b>{{amountReceived - total | currency:'':''}}</b></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" *ngIf="amountReceived - total >= 0" (click)="printReceipt()" (click)="confirmBillsPayment()" data-dismiss="modal">Confirm</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

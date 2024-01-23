@@ -1,0 +1,148 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Lab Test</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a class="btn btn-success" style="margin-right: 1mm;" routerLink="/lab-outpatient-list">Outpatient List</a>
+                    <a class="btn btn-success" style="margin-right: 1mm;" routerLink="/lab-inpatient-list">Inpatient List</a>
+                    <a class="btn btn-success" style="margin-right: 1mm;" routerLink="/lab-outsider-list">Outsider List</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12 alert alert-primary" role="alert">
+                            <h3 class="text-primary">Name: <b>{{patient.firstName}} {{patient.middleName}} {{patient.lastName}}</b>, File No: <b>{{patient.no}}</b>, Date of birth: <b>{{patient.dateOfBirth | date}}</b>, Age: <b>{{patient.dateOfBirth | age}}</b>, {{patient.gender}}, {{patient.paymentType}}</h3>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="col-sm-6" *ngFor="let labTest of labTests">
+                        <div class="row" style="margin: 1mm; background-color: rgb(246, 246, 248);">
+                            <div class="col-sm-12">
+                                <h3 class="text-primary"><b>{{labTest.labTestType.name}}</b></h3>
+                                <span>Status: </span><span><small>{{labTest.status}}</small></span><br><br>
+                                <span>Diagnosis: {{labTest?.diagnosisType?.name}} <span *ngIf="labTest?.diagnosisType?.name === null">NONE</span></span><br><br>
+                                <small>Ordered At | By: {{labTest?.created}}</small><br>
+                                <button class="btn btn-primary btn-rounded btn-outline" (click)="acceptLabTest(labTest)">Accept</button>
+                                <button class="btn btn-danger btn-rounded btn-outline" (click)="rejectLabTest(labTest)">Reject</button>
+                                <button class="btn btn-success btn-rounded btn-outline" (click)="collectLabTest(labTest)">Collect</button>
+                               
+                                <div *ngIf="labTest?.status === 'REJECTED'">
+                                    <h5>Reason for rejection</h5>
+                                    <input type="text" class="form-control" [(ngModel)]="labTest.rejectComment" placeholder="Reason for rejection"><br>
+                                    <button class="btn btn-info" (click)="saveReasonForRejection(labTest.id, labTest.rejectComment)">Save Reason for Rejection</button>
+                                </div>
+                                 <hr>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="row" *ngIf="labTest?.status === 'ACCEPTED' || labTest?.status === 'COLLECTED' || labTest?.status === 'VERIFIED'" style="padding-left: 3mm; padding-right: 3mm;">
+                                    <div class="col-sm-12">
+                                        <span>Results</span>
+                                        <textarea class="form-control" *ngIf="labTest?.status === 'ACCEPTED'" [(ngModel)]="labTest.result" placeholder="Input Results" style="height: 5cm;" readonly></textarea>
+                                        <textarea class="form-control" *ngIf="labTest?.status === 'VERIFIED'" [(ngModel)]="labTest.result" placeholder="Input Results" style="height: 5cm;" readonly></textarea>
+                                        <textarea class="form-control" *ngIf="labTest?.status === 'COLLECTED'" [(ngModel)]="labTest.result" placeholder="Input Results" style="height: 5cm;"></textarea>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>Range</span>
+                                        <select class="form-control" [(ngModel)]="labTest.range">
+                                            <option></option>
+                                            <option *ngFor="let range of labTest.labTestType.labTestTypeRanges">{{range.name}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>Level</span>
+                                        <select class="form-control" [(ngModel)]="labTest.level">
+                                            <option></option>
+                                            <option>Low</option>
+                                            <option>Medium</option>
+                                            <option>High</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>Unit</span>
+                                        <input type="text" class="form-control" [(ngModel)]="labTest.unit" placeholder="Unit">
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-sm-12" style="text-align: center;">
+                                                Attachments
+                                                <div>Temporarily disabled</div>
+                                            </div>
+                                        </div>
+                                        <!--<div class="table table-striped table-small">
+                                            <thead>
+                                                <tr>
+                                                    <td>Attachment Name</td>
+                                                    <td>Select/View File</td>
+                                                    <td>Delete/Upload</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let attachment of labTest.labTestAttachments">
+                                                    <td>{{attachment.name}}</td>
+                                                    <td><span class="glyphicon glyphicon-eye-open" (click)="downloadFile(attachment.fileName)" data-toggle="modal" data-target="#view-attachment-modal"></span></td>
+                                                    <td>
+                                                        <span class="glyphicon glyphicon-trash text-danger"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" class="form-control" [(ngModel)]="name">
+                                                    </td>
+                                                    <td>
+                                                        <input type="file" class="form-control" (change)="selectFile($event)"/>
+                                                        <div class="alert alert-light" role="alert">{{ message }}</div>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-success" [disabled]="!selectedFiles" (click)="upload(labTest)">Upload</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </div>-->
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-primary" (click)="verifyLabTest(labTest)">Verify Results</button>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <br>
+                                        <span class="label label-info m-r-15 pull-right">Verified At | By: {{labTest.verified}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->
+
+
+
+<!-- Modal success -->
+<div class="modal fade modal-success" id="view-attachment-modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg" role="document" style="width: 75%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title"></h2>
+            </div>
+            <div class="modal-body">
+                <img [src]="attachmentUrl" *ngIf="fileExtension != 'pdf'" style="height: 100%; width: 100%;">                
+                <pdf-viewer [src]="attachmentUrl"  *ngIf="fileExtension === 'pdf'" [original-size]="false" style="height: 100%; width: 100%;"></pdf-viewer>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

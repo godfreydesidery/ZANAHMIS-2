@@ -1,0 +1,88 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Role</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a routerLink="/home"><button class="btn btn-primary btn-outline" data-mdb-toggle="tooltip" title="Go to Home dashboard"><i class="glyphicon glyphicon-home"></i>Home</button></a>
+                    <button class="btn btn-primary btn-outline" (click)="clearFields()" data-mdb-toggle="tooltip" title="Create a new Role"><i class="glyphicon glyphicon-file"></i>New</button>
+                    <button class="btn btn-primary btn-outline" (click)="edit()" data-mdb-toggle="tooltip" title="Edit an existing Role"><i class="glyphicon glyphicon-pencil"></i>Edit</button>
+                    <button class="btn btn-primary btn-outline" (click)="deleteRole(id)" data-mdb-toggle="tooltip" title="Delete an existing Role"><i class="glyphicon glyphicon-trash"></i>Delete</button>
+                    <button class="btn btn-primary btn-outline" (click)="saveRole()" [disabled]="enableSave === false" data-mdb-toggle="tooltip" title="Save or Update an existing Role"><i class="glyphicon glyphicon-floppy-disk"></i>Save</button>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-6">
+                        <br>
+                        <div class="row">
+                            <input type="hidden" name="id" [(ngModel)]="id">
+                            <div class="col-sm-4">
+                                <label>Role Name*</label>                               
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" name="username" [readonly]="nameLocked" required  [(ngModel)]="name" list="role_names" class="form-control input-sm special">   
+                            </div>
+                            <datalist id="role_names" style="padding: 0px;">
+                                <option *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
+                            </datalist>
+                            <div class="col-sm-3">
+                                <button *ngIf="grant(['ROLE-R'])" (click)="getRole(name)" class="btn btn-success form-control">Search</button>                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-striped table-small">
+                            <thead>
+                                <tr>
+                                    <td>Role Name</td>
+                                    <td>Owner</td>
+                                    <td>Select</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let role of roles | searchFilter : filterRecords">
+                                    <td style="vertical-align: top;">{{role.name}}</td>
+                                    <td style="vertical-align: top;">{{role?.owner}}</td>
+                                    <td style="vertical-align: top;"><font (click)="getRole(role.name)" *ngIf="role?.owner != 'SYSTEM'" style="cursor: pointer; color: rgb(35, 32, 224);">Select</font></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="add-edit-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title">Add Role</h1>
+            </div>
+            <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Save</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->

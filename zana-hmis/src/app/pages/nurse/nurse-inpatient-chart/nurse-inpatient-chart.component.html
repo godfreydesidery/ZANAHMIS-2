@@ -1,0 +1,771 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Nurse Chart - Inpatient</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn-group"> 
+
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12 alert alert-primary" role="alert">
+                            <h3 class="text-primary">Name: <b>{{admission?.patient?.firstName}} {{admission?.patient?.middleName}} {{admission?.patient?.lastName}}</b>, File No: <b>{{admission?.patient?.no}}</b>, <b>Date of Birth: {{admission.patient.dateOfBirth | date}} Age: {{admission.patient.dateOfBirth | age}}</b>, {{admission?.patient?.gender}}, {{admission.paymentType}} {{admission?.insurancePlan?.name}}</h3>
+                            <hr>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="jumbotron jumbotron-fluid">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#tab1" data-toggle="tab">Prescriptions- To Pharmacy</a></li>
+                                    <li><a href="#tab2" data-toggle="tab">Investigations</a></li>
+                                    <li><a href="#tab3" data-toggle="tab">Procedure Details</a></li>
+                                </ul>
+                                <!-- Tab panels -->
+                                <div class="tab-content">
+                                    <div class="tab-pane fade in active" id="tab1">
+                                        <div class="panel-body">
+                                            <table class="table table-responsive table-small table-bordered">
+                                                <thead>
+                                                    <tr style="font-weight: bold;">
+                                                        <td>ID</td>
+                                                        <td>Doctor</td>
+                                                        <td>Drug Name</td>
+                                                        <td>Dosage</td>
+                                                        <td>Frequency</td>
+                                                        <td>Route</td>
+                                                        <td>Days</td>
+                                                        <td>Qty</td>
+                                                        <td>Status</td>
+                                                        <td>Date</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let p of prescriptions">
+                                                        <td>{{p.id}}</td>
+                                                        <td>{{p?.created | showUser}}</td>
+                                                        <td>{{p?.medicine?.name}}</td>
+                                                        <td>{{p?.dosage}}</td>
+                                                        <td>{{p?.frequency}}</td>
+                                                        <td>{{p?.route}}</td>
+                                                        <td>{{p?.days}}</td>
+                                                        <td>{{p?.qty}}</td>
+                                                        <td>{{p?.status}}</td>
+                                                        <td>{{p?.created | showTime}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="tab2">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="row">
+                                                        <div class="col-sm-12"><h4 class="text-primary text-center">Lab Investigation</h4></div>
+                                                        <div class="col-sm-12 text-center"><button class="btn btn-primary btn-outline" data-toggle="modal" data-target="#lab-test-result-modal"><i class="glyphicon glyphicon-eye-open"></i>  View Results</button></div>
+                                                        <div class="col-sm-12">
+                                                            <table class="table table-bordered table-hover  table-striped">
+                                                                <thead class="success">
+                                                                <tr>
+                                                                    <th>Lab Test</th>
+                                                                    <th>Status</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr *ngFor="let labTest of labTests">
+                                                                        <td>{{labTest.labTestType?.name}}</td>
+                                                                        <td>{{labTest?.status}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>  
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="row">
+                                                        <div class="col-sm-12"><h4 class="text-primary text-center">Radiology Investigation</h4></div>
+                                                        <div class="col-sm-12 text-center"><button class="btn btn-primary btn-outline" data-toggle="modal" data-target="#radiology-result-modal"><i class="glyphicon glyphicon-eye-open"></i>  View Results</button></div>
+                                                        <div class="col-sm-12">
+                                                            <table class="table table-bordered table-hover  table-striped">
+                                                                <thead class="success">
+                                                                <tr>
+                                                                    <th>Radiology</th>
+                                                                    <th>Status</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr *ngFor="let radiology of radiologies">
+                                                                        <td>{{radiology.radiologyType?.name}}</td>
+                                                                        <td>{{radiology?.status}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="tab3">
+                                        <div class="panel-body">
+                                            <table class="table table-responsive table-striped table-bordered table-small">
+                                                <thead>
+                                                    <tr style="font-weight: bold;">
+                                                        <td>ID</td>
+                                                        <td>Procedure</td>
+                                                        <td>Procedure Note</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let p of procedures">
+                                                        <td>{{p?.id}}</td>
+                                                        <td>{{p?.procedureType?.name}}</td>
+                                                        <td><button class="btn btn-primary btn-outline" (click)="showProcedureNote(p.id, p.procedureType.name, p.note)" data-toggle="modal" data-target="#view-procedure-note-to-procedure-modal"><i class="glyphicon glyphicon-eye-open"></i>  View</button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="jumbotron jumbotron-fluid">
+                                <div class="container" style="overflow: auto; width: 100%;">
+                                    <h4 class="text-primary" style="text-align: center;">Dressing Chart</h4>
+                                    <hr>
+                                    <table  class="table table-responsive table-small table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>Select Procedure</td>
+                                                <td>Add</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control" [(ngModel)]="dressingProcedureTypeName" (ngModelChange)="loadDressingLike($event)">
+                                                    <div class="row"  *ngIf="dressings.length > 0">
+                                                        <div class="col-sm-12">
+                                                            <select class="form-control" multiple="multiple">
+                                                                <option *ngFor="let pro of dressings" (click)="getDressing(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.procedureType?.name}}</option>
+                                                            </select>
+                                                            <!--<button class="form-control btn btn-primary btn-outline" *ngFor="let pro of procedureTypes" (click)="getProcedureType(pro.id)" style="text-align: left;">{{pro.name}}</button>-->
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-primary" (click)="savePatientDressingChart()">Add</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-responsive table-striped table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>Procedure Name</td>
+                                                <td>Amount</td>
+                                                <td>Entered By</td>
+                                                <td>Date</td>
+                                                <td><span>[X]</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let d of patientDressingCharts">
+                                                <td>{{d?.procedureType?.name}}</td>
+                                                <td style="text-align: right;"><span *ngIf="d?.patientBill?.status === 'COVERED'">COVERED</span> <span *ngIf="d?.patientBill?.status != 'COVERED'">{{d?.patientBill?.amount | currency:'':''}}</span></td>
+                                                <td>{{d?.created | showUser}}</td>
+                                                <td>{{d?.created | showTime}}</td>    
+                                                <td><span class="text-danger" (click)="deleteDressingChart(d.id)"><i class="fa fa-trash"></i></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="jumbotron jumbotron-fluid">
+                                <div class="container" style="overflow: auto; width: 100%;">
+                                    <h4 class="text-primary" style="text-align: center;">Patient Consumable</h4>
+                                    <hr>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>Select Item</td>
+                                                <td>Qty</td>
+                                                <td>Add</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control" [(ngModel)]="consumableMedicineName" (ngModelChange)="loadConsumableLike($event)">
+                                                    <div class="row"  *ngIf="consumables.length > 0">
+                                                        <div class="col-sm-12">
+                                                            <select class="form-control" multiple="multiple">
+                                                                <option *ngFor="let pro of consumables" (click)="getConsumable(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.medicine?.name}}</option>
+                                                            </select>
+                                                            <!--<button class="form-control btn btn-primary btn-outline" *ngFor="let pro of procedureTypes" (click)="getProcedureType(pro.id)" style="text-align: left;">{{pro.name}}</button>-->
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><input type="number" class="form-control" [(ngModel)]="consumableQty"> </td>
+                                                <td>
+                                                    <button class="btn btn-primary" (click)="savePatientConsumableChart()">Add</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <hr>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>Name</td>
+                                                <td>Qty</td>
+                                                <td>Amount</td>
+                                                <td>Status</td>
+                                                <td>Entered By</td>
+                                                <td>Date</td>
+                                                <td><span>[X]</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let d of patientConsumableCharts">
+                                                <td>{{d?.medicine?.name}}</td>
+                                                <td>{{d?.qty}}</td>
+                                                <td style="text-align: right;"><span *ngIf="d?.patientBill?.status === 'COVERED'">COVERED</span> <span *ngIf="d?.patientBill?.status != 'COVERED'">{{d?.patientBill?.amount | currency:'':''}}</span></td>
+                                                <td>{{d?.status}}</td>
+                                                <td>{{d?.created | showUser}}</td>
+                                                <td>{{d?.created | showTime}}</td>    
+                                                <td><span class="text-danger" (click)="deleteConsumableChart(d.id)"><i class="fa fa-trash"></i></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="jumbotron jumbotron-fluid">
+                                <div class="container" style="overflow: auto; width: 100%;">
+                                    <h4 class="text-primary" style="text-align: center;">Observation Chart</h4>
+                                    <hr>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <tbody>
+                                            <tr style="font-weight: bold;">
+                                                <td>BP</td>
+                                                <td>MAP</td>
+                                                <td>P</td>
+                                                <td>T</td>
+                                                <td>RESP</td>
+                                                <td>SPO2</td>
+                                                <td>Add</td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody>
+                                            <tr>
+                                                <td><textarea class="form-control" [(ngModel)]="observationChartBloodPressure"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="observationChartMeanArterialPressure"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="observationChartPressure"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="observationChartTemperature"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="observationChartRespiratoryRate"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="observationChartSaturationOxygen"></textarea></td>
+                                                <td><button class="btn btn-primary" (click)="savePatientObservationChart()">Add</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>BP</td>
+                                                <td>MAP</td>
+                                                <td>P</td>
+                                                <td>T</td>
+                                                <td>RESP</td>
+                                                <td>SPO2</td>
+                                                <td>Added By</td>
+                                                <td>Date</td>
+                                                <td><span>[X]</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let chart of patientObservationCharts">
+                                                <td>{{chart?.bloodPressure}}</td>
+                                                <td>{{chart?.meanArterialPressure}}</td>
+                                                <td>{{chart?.pressure}}</td>
+                                                <td>{{chart?.temperature}}</td>
+                                                <td>{{chart?.respiratoryRate}}</td>
+                                                <td>{{chart?.saturationOxygen}}</td>
+                                                <td>{{chart?.created | showUser}}</td>
+                                                <td>{{chart?.created | showTime}}</td>
+                                                <td><span class="text-danger" (click)="deleteObservationChart(chart?.id)"><i class="fa fa-trash"></i></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="jumbotron jumbotron-fluid">
+                                <div class="container" style="overflow: auto; width: 100%;">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h4 class="text-primary" style="text-align: center;">Drug Chart</h4>
+                                            <hr>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <h4 style="text-align: center;">Ordered Drug Chart</h4>
+                                            <table class="table table-bordered table-responsive">
+                                                <thead>
+                                                    <tr style="font-weight: bold;">
+                                                        <td>Doctor Name</td>
+                                                        <td>Date</td>
+                                                        <td>Drugs</td>
+                                                        <td>Select</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let p of prescriptions">
+                                                        <td>{{p?.created | showUser}}</td>
+                                                        <td>{{p?.created | showTime}}</td>
+                                                        <td>{{p?.medicine?.name}}</td>
+                                                        <td><button class="btn btn-primary btn-outline" (click)="loadPrescription(p?.id)">Select</button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <h4 style="text-align: center;">Selected Drug</h4>
+                                            <br>
+                                            <table class="table table-responsive table-striped table-bordered">
+                                                <thead>
+                                                    <tr style="font-weight: bold;">
+                                                        <td>Drug</td>
+                                                        <td>Dosage</td>
+                                                        <td>Frequency</td>
+                                                        <td>Route</td>
+                                                        <td>Days</td>
+                                                        <td>Instructions</td>
+                                                        <td>Qty Ordered</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{prescription?.medicine?.name}}</td>
+                                                        <td>{{prescription?.dosage}}</td>
+                                                        <td>{{prescription?.frequency}}</td>
+                                                        <td>{{prescription?.route}}</td>
+                                                        <td>{{prescription?.days}}</td>
+                                                        <td>{{prescription?.status}}</td>
+                                                        <td>{{prescription?.qty}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <hr>
+                                            <h4 class="text-primary" *ngIf="prescription != null" style="text-align: center;">Charting</h4>
+                                            <table class="table table-responsive table-striped table-bordered" *ngIf="prescription != null">
+                                                <thead>
+                                                    <tr style="font-weight: bold;">
+                                                        <td>Date</td>
+                                                        <td>Dosage/qty</td>
+                                                        <td>Output</td>
+                                                        <td>Remark</td>
+                                                        <td>Order By</td>
+                                                        <td><span>[X]</span></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let c of prescriptionCharts">
+                                                        <td>{{c?.created | showTime}}</td>
+                                                        <td>{{c?.dosage}}</td>
+                                                        <td>{{c?.output}}</td>
+                                                        <td>{{c?.remark}}</td>
+                                                        <td>{{c?.created | showUser}}</td>
+                                                        <td><span class="text-danger" (click)="deletePrescriptionChart(c?.id)"><i class="fa fa-trash"></i></span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="row" style="text-align: center;" *ngIf="prescription != null">
+                                                <div class="col-sm-10">
+                                                    <table class="table table-responsive table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <td><h5 class="text-primary">Dosage/Qty</h5></td>
+                                                                <td><h5 class="text-primary">Output</h5></td>
+                                                                <td><h5 class="text-primary">Remark</h5></td>
+                                                                <td><h5 class="text-primary">Add</h5></td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><input type="text" class="form-control" [(ngModel)]="dosage" placeholder="Dosage"></td>
+                                                                <td><input type="text" class="form-control" [(ngModel)]="output" placeholder="Output"></td>
+                                                                <td><input type="text" class="form-control" [(ngModel)]="remark" placeholder="Remark"></td>
+                                                                <td><button class="btn btn-primary" (click)="savePatientPrescriptionChart()">+</button></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="jumbotron jumbotron-fluid">
+                                <div class="container" style="overflow: auto; width: 100%;">
+                                    <h4 class="text-primary" style="text-align: center;">Nurse Chart</h4>
+                                    <hr>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <tbody>
+                                            <tr style="font-weight: bold;">
+                                                <td>Feeding</td>
+                                                <td>Changing Position</td>
+                                                <td>Bed Bathing</td>
+                                                <td>RBG</td>
+                                                <td>FBG</td>
+                                                <td>Drainage Output</td>
+                                                <td>Fluid Intake</td>
+                                                <td>Urine Output</td>
+                                                <td>Add</td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody>
+                                            <tr>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartFeeding"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartChangingPosition"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartBedBathing"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartRandomBloodSugar"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartFullBloodSugar"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartDrainageOutput"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartFluidIntake"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingChartUrineOutput"></textarea></td>
+                                                <td><button class="btn btn-primary" (click)="savePatientNursingChart()">Add</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>Feeding</td>
+                                                <td>Changing Position</td>
+                                                <td>Bed Bathing</td>
+                                                <td>RBG</td>
+                                                <td>FBG</td>
+                                                <td>Drainage Output</td>
+                                                <td>Fluid Intake</td>
+                                                <td>Urine Output</td>
+                                                <td>Added By</td>
+                                                <td>Date</td>
+                                                <td><span>[X]</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let chart of patientNursingCharts">
+                                                <td>{{chart?.feeding}}</td>
+                                                <td>{{chart?.changingPosition}}</td>
+                                                <td>{{chart?.bedBathing}}</td>
+                                                <td>{{chart?.randomBloodSugar}}</td>
+                                                <td>{{chart?.fullBloodSugar}}</td>
+                                                <td>{{chart?.drainageOutput}}</td>
+                                                <td>{{chart?.fluidIntake}}</td>
+                                                <td>{{chart?.urineOutput}}</td>
+                                                <td>{{chart?.created | showUser}}</td>
+                                                <td>{{chart?.created | showTime}}</td>
+                                                <td><span class="text-danger" (click)="deleteNursingChart(chart?.id)"><i class="fa fa-trash"></i></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="jumbotron jumbotron-fluid">
+                                <div class="container">
+                                    <h4 class="text-primary" style="text-align: center;">Nurse Progress Notes</h4>
+                                    <hr>
+                                    <h4>Add Note</h4>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table class="table table-responsive table-small table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <textarea class="form-control" [(ngModel)]="nursingProgressNote"></textarea>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-primary pull-right" (click)="savePatientNursingProgressNote()">Add</button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>Progress Note</td>
+                                                <td>Entered By</td>
+                                                <td>Date</td>
+                                                <td><span>[X]</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let note of patientNursingProgressNotes">
+                                                <td>{{note?.note}}</td>
+                                                <td>{{note?.created | showUser}}</td>
+                                                <td>{{note?.created | showTime}}</td>
+                                                <td><span class="text-danger" (click)="deleteNursingProgressNote(note?.id)"><i class="fa fa-trash"></i></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="jumbotron jumbotron-fluid">
+                                <div class="container" style="overflow: auto; width: 100%;">
+                                    <h4 class="text-primary" style="text-align: center;">Nurse Care Plan</h4>
+                                    <hr>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <tbody>
+                                            <tr style="font-weight: bold;">
+                                                <td>Nursing Diagnosis</td>
+                                                <td>Expected Outcome</td>
+                                                <td>Implementation</td>
+                                                <td>Evaluation</td>
+                                                <td>Add</td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody>
+                                            <tr>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingCarePlanNursingDiagnosis"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingCarePlanExpectedOutcome"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingCarePlanImplementation"></textarea></td>
+                                                <td><textarea class="form-control" [(ngModel)]="nursingCarePlanEvaluation"></textarea></td>
+                                                <td><button class="btn btn-primary" (click)="savePatientNursingCarePlan()">Add</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <hr>
+                                    <table class="table table-responsive table-small table-bordered">
+                                        <thead>
+                                            <tr style="font-weight: bold;">
+                                                <td>Date/Time</td>
+                                                <td>Nursing Diagnosis</td>
+                                                <td>Expected Outcome</td>
+                                                <td>Implementation</td>
+                                                <td>Evaluation</td>
+                                                <td>Provider Name</td>
+                                                <td><span>[X]</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let plan of patientNursingCarePlans">
+                                                <td>{{plan?.created | showTime}}</td>
+                                                <td>{{plan?.nursingDiagnosis}}</td>
+                                                <td>{{plan?.expectedOutcome}}</td>
+                                                <td>{{plan?.implementation}}</td>
+                                                <td>{{plan?.evaluation}}</td>
+                                                <td>{{plan?.created | showUser}}</td>
+                                                <td><span class="text-danger" (click)="deleteNursingCarePlan(plan.id)"><i class="fa fa-trash"></i></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->
+
+
+<div class="modal fade modal-success" id="lab-test-result-modal" tabindex="-2" role="dialog">
+    <div class="modal-dialog modal-md" role="document" style="width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Lab Test Results</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>Test</td>
+                                    <td>Result</td>
+                                    <td>Report</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let labTest of labTests">
+                                    <td><b>{{labTest.labTestType?.name}}</b></td>
+                                    <td>{{labTest.result}}</td>
+                                    <td>{{labTest.report}}</td>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr><td><small>Range: {{labTest?.range}}</small></td></tr>
+                                                <tr><td><small>Level: {{labTest?.level}}</small> </td></tr>    
+                                                <tr><td><small>Range: {{labTest?.unit}}</small></td></tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr><td><small>Status: {{labTest?.status}}</small></td></tr>
+                                                <tr><td><small>Ordered: {{labTest?.ordered}}</small></td></tr>
+                                                <tr><td><small>Accepted: {{labTest?.accepted}}</small></td></tr>
+                                                <tr><td><small>Rejected: {{labTest?.rejected}}</small></td></tr>
+                                                <tr><td><small>Collected: {{labTest?.collected}}</small></td></tr>
+                                                <tr><td><small>Verified: {{labTest?.verified}}</small></td></tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+
+<div class="modal fade modal-success" id="radiology-result-modal" tabindex="-2" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Radiology Results</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>Radiology Test</td>
+                                    <td>Result</td>
+                                    <td>Doctor Report</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let radiology of radiologies">
+                                    <td><b>{{radiology.radiologyType?.name}}</b></td>
+                                    <td>{{radiology?.result}}</td>
+                                    <td>{{radiology?.report}}</td>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr><td><small>Diagnosis: {{radiology?.diagnosisType?.name}}</small></td></tr>
+                                                <tr><td><small>Description: {{radiology?.description}}</small> </td></tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr><td><small>Atachment: </small></td></tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr><td><small>Status: {{radiology?.status}}</small></td></tr>
+                                                <tr><td><small>Rejected: {{radiology?.rejectComment}}</small></td></tr>    
+                                                <tr><td><small>Ordered: {{radiology?.created}}</small></td></tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>   
+                    
+                    
+                    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-right" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade modal-success" id="view-procedure-note-to-procedure-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">View Procedure Note</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="text-info">{{procedureTypeName}}</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br>
+                        <h4>Procedure Note</h4>
+                        <textarea class="form-control" [(ngModel)]="procedureNote" style="height: 3cm;" readonly></textarea>
+                    </div>
+                </div>   
+                   
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-success pull-right" data-dismiss="modal">Close</button>
+               </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>

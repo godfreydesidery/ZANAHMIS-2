@@ -1,0 +1,75 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Radiology</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a class="btn btn-success" style="margin-right: 1mm;" routerLink="/radiology-outpatient-list">Outpatient List</a>
+                    <a class="btn btn-success" style="margin-right: 1mm;" routerLink="/radiology-inpatient-list">Inpatient List</a>
+                    <a class="btn btn-success" style="margin-right: 1mm;" routerLink="/radiology-outsider-list">Outsider List</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12" style="text-align: center;">
+                            <h3 class="text-primary"><b>{{patient.firstName}} {{patient.middleName}} {{patient.lastName}}</b>, <b>{{patient.no}}</b>, Date of birth: <b>{{patient.dateOfBirth | date}}</b>,Age: <b>{{patient.dateOfBirth | age}}</b>, {{patient.gender}}, {{patient.paymentType}}</h3>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="col-sm-12" *ngFor="let radiology of radiologies">
+                        <div class="row" style="margin: 1mm; background-color: rgb(246, 246, 248);">
+                            <div class="col-sm-4">
+                                <h4><b>{{radiology.radiologyType?.name}}</b></h4>
+                                <span>Status: </span><span><small>{{radiology.status}}</small></span><br><br>
+                                <span>Diagnosis: {{radiology?.diagnosisType?.name}} <span *ngIf="radiology?.diagnosisType?.name === null">NONE</span></span><br><br>
+                                <span>Description: {{radiology?.description}} <span *ngIf="radiology?.description === ''">NONE</span></span><br><br>
+                                <small>Ordered At | By: {{radiology?.created}}</small><br>
+                                <h4 class="text-info"><b>Clinical History</b></h4>
+                                <span>{{radiology.description}}</span><br>
+                                <button class="btn btn-default btn-rounded" (click)="acceptRadiology(radiology)">Accept</button>
+                                <button class="btn btn-default btn-rounded" (click)="rejectRadiology(radiology)">Reject</button>
+                               
+                                <div *ngIf="radiology?.status === 'REJECTED'">
+                                    <h5>Reason for rejection</h5>
+                                    <input type="text" class="form-control" [(ngModel)]="radiology.rejectComment" placeholder="Reason for rejection"><br>
+                                    <button class="btn btn-info" (click)="saveReasonForRejection(radiology.id, radiology.rejectComment)">Save Reason for Rejection</button>
+                                </div>
+                                 <hr>
+                            </div>
+                            
+                            <div class="col-sm-4">
+                                <div class="row" style="padding-left: 3mm; padding-right: 3mm;">
+                                    <div class="col-sm-12">
+                                        <span>Results</span>
+                                        <textarea class="form-control" *ngIf="radiology?.status === 'ACCEPTED'" [(ngModel)]="radiology.result" placeholder="Input Results" style="height: 5cm;"></textarea>
+                                        <textarea class="form-control" *ngIf="radiology?.status === 'VERIFIED'" [(ngModel)]="radiology.result" placeholder="Input Results" style="height: 5cm;" readonly></textarea>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span>Attachment</span>
+                                        <input type="file" class="form-control">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <br>
+                                        <button class="btn btn-primary" (click)="verifyRadiology(radiology)">Verify Results</button>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <br>
+                                        <span class="label label-info m-r-15">Verified At | By: {{radiology.verified}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->

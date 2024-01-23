@@ -1,0 +1,54 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient History - Procedure</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a class="btn btn-primary btn-outline" *ngIf="consultationId != null" routerLink="/doctor-cracking"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" *ngIf="admissionId != null" routerLink="/doctor-inpatient"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/clinical-note-history">Clinical Notes</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/general-examination-history">General Examination</a>
+                    <!--<a class="btn btn-primary btn-outline" routerLink="/working-diagnosis-history">Working Diagnosis</a>-->
+                    <a class="btn btn-primary btn-outline" routerLink="/final-diagnosis-history">Final Diagnosis</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/lab-test-history">Lab Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/radiology-history">Radiology Tests</a>
+                    <a class="btn btn-primary" routerLink="/procedure-history">Procedures</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/prescription-history">Medications</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table-striped table-small table-bordered">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>Ordered By/At</td>
+                                        <td>Procedure</td>
+                                        <td>Procedure Note</td>
+                                        <td>Diagnosis</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let history of procedures | searchFilter : filterRecords">
+                                        <td>{{history?.created}}</td>
+                                        <td>{{history?.procedureType?.name}}</td>
+                                        <td>{{history?.note}}</td>
+                                        <td>{{history?.diagnosisType?.name}}</td>
+                                        <td>{{history?.status}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->

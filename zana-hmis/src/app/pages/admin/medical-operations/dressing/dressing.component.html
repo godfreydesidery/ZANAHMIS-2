@@ -1,0 +1,59 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Dressing</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" [(ngModel)]="procedureTypeName" (ngModelChange)="loadProcedureTypesLike($event)">
+                                <div class="row"  *ngIf="procedureTypes.length > 0">
+                                    <div class="col-sm-12">
+                                        <select class="form-control" multiple="multiple">
+                                            <option *ngFor="let pro of procedureTypes" (click)="getProcedureType(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro.name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <button (click)="addDressing()">Add</button>
+                            </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr style="font-weight: bold;">
+                                    <td>Dressing Procedure Type</td>
+                                    <td>Action</td>
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let dressing of dressings | searchFilter : filterRecords">
+                                    <td>{{dressing?.procedureType?.name}}</td>
+                                    <td><a (click)="deleteDressing(dressing.id)"><i class="glyphicon glyphicon-pencil"></i>Delete</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

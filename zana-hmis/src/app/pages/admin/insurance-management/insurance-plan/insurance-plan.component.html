@@ -1,0 +1,108 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Insurance Plan</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn"> 
+                        <button type="button" class="btn btn-success m-r-2 m-b-5" (click)="clear()" data-toggle="modal" data-target="#add-edit-modal">New</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" [(ngModel)]="filterRecords" placeholder="Search...">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>Name</td>
+                                    <td>Provider</td>
+                                    <td>Description</td>
+                                    <td>Active</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let insurancePlan of insurancePlans | searchFilter : filterRecords">
+                                    <td>{{insurancePlan.code}}</td>
+                                    <td>{{insurancePlan.name}}</td>
+                                    <td>{{insurancePlan.insuranceProvider.name}}</td>
+                                    <td>{{insurancePlan.description}}</td>
+                                    <td><span class="label label-info" *ngIf="insurancePlan.active === true">Active</span><span class="label label-danger" *ngIf="insurancePlan.active === false">Inactive</span></td>
+                                    <td><a class="" (click)="getInsurancePlan(insurancePlan.id)" data-toggle="modal" data-target="#add-edit-modal"><i class="glyphicon glyphicon-pencil"></i>Edit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="add-edit-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title" *ngIf="id === null">Add Insurance Plan</h1>
+                <h1 class="modal-title" *ngIf="id != null">Edit Insurance Plan</h1>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" [(ngModel)]="id">
+                        <div class="col-xs-12">
+                            <label>Code*</label>
+                            <input type="text" class="form-control" [(ngModel)]="code">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Insurance Plan Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Select Insurance Provider*</label>
+                            <select class="form-control" [(ngModel)]="insuranceProviderName">
+                                <option></option>
+                                <option *ngFor="let insuranceProviderName of insuranceProviderNames">{{insuranceProviderName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Description</label>
+                            <input type="text" class="form-control" [(ngModel)]="description">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Active</label>
+                            <input type="checkbox" [(ngModel)]="active" style="text-align: right;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" (click)="saveInsurancePlan()"><span *ngIf="id != null">Update</span><span *ngIf="id === null">Add</span></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->

@@ -1,0 +1,183 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Procedure Payment</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button class="btn btn-primary btn-outline" routerLink="/registration-payment" style="margin: 1mm;">Registration</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/lab-test-payment" style="margin: 1mm;">Lab Investigation</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/radiology-payment" style="margin: 1mm;">Radiology</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/medication-payment" style="margin: 1mm;">Medication</button>
+                    <button class="btn btn-primary" routerLink="/procedure-payment" style="margin: 1mm;">Procedure</button>
+                </div>
+                <div class="panel-body">
+                    
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-xs-3"></div>
+                                            <div class="col-xs-6">
+                                                <h4 class="text-primary"><b>Search Patient(Enter 3 characters)<br> Name, File No or Phone</b></h4>
+                                                <input type="text" class="form-control" [(ngModel)]="searchKey" (ngModelChange)="loadPatientsLike($event)" [readonly]="lockSearchKey" placeholder="Search...">
+                                                <div class="row" *ngIf="lockSearchKey === false && patients.length > 0">
+                                                    <div class="col-sm-12">
+                                                        <select class="form-control" multiple="multiple" style="max-width: 15cm">
+                                                            <option *ngFor="let p of patients" (click)="getPatient(p.id)" style="height: 1cm; cursor: pointer; font-size: large;"><b>{{p.firstName}} {{p.middleName}} {{p.lastName}} | </b> FileNo: <b>{{p.no}}</b></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <br><br><br>
+                                                <button class="btn btn-danger" (click)="reset()">Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6" *ngIf="id != null" >
+                                <br>
+                                <div class="col-sm-12 jumbotron" style="border-radius: 2mm;">
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <h3 class="text-primary"><b>Patient Inf</b></h3>
+                                            <table class="table table-bordered table-small table-striped">
+                                                <tbody>
+                                                    <tr><td><b>Full Name</b></td><td>{{firstName+' '+middleName+' '+lastName}}</td></tr>  
+                                                    <tr><td><b>Phone No</b></td><td>{{phoneNo}}</td></tr>  
+                                                    <tr><td><b>Address</b></td><td>{{address}}</td></tr> 
+                                                    <tr><td><b>File No</b></td><td>{{no}}</td></tr>
+                                                    <tr><td><b>Date of Birth</b></td><td>{{dateOfBirth | date}}</td></tr> 
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" *ngIf="id != null" >
+                                <br>
+                                <div *ngIf="procedureBills.length > 0 || registrationBill != null">
+                                    <span>Bills</span>
+                                    <table class="table table-bordered table-small">
+                                        <thead>
+                                            <tr>
+                                                <td>ID</td>
+                                                <td>Description</td>
+                                                <td>Qty</td>
+                                                <td>Amount</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngIf="registrationBill != null">
+                                                <td>{{registrationBill.id}}</td>
+                                                <td>{{registrationBill.description}}</td>
+                                                <td>{{registrationBill.qty}}</td>
+                                                <td style="text-align: right;">{{registrationBill.amount | currency:'':''}}</td>
+                                            </tr>
+
+                                            <tr *ngFor="let procedureBill of procedureBills">
+                                                <td>{{procedureBill.id}}</td>
+                                                <td>{{procedureBill.description}}</td>
+                                                <td>{{procedureBill.qty}}</td>
+                                                <td style="text-align: right;">{{procedureBill.amount | currency:'':''}}</td>
+                                            </tr>
+
+                                            <tr *ngIf="total > 0">
+                                                <td></td>
+                                                <td></td>
+                                                <td><b>Total</b></td>
+                                                <td style="text-align: right;"><b>{{total | currency:'':''}}</b></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div *ngIf="total > 0">
+                                    <div class="row">
+                                        <div class="col-xs-4">
+                                            <span>Select Method</span>
+                                            <select class="form-control">
+                                                <option>CASH</option>
+                                                <option>M-PESA</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-4" style="text-align: center;">
+                                            <br>
+                                            <button class="btn btn-success" data-toggle="modal" data-target="#confirm-payment-modal">Confirm</button>
+                                        </div>
+                                        <div class="col-xs-4" style="text-align: center;">
+                                            <br>
+                                            <button class="btn btn-danger">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success" role="alert" *ngIf="procedureBills.length === 0 && registrationBill === null" style="text-align: center;">
+                                    No Bill Present
+                                </div>
+                            </div>                            
+                        </div>
+                        <br>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>
+     
+ </section> <!-- /.content -->
+
+
+ <!-- Modal success -->
+<div class="modal fade modal-success" id="confirm-payment-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title">Confirm Payment</h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Total Amount</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="form-control" style="text-align: right;"><b>{{total | currency:'':''}}</b></span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Amount Received</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" [(ngModel)]="amountReceived" style="text-align: center;">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Change</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="form-control" style="text-align: right;"><b>{{amountReceived - total | currency:'':''}}</b></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" *ngIf="amountReceived - total >= 0" (click)="printReceipt()" (click)="confirmBillsPayment()" data-dismiss="modal">Confirm</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

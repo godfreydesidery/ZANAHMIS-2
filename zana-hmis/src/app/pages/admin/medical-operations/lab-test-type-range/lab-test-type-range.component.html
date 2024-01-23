@@ -1,0 +1,78 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Lab Test Type Ranges</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <small>Select Lab Test type to modify ranges</small>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-6" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Lab Test Type</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let labTestType of labTestTypes | searchFilter : filterRecords">
+                                    <td>{{labTestType.name}}</td>
+                                    <td><a (click)="getLabTestType(labTestType.id)"><i class="glyphicon glyphicon-pencil"></i>Select</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4><small>Selected Lab Test Type :</small> {{labTestType?.name}}</h4>
+                        <h4 *ngIf="labTestType === null"><small>No Test Type selected</small></h4>
+                        <table class="table table-bordered table-small" *ngIf="labTestType != null">
+                            <tbody>
+                                <tr>
+                                    <td>Range</td>
+                                    <td>Action</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" class="form-control" [(ngModel)]="labTestTypeRangeName"></td>
+                                    <td><button class="btn btn-primary" (click)="saveLabTestTypeRange()">Add</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div *ngIf="labTestType != null">
+                            <h4><small>Available Ranges for this Test Type</small></h4>
+                            <h4 *ngIf="labTestTypeRanges.length === 0"><small>No Ranges available</small></h4>
+                        </div>               
+                        <table class="table table-bordered table-small" *ngIf="labTestTypeRanges.length > 0">
+                            <tbody>
+                                <tr>
+                                    <td>Range</td>
+                                    <td>[X]</td>
+                                </tr>
+                                <tr *ngFor="let range of labTestTypeRanges">
+                                    <td>{{range?.name}}</td>
+                                    <td><a class="text-danger" (click)="deleteRange(range.id)"><i class="glyphicon glyphicon-trash"></i>Delete</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

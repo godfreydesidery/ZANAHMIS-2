@@ -1,0 +1,129 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>External Medical Provider</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn"> 
+                        <button type="button" class="btn btn-success m-r-2 m-b-5" (click)="clear()" data-toggle="modal" data-target="#add-edit-modal">New Provider</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>Name</td>
+                                    <td>Address</td>
+                                    <td>Telephone</td>
+                                    <td>Fax</td>
+                                    <td>Email</td>
+                                    <td>Website</td>
+                                    <td>Status</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let externalMedicalProvider of externalMedicalProviders | searchFilter : filterRecords">
+                                    <td>{{externalMedicalProvider.code}}</td>
+                                    <td>{{externalMedicalProvider.name}}</td>
+                                    <td>{{externalMedicalProvider.address}}</td>
+                                    <td>{{externalMedicalProvider.telephone}}</td>
+                                    <td>{{externalMedicalProvider.fax}}</td>
+                                    <td>{{externalMedicalProvider.email}}</td>
+                                    <td>{{externalMedicalProvider.website}}</td>
+                                    <td><span class="label label-info" *ngIf="externalMedicalProvider.active === true">Active</span><span class="label label-danger" *ngIf="externalMedicalProvider.active === false">Inactive</span></td>
+                                    <td><a (click)="getExternalMedicalProvider(externalMedicalProvider.id)" data-toggle="modal" data-target="#add-edit-modal"><i class="glyphicon glyphicon-pencil"></i>Edit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="add-edit-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title" *ngIf="id === null">Add External Medical Provider</h1>
+                <h1 class="modal-title" *ngIf="id != null">Edit External Medical Provider</h1>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" [(ngModel)]="id">
+                        <div class="col-xs-12">
+                            <label>Code*</label>
+                            <input type="text" class="form-control" [(ngModel)]="code">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Medical Provider Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Address</label>
+                            <input type="text" class="form-control" [(ngModel)]="address">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Telephone</label>
+                            <input type="text" class="form-control" [(ngModel)]="telephone">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Fax</label>
+                            <input type="text" class="form-control" [(ngModel)]="fax">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Email</label>
+                            <input type="text" class="form-control" [(ngModel)]="email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Website</label>
+                            <input type="text" class="form-control" [(ngModel)]="website">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Active</label>
+                            <input type="checkbox" [(ngModel)]="active" style="text-align: right;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" (click)="saveExternalMedicalProvider()"><span *ngIf="id != null">Update</span><span *ngIf="id === null">Add</span></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->

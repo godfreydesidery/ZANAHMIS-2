@@ -1,0 +1,101 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Pharmacy Dispensing Report</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button type="button" class="btn btn-success btn-outline" (click)="print()"><i class="fa fa-print"></i> Print</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" [(ngModel)]="medicineName" (ngModelChange)="loadMedicinesLike($event)" placeholder="Search Drug...">
+                            <div class="row"  *ngIf="medicines.length > 0">
+                                <div class="col-sm-12">
+                                    <select class="form-control" multiple="multiple" size="4">
+                                        <option *ngFor="let medicine of medicines" (click)="getMedicine(medicine.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{medicine.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                         </div>
+                        <div class="col-sm-1">
+                            <h4>From</h4>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control" [(ngModel)]="from">
+                        </div>
+                        <div class="col-sm-1">
+                            <h4>To</h4>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="date" class="form-control" [(ngModel)]="to">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-primary btn-outline" (click)="loadPrescriptionReport(from, to)">Run Report</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-primary btn-outline" (click)="clear()">Clear</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table-small table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td>SN</td>
+                                        <td>Patient Name</td>
+                                        <td>File No</td>
+                                        <td>Drug Name</td>
+                                        <td>Qty</td>
+                                        <td>Dispensing Pharmacy</td>
+                                        <td>Batch Breakdown</td>
+                                        <td>Dispensed At/By</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let test of prescriptions">
+                                        <td>{{test.sn}}</td>
+                                        <td>{{test.patient.firstName}} {{test.patient.middleName}} {{test.patient.lastName}}</td>
+                                        <td>{{test.patient.no}}</td>
+                                        <td>{{test?.medicine?.name}}</td>
+                                        <td>{{test.issued}}</td>
+                                        <td>{{test?.issuePharmacy?.name}}</td>
+                                        <td>
+                                            <table class="table table-small" *ngIf="test.prescriptionBatches.length > 0">
+                                                <thead>
+                                                    <tr style="font-weight: bold;">
+                                                        <td>Batch#</td>
+                                                        <td>Qty</td>
+                                                        <td>MFG</td>
+                                                        <td>EXP</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let batch of test.prescriptionBatches">
+                                                        <td>{{batch.no}}</td>
+                                                        <td>{{batch.qty}}</td>
+                                                        <td>{{batch?.manufacturedDate | date}}</td>
+                                                        <td>{{batch?.expiryDate | date}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td>{{test?.approved}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->

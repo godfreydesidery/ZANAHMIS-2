@@ -1,0 +1,152 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Supplier Price List</h1>
+    </div>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    Select Supplier To Modify Price List
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-4" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Supplier</td>
+                                    <td>Select</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let supplier of suppliers | searchFilter : filterRecords">
+                                    <td>{{supplier.name}}</td>
+                                    <td><a (click)="getSupplierItems(supplier.id)"><i class="glyphicon glyphicon-pencil"></i> Select</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-8">
+                        <h4 *ngIf="supplier != undefined"><small>Price List for Supplier :</small> {{supplier?.name}}</h4>
+                        <h4 *ngIf="supplier === undefined"><small>No Supplier selected!</small></h4>
+                        <hr>
+                        <div *ngIf="supplier != null">
+                            
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h4 class="text-primary">Add Item  <button class="btn btn-success" (click)="clear()" data-toggle="modal" data-target="#item-modal" style="border-radius: 5mm;">+</button></h4>
+                                </div>
+                                <div class="col-sm-3">
+                                    <button class="btn btn-primary btn-outline" (click)="getTemplateToExcel()"><i class="fa fa-file-excel-o"></i> Get Template</button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="file" (change)="uploadSupplierPriceListFile($event)" multiple="false" #inputFile>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control pull-right" [(ngModel)]="filterItems" placeholder="Search..." style="max-width: 8cm;">
+                                </div>
+                            </div>
+                            <br>
+                            <table class="table table-striped table-bordered table-small">
+                                <thead>
+                                    <tr>
+                                        <td>Code</td>
+                                        <td>Name</td>
+                                        <td>Price</td>
+                                        <td>Terms</td>
+                                        <td>Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of supplierItemPriceList.supplierItemPrices | searchFilter : filterItems">
+                                        <td>{{p.item.code}}</td>
+                                        <td>{{p.item.name}}</td>
+                                        <td style="text-align: right;">{{p.price | currency:'':''}}</td>
+                                        <td>{{p.terms}}</td>
+                                        <td>
+                                            <span (click)="getDetail(p.id)" data-toggle="modal" data-target="#item-modal"><i class="glyphicon glyphicon-pencil"></i>Edit</span>
+                                            <span class="text-danger" (click)="deleteDetail(p.id, p.item.id)" style="margin-left: 3mm;"><i class="glyphicon glyphicon-trash"></i>Delete</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section>
+
+
+ <div class="modal fade modal-success" id="item-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Add/Edit Item</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" [(ngModel)]="detailId">
+                    <input type="hidden" [(ngModel)]="detailItemId">
+                    <div class="col-sm-3">
+                        <h4>Code</h4>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" [(ngModel)]="detailItemCode" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h4>Name</h4>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" *ngIf="detailItemId === null" [(ngModel)]="detailItemName" (ngModelChange)="loadItemsLike($event)">
+                        <input type="text" class="form-control" *ngIf="detailItemId != null" [(ngModel)]="detailItemName" readonly>
+                        <div class="row"  *ngIf="items.length > 0">
+                            <div class="col-sm-12">
+                                <select class="form-control" multiple="multiple">
+                                    <option *ngFor="let item of items" (click)="getItem(item.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{item.code}} | {{item.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h4>Price</h4>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" [(ngModel)]="detailPrice" style="text-align: right;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h4>Terms</h4>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" [(ngModel)]="detailTerms">
+                    </div>
+                </div>
+                <div class="row">
+                    <hr>
+                    <div class="col-sm-12">
+                        <button class="btn btn-success pull-right" (click)="saveDetail()" data-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>

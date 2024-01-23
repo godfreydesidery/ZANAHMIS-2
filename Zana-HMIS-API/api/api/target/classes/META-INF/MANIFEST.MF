@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 19
+Implementation-Title: zana-hmis-api
+Implementation-Version: 0.0.1-Zana-HMIS
+Created-By: Maven Integration for Eclipse
+

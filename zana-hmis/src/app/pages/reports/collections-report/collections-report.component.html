@@ -1,0 +1,106 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Collections Report</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <!--<button type="button" class="btn btn-success btn-outline"><i class="fa fa-print"></i> Print</button>-->
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div>Select Cashier</div>
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control" [(ngModel)]="userName" (ngModelChange)="loadUsersLike($event)" [readonly]="userLocked" placeholder="--All Cashiers--">
+                                <span class="input-group-btn" *ngIf="userName != ''">
+                                    <button class="btn" (click)="clear()"><i class="fa fa-times-rectangle"></i></button>
+                                </span>
+                            </div>
+                            <div class="row"  *ngIf="users.length > 0">
+                                <div class="col-sm-12">
+                                    <select class="form-control" multiple="multiple">
+                                        <option *ngFor="let pro of users" (click)="getUser(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.firstName}} {{pro?.middleName}} {{pro?.lastName}} </option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div>From Date</div>
+                                    <input type="date" class="form-control" [(ngModel)]="startDate">
+                                </div>
+                                <div class="col-sm-6">
+                                    <div>To Date</div>
+                                    <input type="date" class="form-control" [(ngModel)]="endDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <br>
+                            <button class="btn btn-success" *ngIf="startDate != undefined && endDate != undefined" (click)="runReport()">Run Report</button>
+                        </div>
+                        
+                        <div class="col-sm-12" *ngIf="startDate != undefined && endDate != undefined">
+                            <div>
+                                <hr>
+                                <table>
+                                    <tr><td><small>Cashier</small></td><td>:<small><span *ngIf="userName != ''">{{userName}}</span><span *ngIf="userName === ''">--All Cashiers--</span></small></td></tr>
+                                    <tr><td><small>Starting Date</small></td><td>:<small>{{startDate | date}}</small></td></tr>
+                                    <tr><td><small>End Date</small></td><td>:<small>{{endDate | date}}</small></td></tr>
+                                </table>
+                                <hr>
+                                <div class="alert alert-secondary" *ngIf="collections.length === 0" style="text-align: center;"><b>No Data... Click Run to run Report!</b></div>
+                                <table class="table table-striped table-bordered" *ngIf="collections.length > 0">
+                                    <thead>
+                                        <tr>
+                                            <td>ID</td>
+                                            <td>Item</td>
+                                            <td>Amount</td>
+                                            <td>Payment Channel</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let collection of collections">
+                                            <td>{{collection?.sn}}</td>
+                                            <td>{{collection?.itemName}}</td>
+                                            <td style="text-align: right;">{{collection?.amount | currency:'':''}}</td>
+                                            <td>{{collection?.paymentChannel}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td style="font-weight: bold;">Total</td>
+                                            <td style="text-align: right; font-weight: bold;">{{totalAmount | currency:'':''}}</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <div *ngIf="startDate != undefined && endDate != undefined">
+                                    <button class="btn btn-success">Registration</button>
+                                    <button class="btn btn-success">Consultation</button>
+                                    <button class="btn btn-success">Lab Test</button>
+                                    <button class="btn btn-success">Radiology</button>
+                                    <button class="btn btn-success">Procedure</button>
+                                    <button class="btn btn-success">Medication</button>
+                                    <button class="btn btn-success">Ward Bed</button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->

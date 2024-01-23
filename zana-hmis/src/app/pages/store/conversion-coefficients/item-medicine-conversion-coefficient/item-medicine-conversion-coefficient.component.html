@@ -1,0 +1,138 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Item-Medicine Conversion Coefficients</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn"> 
+                        <button type="button" class="btn btn-success m-r-2 m-b-5" (click)="clear()">New</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h3>Item Details</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <input type="hidden" [(ngModel)]="itemId">
+                                <div class="col-sm-4"><h4>Code</h4></div>
+                                <div class="col-sm-8">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" [(ngModel)]="itemCode">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-primary" (click)="searchItem()">Search</button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Name</h4></div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" list="itemNames" [(ngModel)]="itemName">
+                                    <datalist id="itemNames" style="padding: 0px;" >
+                                        <option *ngFor="let n of itemNames" [ngValue]="n">{{n}}</option>
+                                    </datalist> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Qty</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="itemQty"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h3>Medicine Equivalent</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <input type="hidden" [(ngModel)]="medicineId">
+                                <div class="col-sm-4"><h4>Code</h4></div>
+                                <div class="col-sm-8">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" [(ngModel)]="medicineCode">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-primary" (click)="searchMedicine()">Search</button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Name</h4></div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" list="medicineNames" [(ngModel)]="medicineName">
+                                    <datalist id="medicineNames" style="padding: 0px;" >
+                                        <option *ngFor="let n of medicineNames" [ngValue]="n">{{n}}</option>
+                                    </datalist> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Qty</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="medicineQty"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <hr>
+                        <div class="col-sm-12" style="text-align: center;"><button class="btn btn-primary" (click)="saveCoefficient()">Save</button></div>
+                    </div>
+                    <div class="row">
+                        <hr>
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                                </div>
+                            </div>
+                            <br>
+                            <table class="table table-responsive table-bordered table-striped">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>Unit Qty</td>
+                                        <td>Item Code</td>
+                                        <td>Item Name</td>
+                                        <td></td>
+                                        <td>Qty</td>
+                                        <td>Medicine Code</td>
+                                        <td>Medicine Name</td>
+                                        <td>Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let c of itemMedicineCoefficients | searchFilter : filterRecords">
+                                        <td style="text-align: center;">1</td>
+                                        <td><i>{{c.item.code}}</i></td>
+                                        <td>{{c.item.name}}</td>
+                                        <td>=</td>
+                                        <td style="text-align: center;">{{c.coefficient}}</td>
+                                        <td><i>{{c.medicine.code}}</i></td>
+                                        <td>{{c.medicine.name}}</td>
+                                        <td style="text-align: center;"><span class="glyphicon glyphicon-pencil" (click)="getCoefficient(c.id)">Edit</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

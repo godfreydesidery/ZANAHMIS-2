@@ -1,0 +1,93 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Item Inquiry | Store - {{selectedStoreName}}</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button class="btn btn-primary btn-outline" routerLink="/select-store"><i class="glyphicon glyphicon-chevron-left"></i> Back</button>
+                    <button class="btn btn-primary btn-outline" (click)="clear()"><i class="glyphicon glyphicon-remove"></i> Clear</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <input type="hidden" [(ngModel)]="id">
+                                <div class="col-sm-4"><h4>Code</h4></div>
+                                <div class="col-sm-8">
+                                    <div class="row">
+                                        <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="code"></div>
+                                        <div class="col-sm-4"><button class="btn btn-success" (click)="loadItemByStore()">Search</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Barcode</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="barcode"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Name</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="name"  list="names"></div>
+                                <datalist id="names" style="padding: 0px;" >
+                                    <option *ngFor="let n of names" [ngValue]="n">{{n}}</option>
+                                </datalist> 
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Short Name</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="shortName" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Common Name</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="commonName" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Vat</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="vat" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>UOM</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="uom" readonly></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Stock</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="stock" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Pack Size</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="packSize" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Minimum Inventory</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="minimumInventory" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Maximum Inventory</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="maximumInventory" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Default Reorder Qty</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="defaultReorderQty" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4>Default Reorder Level</h4></div>
+                                <div class="col-sm-8"><input type="text" class="form-control" [(ngModel)]="defaultReorderLevel" readonly></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><h4></h4></div>
+                                <div class="col-sm-8"><input type="checkbox" [(ngModel)]="active" readonly><label>Active</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

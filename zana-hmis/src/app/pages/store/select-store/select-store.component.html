@@ -1,0 +1,65 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Store - {{selectedStoreName}}</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading" *ngIf="selectedStoreName != ''">
+                    <button class="btn btn-primary btn-outline" routerLink="/item-inquiry"><i class="glyphicon glyphicon-zoom-out"></i> Item Inquiry</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-store-r-o-list"><i class="glyphicon glyphicon-list"></i> Pharmacy Order List</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/goods-received-note"><i class="glyphicon glyphicon-book"></i> Goods Received Note</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/store-item-stock-status"><i class="glyphicon glyphicon-cart"></i> Stock Status</button>
+                </div>
+                <div class="panel-body">
+                    
+                    <section class="content">
+                        <div class="row" style="margin-top: 5%;">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-6 jumbotron">
+                                <div class="row">
+                                    <div *ngIf="selectedStoreName != ''">
+                                        <div class="col-sm-12">
+                                            <h4>Selected Store: {{selectedStoreName}}</h4><br>
+                                            <br>
+                                            <h5>To switch store, please log in afresh</h5>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="selectedStoreName === ''">
+                                        <div class="col-sm-12" *ngIf="stores.length > 0">
+                                            <h2 class="text-primary">Please Select Store</h2>
+                                            <select class="form-control" [(ngModel)]="storeName" style="font-size: x-large; height: 2cm;">
+                                                <option></option>
+                                                <option *ngFor="let store of stores">{{store.name}}</option>
+                                            </select>
+                                            <hr>
+                                        </div>
+                                        <div class="alert alert-success" *ngIf="stores.length === 0" style="text-align: center;">Store access restricted. Please contact administrator for store allocation!</div>
+                                        <div class="col-xs-6">
+                                            <button class="btn btn-primary form-control" *ngIf="storeName != ''" (click)="selectStore(storeName)">Select</button>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <button class="btn btn-default form-control" *ngIf="storeName != ''" (click)="clear()">Cancel</button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
+                         
+                    </section>
+
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->

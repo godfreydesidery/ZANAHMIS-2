@@ -1,0 +1,46 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~assets/plugins/jquery-ui-1.12.1/jquery-ui.css';
+@import '~assets/bootstrap/css/bootstrap.min.css';
+@import '~assets/plugins/lobipanel/lobipanel.min.css';
+@import '~assets/plugins/pace/flash.css';
+@import '~assets/font-awesome/css/font-awesome.min.css';
+
+
+@import '~assets/pe-icon-7-stroke/css/pe-icon-7-stroke.css';
+@import '~assets/themify-icons/themify-icons.css';
+@import '~assets/plugins/toastr/toastr.css';
+@import '~assets/plugins/emojionearea/emojionearea.min.css';
+@import '~assets/plugins/monthly/monthly.css';
+@import '~assets/dist/css/stylehealth.min.css';
+
+
+
+.btn {
+    border-radius: 5px;
+    margin: 2px;
+}
+
+.jumbotron {
+    background-color: #f4f9f3;
+}
+
+.sidebar-menu{
+    font-weight: bold;
+}
+
+.main-sidebar1{
+    background-color: #020913;
+}
+
+.side-bar1{
+    background-color: rgba(9, 144, 248, 0.422);
+}
+
+.treeview.treeview-menu1{
+    background-color: rgba(9, 144, 248, 0.422);
+}
+
+.menu-theme1{
+    background-color: rgba(9, 144, 248, 0.422);
+}

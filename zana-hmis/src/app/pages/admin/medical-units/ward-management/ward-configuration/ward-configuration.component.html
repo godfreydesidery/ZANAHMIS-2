@@ -1,0 +1,99 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Ward Configuration</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <h4 class="text-primary">Ward : <b>{{ward?.name}}</b> Category : <b>{{ward?.wardCategory?.name}}</b> Type : <b>{{ward?.wardType?.name}}</b> Max No of Beds/Rooms : <b>{{ward?.noOfBeds}}</b></h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+
+                        <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" [(ngModel)]="bedNo" style="text-align: center;" placeholder="Enter Bed/Room No">
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary btn-outline" (click)="registerBed(bedNo)" ><i class="glyphicon glyphicon-plus-sign"></i> Add</button>
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                                </div>
+                            </div>
+                            <br>
+                            <table class="table table-bordered table-small table-responsive">
+                                <thead>
+                                    <tr>
+                                        <td>Bed/Room No</td>
+                                        <td>Occupied Status</td>
+                                        <td>Active Status</td>
+                                        <td>Activate</td>
+                                        <td>Action</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let wardBed of wardBeds | searchFilter : filterRecords">
+                                        <td style="text-align: center;">
+                                            <span class="label-success label label-default" *ngIf="wardBed?.active === true">{{wardBed.no}}</span>
+                                            <span class="label-success label label-danger" *ngIf="wardBed?.active === false">{{wardBed.no}}</span>
+                                        </td>
+                                        <td>
+                                            <span class="label-success label label-default" *ngIf="wardBed?.active === true">{{wardBed.status}}</span>
+                                            <span class="label-default label label-danger" *ngIf="wardBed?.active === false">{{wardBed.status}}</span>
+                                        <td>
+                                            <span class="label-success label label-default" *ngIf="wardBed?.active === true">Active</span>
+                                            <span class="label-default label label-danger" *ngIf="wardBed?.active === false">Inactive</span>
+                                        </td>
+                                        <td>
+                                            <button (click)="activateBed(wardBed.id)" *ngIf="wardBed.active === false">Activate</button>
+                                            <button (click)="deactivateBed(wardBed.id)" *ngIf="wardBed.active === true">Deactivate</button>  
+                                            
+                                        </td>
+                                        <td>
+                                            <span class="text-success" (click)="getWardBed(wardBed.id)" data-toggle="modal" data-target="#edit-modal"><i class="fa fa-pencil"></i>Edit</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->
+
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="edit-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title">Edit Bed/Room No</h1>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" [(ngModel)]="bedId">
+                        <div class="col-xs-12">
+                            <label>Bed/Room No*</label>
+                            <input type="text" class="form-control" [(ngModel)]="bedNo">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" (click)="updateBed()">Update</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->

@@ -1,0 +1,46 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Registration Prices</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <h4 class="text-primary">Package: {{insurancePlanName}}</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12" style="overflow: scroll;">
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Price</td>
+                                    <td>Edit Price</td>
+                                    <td>Action</td>
+                                    <td>Coverage</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let l of registrationPrices">
+                                    <td style="text-align: right;">{{l.price | currency:'':''}}</td>
+                                    <td><input type="text" class="form-control" [(ngModel)]="l.price" style="text-align: center;"></td>
+                                    <td><button class="btn btn-success" (click)="updateRegistrationPriceByInsurance(insurancePlanId, l.price)"><i class="glyphicon glyphicon-floppy-disk"></i>Save</button></td>
+                                    <td>
+                                        <div *ngIf="l?.registrationInsurancePlan?.covered != undefined">
+                                            <span *ngIf="l?.registrationInsurancePlan?.covered === true">COVERED <button (click)="changeRegistrationCoverage(insurancePlanId, false)">Change</button></span>
+                                            <span *ngIf="l?.registrationInsurancePlan?.covered === false">NOT COVERED <button (click)="changeRegistrationCoverage(insurancePlanId, true)">Change</button></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

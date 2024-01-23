@@ -1,0 +1,61 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Nurse - Outsider List</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn-group"> 
+                        <a class="btn btn-primary btn-outline" routerLink="/nurse-outpatient-list" style="margin: 1px;"> <i class="fa fa-list"></i>Outpatient List</a>
+                        <a class="btn btn-primary btn-outline" routerLink="/nurse-inpatient-list" style="margin: 1px;"> <i class="fa fa-list"></i>Inpatient List</a>  
+                        <a class="btn btn-primary" routerLink="/nurse-outsider-list" style="margin: 1px;"> <i class="fa fa-list"></i>Outsider List</a>    
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover text-small">
+                                <thead class="success">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Patient's File No</th>
+                                    <th>Payment Type</th>
+                                    <th>Gender</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let nonConsultation of nonConsultations | searchFilter : filterRecords">
+                                        <td>{{nonConsultation?.patient?.firstName+' '+nonConsultation?.patient?.middleName+' '+nonConsultation?.patient?.lastName}}</td>
+                                        <td>{{nonConsultation?.patient?.no}}</td>
+                                        <td>
+                                            <span *ngIf="nonConsultation?.insurancePlan === null">Cash</span>
+                                            <span *ngIf="nonConsultation?.insurancePlan != null">{{nonConsultation?.insurancePlan?.name}}</span>
+                                            
+                                        </td>
+                                        <td>{{nonConsultation?.patient?.gender}}</td>
+                                        <td><a class="btn btn-success" >Attend</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> <!-- /.content -->

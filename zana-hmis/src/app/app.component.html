@@ -1,0 +1,446 @@
+<body class="hold-transition sidebar-mini" style="background-color: rgb(210, 211, 212); min-height: 150%;">
+
+  <div *ngIf="isLoggedIn===false">
+      <app-login></app-login>
+    </div>
+
+
+  <!-- Site wrapper -->
+  <div style="margin-left: 3%; margin-right: 3%; margin-bottom: 1%; margin-top: 3mm; border-radius: 3mm;">
+
+  
+  <div class="wrapper" *ngIf="isLoggedIn===true">
+      <header class="main-header">
+          <a href="index.html" class="logo" style="background-color: transparent;"> <!-- Logo -->
+              <span class="logo-mini">
+                  <!--<b>A</b>H-admin-->
+                  <!--<img src="assets/dist/img/mini-logo.png" alt="">-->
+              </span>
+              <span class="logo-lg" style="margin: 1mm;">
+                  <!--<b>Admin</b>H-admin-->
+                  <img *ngIf="retrievedImage" class="img-fluid img-thumbnail" [src]="retrievedImage" style="width: 100%; height: 100%;">
+                  <!--<img src="assets/dist/img/zana-logo.png" alt="">-->
+              </span>
+          </a>
+          <!-- Header Navbar -->
+          <nav class="navbar navbar-static-top">
+              <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button"> <!-- Sidebar toggle button-->
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="fa fa-tasks"></span>
+              </a>
+              <div class="navbar-custom-menu">
+                  <ul class="nav navbar-nav">
+                      <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
+
+                              <span style="color: rgb(255, 255, 255); font-size: large; font-weight: bold;">{{userName}}</span><i class="fa fa-user"></i>
+                          <div>
+                          <!--<img src="assets/dist/img/avatar4.png" class="img-circle" height="40" width="40" alt="User Image">-->
+                            
+                          </div>
+                          </a>
+                          <ul class="dropdown-menu">
+                              <!--<li><a href="profile.html"><i class="fa fa-users"></i> User Profile</a></li>
+                              <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>-->
+                              <li (click)="logout()" style="height: 2cm;"><a href="#" style="height: 2cm;"> <h4><i class="fa fa-sign-out"></i>Logout</h4></a></li>
+                          </ul>
+                      </li>
+                  </ul>
+              </div>
+          </nav>
+      </header>
+      <!-- =============================================== -->
+      <!-- Left side column. contains the sidebar -->
+      <aside class="main-sidebar">
+          <br>
+          <!-- sidebar -->
+          <div class="sidebar">
+              <!-- Sidebar user panel -->
+              <!--<div class="user-panel">
+                  <div class="image pull-left">
+                      <img src="assets/dist/img/avatar5.png" class="img-circle" alt="User Image">
+                  </div>
+                  <div class="info">
+                      <h4>Welcome</h4>
+                      <h5 style="color: white;">{{userName}}</h5>
+                  </div>
+              </div>-->
+              
+              <!-- sidebar menu -->
+                <ul class="sidebar-menu">
+                    <li>
+                      <a routerLink="/dashboard"><i class="fa fa-hospital-o"></i><span>My Dashboard</span></a>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['PATIENT-ALL','PATIENT-CREATE','PATIENT-UPDATE'])">
+                        <a href="#" (click)="loadRegistrationModule()">
+                            <i class="fa fa-wheelchair"></i><span>Reception</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/patient-register">Patient Register</a></li>
+                            <li><a>Requisition Order</a></li>
+                            <!--<li><a href="#">Outsider Patient</a></li>
+                            <li><a href="#">NHIF Patient List</a></li>-->
+                        </ul>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['CLINIC_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadClinicModule()">
+                            <i class="fa fa-stethoscope"></i><span>Doctor</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/list-from-reception">List From Reception</a></li>
+                            <li><a routerLink="/my-consultation">My Consultations</a></li>
+                            <li><a routerLink="/doctor-inpatient-list">Inpatient List</a></li>
+                        </ul>
+                        
+                    </li>
+                    <li class="treeview" *ngIf="grant(['NURSING_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadNursingModule()">
+                            <i class="fa fa-thermometer"></i><span>Nurse</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <!--<li><a routerLink="/nurse-outpatient-list">Outpatient List</a></li>-->
+                            <li><a routerLink="/nurse-inpatient-list">Inpatient List</a></li>
+                            <!--<li><a routerLink="/nurse-outsider-list">Outsider List</a></li>-->
+                            <li><a>Requisition Order</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="treeview" *ngIf="grant(['LAB_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadLaboratoryModule()">
+                            <i class="fa fa-thermometer"></i><span>Laboratory</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/lab-outpatient-list">Outpatient List</a></li>
+                            <li><a routerLink="/lab-inpatient-list">Inpatient List</a></li>
+                            <li><a routerLink="/lab-outsider-list">Outsider List</a></li>
+                            <li><a routerLink="/patient-results">Patient Results</a></li>
+                            <li><a>Requisition Order</a></li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/lab-test-report">Test Report</a></li>
+                                    <li><a routerLink="/lab-test-statistics-report">Test Statistics Report</a></li>
+                                    <li><a routerLink="/lab-sample-collection-report">Sample Collection Report</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['RADIOLOGY_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadRadiologyModule()">
+                            <i class="fa fa-flash"></i><span>Radiology</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/radiology-outpatient-list">Outpatient List</a></li>
+                            <li><a routerLink="/radiology-inpatient-list">Inpatient List</a></li>
+                            <li><a routerLink="/radiology-outsider-list">Outsider List</a></li>
+                            <li><a>Requisition Order</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['PHARMACY_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadPharmacyModule()">
+                            <i class="fa fa-eyedropper"></i><span>Pharmacy</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/select-pharmacy">Select Pharmacy</a></li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/pharmacy-dispensing-report">Dispensing Report</a></li>
+                                    <li><a routerLink="/fast-moving-drugs-report">Fast Moving Drugs</a></li>
+                                    <li><a routerLink="/slow-moving-drugs-report">Slow Moving Drugs</a></li>
+                                    <li><a routerLink="/pharmacy-stock-card-report">Stock Card Report</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['CASHIER_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadCashierModule()">
+                            <i class="fa fa-dollar"></i><span>Cashier</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <!--<li><a routerLink="/patient-payment">Receive Payments</a></li>-->
+                            <li><a routerLink="/registration-payment">Reception</a></li>
+                            <li><a routerLink="/lab-test-payment">Lab Investigation</a></li>
+                            <li><a routerLink="/radiology-payment">Radiology</a></li>
+                            <li><a routerLink="/medication-payment">Medication</a></li>
+                            <li><a routerLink="/procedure-payment">Procedure</a></li>
+                            <li><a routerLink="/inpatient-payment">Inpatients</a></li>
+                            <li><a routerLink="/patient-direct-pending-invoices">Patient Direct Invoices</a></li>
+                            <li><a routerLink="/patient-insurance-pending-invoices">Patient Insurance Invoices</a></li>
+                            <li><a routerLink="/discharge-list">Discharge List</a></li>
+                            <li><a routerLink="/deceased-list">Deceased List</a></li>
+                            <li><a routerLink="/referral-list">Referral List</a></li>
+                            <li><a routerLink="/registration-prices">Price View</a></li>
+                            <li><a routerLink="/patient-report">Patient Report</a></li>
+                            <li><a>Requisition Order</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['STORE_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadStoreModule()">
+                            <i class="fa fa-university"></i><span>Store</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/select-store">Select Store</a></li>
+                            <li><a routerLink="/item-medicine-conversion-coefficient">Item Medicine Coefficient</a></li>
+                            <li><a>Requisition Order</a></li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/goods-received-note-report">GRN Report</a></li>
+                                    <li><a routerLink="/store-stock-card-report">Stock Card Report</a></li>
+                                    <li><a routerLink="/local-purchase-order-report">LPO Report</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!--<ul class="treeview-menu">
+                            <li><a routerLink="/item-inquiry">Item Inquiry</a></li>
+                            <li><a routerLink="/pharmacy-to-store-r-o-list">Pharmacy Order List</a></li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-balance-scale"></i><span>Conversion Settings</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/item-medicine-conversion-coefficient">Item Medicine Coefficient</a></li>
+                                </ul>
+                            </li>
+                        </ul>-->
+                    </li>
+                    <li class="treeview" *ngIf="grant(['PROCUREMENT_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadProcurementModule()">
+                            <i class="fa fa-shopping-cart"></i><span>Procurement</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/local-purchase-order">LPO</a></li>
+                            <li><a routerLink="/supplier-item-price-list">Supplier Price List</a></li>
+                            <li><a routerLink="/supplier-register">Supplier Register</a></li>
+                            <li><a routerLink="/item-register">Item Register</a></li>
+                            <li><a>Requisition Order</a></li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/local-purchase-order-report">LPO Report</a></li>
+                                    <li><a routerLink="/goods-received-note-report">GRN Report</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['ADMIN-ACCESS'])">
+                        <a href="#" (click)="loadAdminModule()">
+                            <i class="fa fa-user-o"></i><span>Admin</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-medkit"></i><span>Medical Operations</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/diagnosis-type">Diagnosis Type</a></li>
+                                    <li><a routerLink="/lab-test-type">Lab Test Type</a></li>
+                                    <li><a routerLink="/lab-test-type-range">Lab Test Type Ranges</a></li>
+                                    <li><a routerLink="/procedure-type">Procedure Type</a></li>
+                                    <li><a routerLink="/radiology-type">Radiology Type</a></li>
+                                    <li><a routerLink="/medicine">Medicine</a></li>
+                                    <li><a routerLink="/dressing">Dressing</a></li>
+                                    <li><a routerLink="/consumable">Consumable</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-institution"></i><span>Insurance Management</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/insurance-provider">Insurance Provider</a></li>
+                                    <li><a routerLink="/insurance-plan">Insurance Plan</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-money"></i><span>Insurance Plan Pricing</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/registration-plan">Registration Plan</a></li>
+                                    <li><a routerLink="/consultation-plan">Consultation Plan</a></li>
+                                    <li><a routerLink="/lab-test-plan">Lab Test Plan</a></li>
+                                    <li><a routerLink="/procedure-plan">Medical Procedure Plan</a></li>
+                                    <li><a routerLink="/radiology-plan">Radiology Plan</a></li>
+                                    <li><a routerLink="/medicine-plan">Medicine Plan</a></li>
+                                    <li><a routerLink="/ward-plan">Ward Plan</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-id-card"></i><span>Personel Management</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/clinician">Doctor</a></li>
+                                    <li><a routerLink="/pharmacist">Pharmacist</a></li>
+                                    <li><a routerLink="/nurse">Nurse</a></li>
+                                    <li><a routerLink="/store-person">Store Person</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-hospital-o"></i><span>Medical Units</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="external-medical-provider">External Provider</a></li>
+                                    <li><a routerLink="clinic">Clinic</a></li>
+                                    <li><a routerLink="/pharmacy">Pharmacy</a></li>
+                                    <li><a routerLink="/store">Store</a></li>
+                                    <li><a routerLink="/theatre">Theatre</a></li>
+                                    <li class="treeview">
+                                        <a href="#">
+                                            <i class="fa fa-bed"></i><span>Ward Manager</span>
+                                            <span class="pull-right-container">
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </span>
+                                        </a>
+                                        <ul class="treeview-menu">
+                                            <li><a routerLink="/ward">Ward</a></li>
+                                            <li><a routerLink="/ward-category">Ward Category</a></li>
+                                            <li><a routerLink="/ward-type">Ward Type</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-key"></i><span>User and Access</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/user-profile">User Profile</a></li>
+                                    <li><a routerLink="/role">Roles</a></li>
+                                    <li><a routerLink="/access-management">Access Management</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-institution"></i><span>Company</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/company-profile">Company Profile</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/consultation-report">Consultation Report</a></li>
+                                    <li><a routerLink="/procedure-report">Procedure Report</a></li>
+                                    <li><a routerLink="/doctor-to-radiology-report">Doctor to Radiology Report</a></li>
+                                    <li><a routerLink="/doctor-to-laboratory-report">Doctor to Laboratory Report</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="treeview" *ngIf="grant(['REPORT_SERVICE-ACCESS'])">
+                        <a href="#" (click)="loadReportModule()">
+                          <i class="fa fa-file-text"></i><span>Report</span>
+                          <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/doctors-reports">Doctors Report</a></li>
+                            <li><a routerLink="/collections-report">Collections Report</a></li>
+                            <!--<li><a href="patient-wise-report.html">Patient wise Report</a></li>
+                            <li><a href="doctor-wise-report.html">Doctor wise Report</a></li>
+                            <li><a href="total-report.html">Total Report</a></li>
+                            <li><a routerLink="/report-template">Report Template</a></li>-->
+                        </ul>
+                    </li>
+                </ul>
+            </div> <!-- /.sidebar -->
+        </aside>
+      <!-- =============================================== -->
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+          <router-outlet></router-outlet>
+      </div><!-- /.content-wrapper -->
+       
+      <footer class="main-footer">
+          <div class="pull-right hidden-xs"> <b>Version</b> 1.0</div>
+          <strong>Copyright &copy; 2023 <a href="#">Zana Health Care</a>.</strong> All rights reserved.
+      </footer>
+  </div> <!-- ./wrapper -->
+  </div>
+</body>
+<ngx-spinner>Zana. Process loading, Please wait...</ngx-spinner>
+

@@ -1,0 +1,31 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Registration Plan</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <h4 class="text-primary">Select Package</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <button class="btn btn-transparent btn-primary btn-outline form-control" routerLink="/registration-price" (click)="setInsurancePlanId(0, 'CASH')" style="border-radius: 0px;">CASH</button>
+                            </div>
+                            <div class="col-sm-2" *ngFor="let p of insurancePlans">
+                                <button class="btn btn-transparent btn-primary btn-outline form-control" routerLink="/registration-price" (click)="setInsurancePlanId(p.id, p.name)" style="border-radius: 0px;">{{p.name}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->

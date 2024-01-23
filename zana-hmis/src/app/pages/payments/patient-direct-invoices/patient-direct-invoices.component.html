@@ -1,0 +1,53 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient Direct Invoices</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn-group"> 
+
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover text-small">
+                                <thead class="success">
+                                <tr>
+                                    <th>Invoice No</th>
+                                    <th>Name</th>
+                                    <th>Patient's File No</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let invoice of invoices | searchFilter : filterRecords">
+                                        <td>{{invoice.no}}</td>
+                                        <td>{{invoice?.patient?.firstName}} {{invoice?.patient?.middleName}} {{invoice?.patient?.lastName}}</td>
+                                        <td>{{invoice?.patient?.no}}</td>
+                                        <td><span routerLink="/patient-invoice" (click)="setInvoice(invoice.id)" >Select</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> <!-- /.content -->

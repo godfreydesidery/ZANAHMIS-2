@@ -1,0 +1,54 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Radiology - Inpatient List</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button class="btn btn-primary btn-outline" routerLink="/radiology-outpatient-list">Outpatient List</button>
+                    <button class="btn btn-primary" routerLink="/radiology-inpatient-list">Inpatient List</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/radiology-outsider-list">Outsider List</button>
+
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="success">
+                            <tr>
+                                <th>Name</th>
+                                <th>Patient's File No</th>
+                                <th>Payment Type</th>
+                                <th>Gender</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let p of patients | searchFilter : filterRecords">
+                                    <td>{{p.firstName+' '+p.middleName+' '+p.lastName}}</td>
+                                    <td>{{p.no}}</td>
+                                    <td>{{p.paymentType}}</td>
+                                    <td>{{p.gender}}</td>
+                                    <td><a class="btn btn-success" (click)="attend(p.id)">Attend</a></td>
+                                </tr>
+                            </tbody>
+                        </table>   
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</section> <!-- /.content -->

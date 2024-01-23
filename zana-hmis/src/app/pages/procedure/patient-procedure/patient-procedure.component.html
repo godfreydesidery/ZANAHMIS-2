@@ -1,0 +1,131 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Theatre/Non Theatre - Procedures</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <!--<a class="btn btn-primary btn-outline" style="margin-right: 1mm;" routerLink="/pharmacy-outpatient-list">Outpatient List</a>
+                    <a class="btn btn-primary btn-outline" style="margin-right: 1mm;" routerLink="/pharmacy-inpatient-list">Inpatient List</a>
+                    <a class="btn btn-primary btn-outline" style="margin-right: 1mm;" routerLink="/pharmacy-outsider-list">Outsider List</a>-->
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12 alert alert-primary" role="alert">
+                            <h3 class="text-primary">Name: <b>{{patient.firstName}} {{patient.middleName}} {{patient.lastName}}</b>, File No: <b>{{patient.no}}</b>, Date of birth: <b>{{patient.dateOfBirth | date}}</b>, Age: <b>{{patient.dateOfBirth | age}}</b>, {{patient.gender}}, {{patient.paymentType}}</h3>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table striped">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>Procedure</td>
+                                        <!--<td>Dosage</td>
+                                        <td>Frequency</td>
+                                        <td>Route</td>
+                                        <td>Days</td>
+                                        <td>qty</td>
+                                        <td>Amount</td>-->
+                                        <td>Status</td>
+                                        <td>Accept</td>
+                                        <td>Procedure Note</td>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let procedure of procedures | searchFilter : filterRecords">
+                                        <td>{{procedure?.procedureType?.name}}</td>
+                                        <!--<td>{{procedure.dosage}}</td>
+                                        <td>{{procedure.frequency}}</td>
+                                        <td>{{procedure.route}}</td>
+                                        <td>{{procedure.days}}</td>
+                                        <td>{{procedure.qty}}</td>
+                                        <td>{{procedure.price * procedure.qty | currency:'':''}}</td>-->
+                                        <td>{{procedure.status}}</td>
+                                        <td>
+                                            <button class="btn btn-default btn-rounded" (click)="acceptProcedure(procedure)">Accept</button>
+                                            <!--<button class="btn btn-default btn-rounded" (click)="rejectProcedure(procedure)">Reject</button>-->
+                                            <!--<button class="btn btn-default btn-rounded" (click)="holdProcedure(procedure)">Hold</button>
+                                            <button class="btn btn-default btn-rounded" (click)="collectProcedure(procedure)">Collect</button>-->
+                                            <!--<button class="btn btn-primary" (click)="verifyProcedure(procedure)">Verify</button>-->
+                                        </td>
+                                        <td>
+                                            <div class="row" *ngIf="procedure.status === 'ACCEPTED'">
+                                                <div class="col-sm-12">
+                                                    <textarea class="form-contorl" [(ngModel)]="procedure.note" style="height: 5cm;">{{procedure?.note}}</textarea>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <button class="btn btn-primary" (click)="updateProcedure(procedure)">Save</button>
+                                                </div>
+                                            </div>
+                                        </td>    
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--<div class="col-sm-6" *ngFor="let procedure of procedures">
+                        <div class="row" style="margin: 1mm; background-color: rgb(246, 246, 248);">
+                            <div class="col-sm-12">
+                                <h4><b>{{procedure.medicine.name}}</b></h4>
+                                <h4><b>{{procedure.dosage}}</b></h4>
+                                <h4><b>{{procedure.frequency}}</b></h4>
+                                <h4><b>{{procedure.route}}</b></h4>
+                                <h4><b>{{procedure.qty}}</b></h4>
+                            </div>
+                            <div class="col-sm-12">
+                                <span class="label label-success m-r-15"><small>{{procedure.status}}</small></span>
+                                <button class="btn btn-default btn-rounded" (click)="acceptProcedure(procedure)">Accept</button>
+                                <button class="btn btn-default btn-rounded" (click)="rejectProcedure(procedure)">Reject</button>
+                                <button class="btn btn-default btn-rounded" (click)="holdProcedure(procedure)">Hold</button>
+                                <button class="btn btn-default btn-rounded" (click)="collectProcedure(procedure)">Collect</button>
+
+                                <hr>
+                            </div>
+                            <small>Ordered on: </small><br>
+                            <small>ID </small><span class="label label-primary m-r-15">{{procedure?.id}}</span>
+                            <div *ngIf="procedure?.status === 'ACCEPTED' || procedure?.status === 'COLLECTED' || procedure?.status === 'VERIFIED'">
+                                
+                                
+                                <div class="row" style="padding-left: 3mm; padding-right: 3mm;">
+                                    <br>
+                                    <div class="col-sm-12">
+                                        <span class="label label-info m-r-15">Verified By: {{procedure.verified}}</span>
+                                    </div>
+                                    <div class="col-sm-12" style="text-align: right;">
+                                        <button class="btn btn-primary" (click)="verifyProcedure(procedure)">Verify Results</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="procedure?.status === 'REJECTED'">
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <h5>Reason for rejection</h5>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" placeholder="Reason for rejection">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button class="btn btn-info">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>-->
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->

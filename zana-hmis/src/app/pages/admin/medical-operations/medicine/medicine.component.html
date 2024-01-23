@@ -1,0 +1,153 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Medicine</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-success m-r-2 m-b-5" (click)="clear()" data-toggle="modal" data-target="#add-edit-modal">New</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-primary btn-outline" (click)="exportTemplateToExcel()"><i class="fa fa-file-excel-o"></i> Template</button>
+                            <button class="btn btn-primary btn-outline" (click)="exportMedicinesToExcel()"><i class="fa fa-file-excel-o"></i> Excel</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <h5>Upload from Excel <span>Progress: {{progressStatus}} {{currentRecord}} of {{totalRecords}}</span></h5>
+                            <input type="file" (change)="uploadMedicinesFile($event)" multiple="false">
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>Name</td>
+                                    <td>Description</td>
+                                    <td>Uom</td>
+                                    <td>Type</td>
+                                    <td>Category</td>
+                                    <td>Price</td>
+                                    <td>Active</td>
+                                    <td>Activate</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let medicine of medicines | searchFilter : filterRecords">
+                                    <td>{{medicine?.code}}</td>
+                                    <td>{{medicine?.name}}</td>
+                                    <td>{{medicine?.description}}</td>
+                                    <td>{{medicine?.uom}}</td>
+                                    <td>{{medicine?.type}}</td>
+                                    <td>{{medicine?.category}}</td>
+                                    <td style="text-align: right;">{{medicine?.price | currency:'':''}}</td>
+                                    <td><span class="label label-info" *ngIf="medicine.active === true">Active</span><span class="label label-danger" *ngIf="medicine.active === false">Inactive</span></td>
+                                    <td>
+                                        <button (click)="activateMedicine(medicine.id)" *ngIf="medicine.active === false">Activate</button>
+                                        <button (click)="deactivateMedicine(medicine.id)" *ngIf="medicine.active === true">Deactivate</button>  
+                                        
+                                    </td>
+                                    <td><a class="" (click)="getMedicine(medicine.id)" data-toggle="modal" data-target="#add-edit-modal"><i class="glyphicon glyphicon-pencil"></i>Edit</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="add-edit-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title" *ngIf="id === null">Add Medicine</h1>
+                <h1 class="modal-title" *ngIf="id != null">Edit Medicine</h1>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" [(ngModel)]="id">
+                        <div class="col-xs-12">
+                            <label>Code*</label>
+                            <input type="text" class="form-control" [(ngModel)]="code">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Medicine Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Description</label>
+                            <input type="text" class="form-control" [(ngModel)]="description">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>UOM</label>
+                            <input type="text" class="form-control" [(ngModel)]="uom">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Type</label>
+                            <select class="form-control" [(ngModel)]="type">
+                                <option>ORAL</option>
+                                <option>PILL</option>
+                                <option>OTHER</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Category</label>
+                            <select class="form-control" [(ngModel)]="category">
+                                <option>MEDICINE</option>
+                                <option>PRODUCT</option>
+                                <option>EQUIPMENT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Price</label>
+                            <input type="text" class="form-control" [(ngModel)]="price" style="text-align: center;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Active</label>
+                            <input type="checkbox" [(ngModel)]="active" style="text-align: right;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" (click)="saveMedicine()"><span *ngIf="id != null">Update</span><span *ngIf="id === null">Add</span></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->

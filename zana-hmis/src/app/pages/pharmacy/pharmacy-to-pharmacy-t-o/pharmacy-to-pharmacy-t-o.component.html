@@ -1,0 +1,192 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Transfer to other Pharmacy(Pharmacy To Pharmacy Transfer Order)</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button class="btn btn-primary btn-outline" *ngIf="pharmacyToPharmacyTO?.status === 'PENDING'" (click)="verifyOrder()"><span class="glyphicon glyphicon-check"></span>Verify Order</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="pharmacyToPharmacyTO?.status === 'VERIFIED'" (click)="approveOrder()"><span class="glyphicon glyphicon-ok"></span>Approve Order</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="pharmacyToPharmacyTO?.status === 'APPROVED'" (click)="issueGoods()"><span class="glyphicon glyphicon-shopping-cart"></span>Issue Goods</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12" *ngIf="pharmacyToPharmacyTO != null">
+                            <h4 class="text-primary">Order</h4>
+                            <h5>Designated Pharmacy: {{pharmacyToPharmacyTO?.requestingPharmacy?.name}}</h5>
+                            <h5>Origin Pharmacy: {{pharmacyToPharmacyTO?.deliveringPharmacy?.name}}</h5>
+                            <h5>Order#: {{pharmacyToPharmacyTO?.no}}</h5>
+                            <h5>Order Date: {{pharmacyToPharmacyTO?.orderDate | date}}</h5>
+                            <h5>Status: {{pharmacyToPharmacyTO?.status}}</h5>
+                            <h5>Status Description: {{pharmacyToPharmacyTO?.statusDescription}}</h5>
+                            <h5>Created: {{pharmacyToPharmacyTO?.created}}</h5>
+                            <h5>Verified: {{pharmacyToPharmacyTO?.verified}}</h5>
+                            <h5>Approved: {{pharmacyToPharmacyTO?.approved}}</h5>
+                            <table class="table table-responsive table-striped table-bordered table-small">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td><small>Requested</small></td>
+                                        <td *ngIf="pharmacyToPharmacyTO?.status === 'PENDING'"></td>
+                                        <td><small>Transfered</small></td>
+                                        <!--<td><small>Receive by Pharmacy - Pharmacy SKUs</small></td>-->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let d of pharmacyToPharmacyTO.pharmacyToPharmacyTODetails">
+                                        <td>
+                                            <table class="table table-small">
+                                                <tr>
+                                                    <td><small>Code</small></td>
+                                                    <td><small>{{d?.medicine?.code}}</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small>Name</small></td>
+                                                    <td><small>{{d?.medicine?.name}}</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small>Ordered Qty | [UOM]</small></td>
+                                                    <td><small><b>{{d.orderedQty}}</b> | [<i>{{d?.medicine?.uom}}</i>]</small></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td *ngIf="pharmacyToPharmacyTO?.status === 'PENDING'"><button *ngIf="pharmacyToPharmacyTO?.status === 'PENDING'" (click)="loadMedicineNames(d?.medicine?.id, d.id)" data-toggle="modal" data-target="#add-sku-modal">Add Batch</button></td>
+                                        <td>
+                                            <table class="table table-small">
+                                                <!--<tr>
+                                                    <td><small></small> {{d?.medicine?.code}} .</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small></small> {{d?.medicine?.name}} .</td>
+                                                </tr>-->
+                                                <tr>
+                                                    <td><small><b>{{d.transferedQty}}</b> | [<i>{{d?.medicine?.uom}} .</i>]</small></td>
+                                                </tr>
+                                            </table>
+                                            
+                                            <table class="table table-responsive table-small">
+                                                <thead>
+                                                    <tr>
+                                                        <td><small>Batch#</small></td>
+                                                        <td><small>Qty</small></td>
+                                                        <td><small>Expiry Date</small></td>
+                                                        <td><small>Action</small></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let b of d?.pharmacyToPharmacyBatches">
+                                                        <td><small>{{b.no}}</small></td>
+                                                        <td><small>{{b.qty}}</small></td>
+                                                        <td><small>{{b.expiryDate | date}}</small></td>
+                                                        <td>
+                                                            <span class="glyphicon glyphicon-pencil" *ngIf="pharmacyToPharmacyTO?.status === 'PENDING'"></span>
+                                                            <span class="glyphicon glyphicon-trash text-danger" *ngIf="pharmacyToPharmacyTO?.status === 'PENDING'" (click)="deleteBatch(b.id)"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <!--<td>
+                                            <table class="table table-small">
+                                                <tr>
+                                                    <td><small>{{d?.medicine?.code}}</small>  </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small>{{d?.medicine?.name}}</small>  </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><small><b>{{d.transferedQty}}</b>  <i>{{d?.medicine?.uom}} </i></small></td>
+                                                </tr>
+                                            </table>
+                                            <table class="table table-responsive table-small">
+                                                <thead>
+                                                    <tr>
+                                                        <td><small>Batch#</small></td>
+                                                        <td><small>Qty</small></td>
+                                                        <td><small>Expiry Date</small></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let b of d?.pharmacyToPharmacyBatches">
+                                                        <td><small>{{b.no}}</small></td>
+                                                        <td><small>{{b.qty}}</small></td>
+                                                        <td><small>{{b.expiryDate | date}}</small></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>-->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section>
+
+ <div class="modal fade modal-success" id="add-sku-modal" tabindex="-2" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Add SKUs</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4>Code</h4>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="batchMedicineCode" readonly>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4>Name</h4>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" [(ngModel)]="batchMedicineName" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4>Batch#</h4>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" [(ngModel)]="batchNo">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4>Qty</h4>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" [(ngModel)]="batchQty">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4>Expiry Date</h4>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="date" class="form-control" [(ngModel)]="batchExpiryDate">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-right" (click)="addBatch()" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

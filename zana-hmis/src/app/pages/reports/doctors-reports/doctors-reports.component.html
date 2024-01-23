@@ -1,0 +1,214 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Doctor's Report</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button type="button" class="btn btn-success btn-outline" (click)="print()"><i class="fa fa-print"></i> Print</button>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div>Select Doctor</div>
+                                <div class="input-group">
+                                    <input type="text" name="q" class="form-control" [(ngModel)]="clinicianName" (ngModelChange)="loadCliniciansLike($event)" [readonly]="clinicianLocked" placeholder="Search Doctor...">
+                                    <span class="input-group-btn">
+                                        <button class="btn" (click)="clear()"><i class="fa fa-times-rectangle"></i></button>
+                                    </span>
+                                </div>
+                                <div class="row"  *ngIf="clinicians.length > 0">
+                                    <div class="col-sm-12">
+                                        <select class="form-control" multiple="multiple">
+                                            <option *ngFor="let pro of clinicians" (click)="getClinician(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.firstName}} {{pro?.middleName}} {{pro?.lastName}} </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4" *ngIf="clinicianId != null">
+                                <div>Starting Date</div>
+                                <input type="date" class="form-control" [(ngModel)]="startDate">
+                            </div>
+                            <div class="col-sm-4" *ngIf="clinicianId != null">
+                                <div>Ending Date</div>
+                                <input type="date" class="form-control" [(ngModel)]="endDate">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row" *ngIf="clinicianId != null && startDate != undefined && endDate != undefined">
+                            <!--<div class="col-sm-4">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div>From Time</div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="time" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div>To Time</div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="time" class="form-control">
+                                    </div>
+                                </div>
+                            </div>-->
+                            <div class="col-sm-4">
+                                <div>Select Report Type</div>
+                                <select class="form-control" [(ngModel)]="reportType">
+                                    <option></option>
+                                    <option>Consultation</option>
+                                    <option>Laboratory</option>
+                                    <option>Radiology</option>
+                                    <option>Procedure</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <br>
+                                <button class="btn btn-success" *ngIf="reportType != ''" (click)="runReport()">Run Report</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" *ngIf="clinicianId != null">
+                        <hr>
+                        <div *ngIf="reportType === 'Consultation'">
+                            <table class="table table-striped table-samll">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>SN</td>
+                                        <td>Patient Name</td>
+                                        <td>Phone No</td>
+                                        <td>Reg No</td>
+                                        <td>Payment Type</td>
+                                        <td>Date</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="consultations.length > 0">
+                                    <tr *ngFor="let consultation of consultations">
+                                        <td>{{consultation.sn}}</td>
+                                        <td>{{consultation?.patient?.firstName}} {{consultation?.patient?.middleName}} {{consultation?.patient?.lastName}}</td>
+                                        <td>{{consultation?.patient?.phoneNo}}</td>
+                                        <td>{{consultation?.patient?.no}}</td>
+                                        <td>
+                                            <span *ngIf="consultation.insurancePlan === null">Cash</span>
+                                            <span *ngIf="consultation.insurancePlan != null">{{consultation?.insurancePlan?.name}}</span>
+                                        </td>
+                                        <td>{{consultation.createdAt | dateOnly}}</td>
+                                        <td>{{consultation?.patient?.type}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div *ngIf="reportType === 'Laboratory'">
+                            <table class="table table-striped table-samll">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>SN</td>
+                                        <td>Patient Name</td>
+                                        <td>Phone No</td>
+                                        <td>Reg No</td>
+                                        <td>Payment Type</td>
+                                        <td>Lab Test</td>
+                                        <td>Date</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="labTests.length > 0">
+                                    <tr *ngFor="let labTest of labTests">
+                                        <td>{{labTest.sn}}</td>
+                                        <td>{{labTest?.patient?.firstName}} {{labTest?.patient?.middleName}} {{labTest?.patient?.lastName}}</td>
+                                        <td>{{labTest?.patient?.phoneNo}}</td>
+                                        <td>{{labTest?.patient?.no}}</td>
+                                        <td>
+                                            <span *ngIf="labTest.insurancePlan === null">Cash</span>
+                                            <span *ngIf="labTest.insurancePlan != null">{{labTest?.insurancePlan?.name}}</span>
+                                        </td>
+                                        <td>{{labTest?.labTestType?.name}}</td>
+                                        <td>{{labTest.createdAt | dateOnly}}</td>
+                                        <td>{{labTest?.patient?.type}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div *ngIf="reportType === 'Radiology'">
+                            <table class="table table-striped table-samll">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>SN</td>
+                                        <td>Patient Name</td>
+                                        <td>Phone No</td>
+                                        <td>Reg No</td>
+                                        <td>Payment Type</td>
+                                        <td>Radiology</td>
+                                        <td>Date</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="radiologies.length > 0">
+                                    <tr *ngFor="let radiology of radiologies">
+                                        <td>{{radiology.sn}}</td>
+                                        <td>{{radiology?.patient?.firstName}} {{radiology?.patient?.middleName}} {{radiology?.patient?.lastName}}</td>
+                                        <td>{{radiology?.patient?.phoneNo}}</td>
+                                        <td>{{radiology?.patient?.no}}</td>
+                                        <td>
+                                            <span *ngIf="radiology.insurancePlan === null">Cash</span>
+                                            <span *ngIf="radiology.insurancePlan != null">{{radiology?.insurancePlan?.name}}</span>
+                                        </td>
+                                        <td>{{radiology?.radiologyType?.name}}</td>
+                                        <td>{{radiology.createdAt | dateOnly}}</td>
+                                        <td>{{radiology?.patient?.type}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div *ngIf="reportType === 'Procedure'">
+                            <table class="table table-striped table-samll">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>SN</td>
+                                        <td>Patient Name</td>
+                                        <td>Phone No</td>
+                                        <td>Reg No</td>
+                                        <td>Payment Type</td>
+                                        <td>Procedure</td>
+                                        <td>Date</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="procedures.length > 0">
+                                    <tr *ngFor="let procedure of procedures">
+                                        <td>{{procedure.sn}}</td>
+                                        <td>{{procedure?.patient?.firstName}} {{procedure?.patient?.middleName}} {{procedure?.patient?.lastName}}</td>
+                                        <td>{{procedure?.patient?.phoneNo}}</td>
+                                        <td>{{procedure?.patient?.no}}</td>
+                                        <td>
+                                            <span *ngIf="procedure.insurancePlan === null">Cash</span>
+                                            <span *ngIf="procedure.insurancePlan != null">{{procedure?.insurancePlan?.name}}</span>
+                                        </td>
+                                        <td>{{procedure?.procedureType?.name}}</td>
+                                        <td>{{procedure.createdAt | dateOnly}}</td>
+                                        <td>{{procedure?.patient?.type}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->
