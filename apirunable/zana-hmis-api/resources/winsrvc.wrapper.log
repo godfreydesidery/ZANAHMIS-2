@@ -1,0 +1,7 @@
+2024-01-25 12:34:32,586 DEBUG - Starting WinSW in the CLI mode
+2024-01-25 12:34:32,898 INFO  - Starting the service with id 'Zana-HMIS-API'
+2024-01-25 12:34:33,039 DEBUG - Starting WinSW in the service mode
+2024-01-25 12:34:33,039 DEBUG - Completed. Exit code is 0
+2024-01-25 12:34:33,054 INFO  - Starting java -jar C:\zana-hmis-api\resources\api-0.0.1-Zana-HMIS.jar
+2024-01-25 12:34:33,085 INFO  - Started process 2460
+2024-01-25 12:34:33,085 DEBUG - Forwarding logs of the process System.Diagnostics.Process (java) to winsw.DefaultLogAppender

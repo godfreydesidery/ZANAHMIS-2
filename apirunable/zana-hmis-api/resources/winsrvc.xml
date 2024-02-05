@@ -1,0 +1,12 @@
+<configuration>
+<!-- ID of the service. It should be unique accross the Windows system-->
+<id>Zana-HMIS-API</id>
+<!-- Display name of the service -->
+<name>Zana-HMIS-API</name>
+<!-- Service description -->
+<description>Spring Boot Service</description>
+
+<!-- we need to execute java -jar ./XXX.jar -->
+<executable>java</executable>
+<arguments>-jar %BASE%\api-0.0.1-Zana-HMIS.jar</arguments>
+</configuration>
