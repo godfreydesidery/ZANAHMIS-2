@@ -51,12 +51,12 @@ public interface CollectionRepository extends JpaRepository <Collection, Long> {
 					"ON\r\n" + 
 					"`users`.`id`=`collections`.`created_by_user_id`\r\n" + 
 					"WHERE\r\n" +
-					"`collections`.`created_at` BETWEEN :from AND :to AND `users`.`id`=:userId\r\n" +
+					"`collections`.`created_at` BETWEEN :from AND :to AND `users`.`nickname`=:nickname\r\n" +
 					"GROUP BY\r\n" + 
 					"`itemName`, `paymentChannel`",
 					nativeQuery = true					
 			)
-	List<CollectionReport> getCollectionReportByCashier(LocalDateTime from, LocalDateTime to, Long userId);
+	List<CollectionReport> getCollectionReportByCashier(LocalDateTime from, LocalDateTime to, String nickname);
 	
 	
 }

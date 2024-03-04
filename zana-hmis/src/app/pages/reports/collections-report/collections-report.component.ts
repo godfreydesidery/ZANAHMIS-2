@@ -81,6 +81,8 @@ export class CollectionsReportComponent {
 
   totalAmount : number = 0
 
+  nickname : string = '--All Cashiers--'
+
   constructor(
     private auth : AuthService,
     private http : HttpClient,
@@ -89,6 +91,10 @@ export class CollectionsReportComponent {
     private data : DataService,
               
   ) {(window as any).pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+
+  ngOnInit(): void {
+    this.loadUsers()
+  }
 
 
   runReport(){
@@ -113,7 +119,10 @@ export class CollectionsReportComponent {
     var args = {
       from : from,
       to   : to,
-      user : {id : this.userId}
+      user : {nickname : this.nickname}
+    }
+    if(args.user.nickname === '--All Cashiers--'){
+      args.user.nickname = ''
     }
 
     this.spinner.show()
@@ -184,6 +193,27 @@ export class CollectionsReportComponent {
       }
     )
   }
+
+  async loadUsers(){
+    this.users = []
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    await this.http.get<IUser[]>(API_URL+'/users', options)
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.users = data!
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+
   async getUser(id : any){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)

@@ -618,8 +618,8 @@ public class ReportResource {
 			@RequestBody CollectionReportArgs args,
 			HttpServletRequest request){
 		
-		if(args.user.getId() != null) {
-			return ResponseEntity.ok().body(collectionRepository.getCollectionReportByCashier(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), args.user.getId()));
+		if(!args.user.getNickname().equals("")) {
+			return ResponseEntity.ok().body(collectionRepository.getCollectionReportByCashier(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), args.user.getNickname()));
 		}else {
 			return ResponseEntity.ok().body(collectionRepository.getCollectionReportGeneral(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1)));
 		}

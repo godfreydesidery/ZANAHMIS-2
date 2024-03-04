@@ -17,19 +17,27 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div>Select Cashier</div>
-                            <div class="input-group">
+                            <!--<div class="input-group">
                                 <input type="text" name="q" class="form-control" [(ngModel)]="userName" (ngModelChange)="loadUsersLike($event)" [readonly]="userLocked" placeholder="--All Cashiers--">
                                 <span class="input-group-btn" *ngIf="userName != ''">
                                     <button class="btn" (click)="clear()"><i class="fa fa-times-rectangle"></i></button>
                                 </span>
+                            </div>-->
+                            <div class="row" >
+                                <div class="col-sm-12">
+                                    <select class="form-control" [(ngModel)]="nickname">
+                                        <option>--All Cashiers--</option>
+                                        <option *ngFor="let user of users">{{user.nickname}} </option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="row"  *ngIf="users.length > 0">
+                            <!--<div class="row"  *ngIf="users.length > 0">
                                 <div class="col-sm-12">
                                     <select class="form-control" multiple="multiple">
                                         <option *ngFor="let pro of users" (click)="getUser(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.firstName}} {{pro?.middleName}} {{pro?.lastName}} </option>
                                     </select>
                                 </div>
-                            </div>
+                            </div>-->
 
 
                         </div>
@@ -54,7 +62,7 @@
                             <div>
                                 <hr>
                                 <table>
-                                    <tr><td><small>Cashier</small></td><td>:<small><span *ngIf="userName != ''">{{userName}}</span><span *ngIf="userName === ''">--All Cashiers--</span></small></td></tr>
+                                    <tr><td><small>Cashier</small></td><td>:<small><span>{{nickname}}</span></small></td></tr>
                                     <tr><td><small>Starting Date</small></td><td>:<small>{{startDate | date}}</small></td></tr>
                                     <tr><td><small>End Date</small></td><td>:<small>{{endDate | date}}</small></td></tr>
                                 </table>
@@ -86,17 +94,341 @@
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <div *ngIf="startDate != undefined && endDate != undefined">
-                                    <button class="btn btn-success">Registration</button>
-                                    <button class="btn btn-success">Consultation</button>
-                                    <button class="btn btn-success">Lab Test</button>
-                                    <button class="btn btn-success">Radiology</button>
-                                    <button class="btn btn-success">Procedure</button>
-                                    <button class="btn btn-success">Medication</button>
-                                    <button class="btn btn-success">Ward Bed</button>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="jumbotron jumbotron-fluid"  *ngIf="startDate != undefined && endDate != undefined">
+                                            <!-- Nav tabs -->
+                                            <ul class="nav nav-tabs">
+                                                <li><a href="#registration_tab" data-toggle="tab">Registration</a></li>
+                                                <li><a href="#consultation_tab" data-toggle="tab">Consultation</a></li>
+                                                <li><a href="#lab_test_tab" data-toggle="tab">Lab Test</a></li>
+                                                <li><a href="#radiology_tab" data-toggle="tab">Radiology</a></li>
+                                                <li><a href="#procedure_tab" data-toggle="tab">Procedure</a></li>
+                                                <li><a href="#medication_tab" data-toggle="tab">Medication</a></li>
+                                                <li><a href="#ward_bed_tab" data-toggle="tab">Ward Bed</a></li>
+                                            </ul>
+                                            <!-- Tab panels -->
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade" id="registration_tab">
+                                                    <div class="panel-body">
+                                                        <h4>Registration</h4>
+                                                        <table class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>ID</td>
+                                                                    <td>P Name</td>
+                                                                    <td>F No</td>
+                                                                    <td>Phone No</td>
+                                                                    <td>Amount</td>
+                                                                    <td>Payment Type</td>
+                                                                    <td>Cashier</td>
+                                                                    <td>Date/Time</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="font-weight: bold; text-align: center;">Total</td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                        <button class="btn btn-success">Print</button>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="consultation_tab">
+                                                    <div class="panel-body">
+                                                        <h4>Cosultation</h4>
+                                                        <table class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>ID</td>
+                                                                    <td>P Name</td>
+                                                                    <td>F No</td>
+                                                                    <td>Phone No</td>
+                                                                    <td>Amount</td>
+                                                                    <td>Payment Type</td>
+                                                                    <td>Cashier</td>
+                                                                    <td>Date/Time</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="font-weight: bold; text-align: center;">Total</td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                        <button class="btn btn-success">Print</button>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="lab_test_tab">
+                                                    <div class="panel-body">
+                                                        <h4>Lab Test</h4>
+                                                        <table class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>ID</td>
+                                                                    <td>P Name</td>
+                                                                    <td>F No</td>
+                                                                    <td>Phone No</td>
+                                                                    <td>Amount</td>
+                                                                    <td>Payment Type</td>
+                                                                    <td>Cashier</td>
+                                                                    <td>Date/Time</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="font-weight: bold; text-align: center;">Total</td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                        <button class="btn btn-success">Print</button>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="radiology_tab">
+                                                    <div class="panel-body">
+                                                        <h4>Radiology</h4>
+                                                        <table class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>ID</td>
+                                                                    <td>P Name</td>
+                                                                    <td>F No</td>
+                                                                    <td>Phone No</td>
+                                                                    <td>Amount</td>
+                                                                    <td>Payment Type</td>
+                                                                    <td>Cashier</td>
+                                                                    <td>Date/Time</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="font-weight: bold; text-align: center;">Total</td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                        <button class="btn btn-success">Print</button>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="procedure_tab">
+                                                    <div class="panel-body">
+                                                        <h4>Procedure</h4>
+                                                        <table class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>ID</td>
+                                                                    <td>P Name</td>
+                                                                    <td>F No</td>
+                                                                    <td>Phone No</td>
+                                                                    <td>Amount</td>
+                                                                    <td>Payment Type</td>
+                                                                    <td>Cashier</td>
+                                                                    <td>Date/Time</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="font-weight: bold; text-align: center;">Total</td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                        <button class="btn btn-success">Print</button>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="medication_tab">
+                                                    <div class="panel-body">
+                                                        <h4>Medication</h4>
+                                                        <table class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>ID</td>
+                                                                    <td>P Name</td>
+                                                                    <td>F No</td>
+                                                                    <td>Phone No</td>
+                                                                    <td>Amount</td>
+                                                                    <td>Payment Type</td>
+                                                                    <td>Cashier</td>
+                                                                    <td>Date/Time</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="font-weight: bold; text-align: center;">Total</td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                        <button class="btn btn-success">Print</button>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="ward_bed_tab">
+                                                    <div class="panel-body">
+                                                        <h4>Ward Bed</h4>
+                                                        <table class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>ID</td>
+                                                                    <td>P Name</td>
+                                                                    <td>F No</td>
+                                                                    <td>Phone No</td>
+                                                                    <td>Amount</td>
+                                                                    <td>Payment Type</td>
+                                                                    <td>Cashier</td>
+                                                                    <td>Date/Time</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td style="font-weight: bold; text-align: center;">Total</td>
+                                                                    <td style="text-align: right;"></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                        <button class="btn btn-success">Print</button>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
