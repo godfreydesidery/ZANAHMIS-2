@@ -31,15 +31,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <!--<div class="row"  *ngIf="users.length > 0">
-                                <div class="col-sm-12">
-                                    <select class="form-control" multiple="multiple">
-                                        <option *ngFor="let pro of users" (click)="getUser(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.firstName}} {{pro?.middleName}} {{pro?.lastName}} </option>
-                                    </select>
-                                </div>
-                            </div>-->
-
-
                         </div>
                         <div class="col-sm-6">
                             <div class="row">
@@ -216,12 +207,12 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
+                                                                <tr *ngFor="let labTestCollection of labTestCollections">
                                                                     <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td style="text-align: right;"></td>
+                                                                    <td>{{labTestCollection.patient.firstName}} {{labTestCollection.patient.middleName}} {{labTestCollection.patient.lastName}}</td>
+                                                                    <td>{{labTestCollection.patient.no}}</td>
+                                                                    <td>{{labTestCollection.patient.phoneNo}}</td>
+                                                                    <td style="text-align: right;">{{labTestCollection.patientBill.amount}}</td>
                                                                     <td></td>
                                                                     <td></td>
                                                                     <td></td>
@@ -240,7 +231,6 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
                                                         
                                                     </div>
                                                 </div>

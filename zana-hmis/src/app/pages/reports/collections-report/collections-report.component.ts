@@ -36,6 +36,7 @@ import { IRadiology } from 'src/app/domain/radiology';
 import { IClinician } from 'src/app/domain/clinician';
 import { ICollection } from 'src/app/domain/collection';
 import { IUser } from 'src/app/domain/user';
+import { ILabTestCollection } from 'src/app/models/labTestCollection';
 var pdfFonts = require('pdfmake/build/vfs_fonts.js'); 
 const fs = require('file-saver');
 
@@ -77,6 +78,8 @@ export class CollectionsReportComponent {
 
   collections : ICollection[] = []
 
+  labTestCollections : ILabTestCollection[] = []
+
   reportType : string = ''
 
   totalAmount : number = 0
@@ -99,6 +102,9 @@ export class CollectionsReportComponent {
 
   runReport(){
     this.loadReport(this.startDate, this.endDate)
+
+    this.loadLabTestCollectionReport(this.startDate, this.endDate)
+
   }
 
   async loadReport(from : Date, to : Date){   
@@ -110,6 +116,7 @@ export class CollectionsReportComponent {
       this.msgBox.showErrorMessage3('Could not run. Please select date range')
       return
     }
+    
 
     if(from > to){
       this.msgBox.showErrorMessage3('Could not run. Start date must be earlier or equal to end date')
@@ -235,6 +242,63 @@ export class CollectionsReportComponent {
       error => {
         this.msgBox.showErrorMessage(error, '')
         console.log(error)
+      }
+    )
+  }
+
+
+
+
+
+  runLabTestCollectionReport(){
+    this.loadLabTestCollectionReport(this.startDate, this.endDate)
+  }
+  async loadLabTestCollectionReport(from : Date, to : Date){   
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    if(from === undefined || to === undefined){
+      this.msgBox.showErrorMessage3('Could not run. Please select date range')
+      return
+    }
+
+    if(from > to){
+      this.msgBox.showErrorMessage3('Could not run. Start date must be earlier or equal to end date')
+      return
+    }
+
+    var args = {
+      from : from,
+      to   : to,
+      user : {nickname : this.nickname}
+    }
+    if(args.user.nickname === '--All Cashiers--'){
+      args.user.nickname = ''
+    }
+
+    this.spinner.show()
+    await this.http.post<ILabTestCollection[]>(API_URL+'/reports/lab_test_collection_report', args, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        
+        this.labTestCollections = data!
+        var sn = 1
+        this.totalAmount = 0
+        this.labTestCollections.forEach(element => {
+         // this.totalAmount = this.totalAmount + element.amount
+          //element.sn = sn
+          //sn = sn + 1
+
+        })
+        console.log(this.labTestCollections)
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
       }
     )
   }

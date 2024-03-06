@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.orbix.api.domain.Admission;
 import com.orbix.api.domain.Clinician;
@@ -15,7 +16,10 @@ import com.orbix.api.domain.LabTest;
 import com.orbix.api.domain.LabTestType;
 import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Patient;
+import com.orbix.api.domain.PatientBill;
 import com.orbix.api.domain.RadiologyType;
+import com.orbix.api.reports.FastMovingDrugs;
+import com.orbix.api.reports.models.LabTestCollectionReport;
 
 /**
  * @author Godfrey
@@ -179,5 +183,30 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
 	List<LabTest> findAllByStatusInAndCreatedAtBetween(List<String> statuses, LocalDateTime atStartOfDay,
 			LocalDateTime plusDays);
 
+	List<LabTest> findAllByPatientBillIn(List<PatientBill> bills);
+
 	
+	/*
+	 * 
+	 * this query is cumbersome, use alternative method though cumbersome
+	@Query(
+			value = "SELECT\r\n" + 
+					"`lab_tests`.`id` AS `id`\r\n" + 
+					"FROM\r\n" + 
+					"`lab_tests`\r\n"+
+					"JOIN\r\n" + 
+					"`medicines`\r\n" + 
+					"ON\r\n" + 
+					"`medicines`.`id`=`prescriptions`.`medicine_id`\r\n" + 
+					"WHERE\r\n" +
+					"`prescriptions`.`approved_at` BETWEEN :atStartOfDay AND :plusDays\r\n" +
+					"GROUP BY\r\n" + 
+					"`code`\r\n" +
+					"ORDER BY\r\n" +
+					"`issued` DESC",
+					nativeQuery = true					
+			)
+	List<LabTestCollectionReport> getFastMovingCollectionReport(LocalDateTime atStartOfDay,
+			LocalDateTime plusDays);
+			*/
 }

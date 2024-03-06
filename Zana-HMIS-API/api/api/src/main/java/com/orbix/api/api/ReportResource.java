@@ -47,6 +47,7 @@ import com.orbix.api.domain.StoreStockCard;
 import com.orbix.api.domain.Supplier;
 import com.orbix.api.domain.User;
 import com.orbix.api.exceptions.NotFoundException;
+import com.orbix.api.models.LabTestCollectionModel;
 import com.orbix.api.models.LabTestModel;
 import com.orbix.api.models.PharmacyStockCardModel;
 import com.orbix.api.models.PrescriptionModel;
@@ -623,7 +624,39 @@ public class ReportResource {
 		}else {
 			return ResponseEntity.ok().body(collectionRepository.getCollectionReportGeneral(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1)));
 		}
-	}	
+	}
+	
+	
+	@PostMapping("/reports/lab_test_collection_report")
+	public ResponseEntity<List<LabTestCollectionModel>>getLabTestCollectionReport(
+			@RequestBody PatientBillArgs args,
+			HttpServletRequest request){
+		
+		List<String> statuses = new ArrayList<>();
+		statuses.add("VERIFIED");
+		statuses.add("PAID");
+		statuses.add("COVERED");
+		
+		List<PatientBill> bills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		
+		List<LabTest> labTests = labTestRepository.findAllByPatientBillIn(bills);
+		
+		List<LabTestCollectionModel> models = new ArrayList<>();
+		for(LabTest l : labTests) {
+			
+			LabTestCollectionModel model = new LabTestCollectionModel();
+			model.setId(l.getId());
+			model.setDescription(l.getDescription());
+			model.setLabTestType(l.getLabTestType());
+			model.setPatientBill(l.getPatientBill());
+			model.setPatient(l.getPatient());
+			models.add(model);
+		}
+		
+		return ResponseEntity.ok().body(models);
+	}
+	
+	
 }
 
 @Data
@@ -708,6 +741,13 @@ class PharmacyStockCardReportArgs {
 
 @Data
 class CollectionReportArgs {
+	LocalDate from;
+	LocalDate to;
+	User user;
+}
+
+@Data
+class PatientBillArgs{
 	LocalDate from;
 	LocalDate to;
 	User user;
