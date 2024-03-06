@@ -284,6 +284,7 @@ export class RegistrationPaymentComponent implements OnInit {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
 
+
     this.spinner.show()
     await this.http.post<IBill>(API_URL+'/bills/confirm_registration_and_consultation_payment?patient_id='+this.id+'&total_amount='+this.total, null, options)
     .pipe(finalize(() => this.spinner.hide()))

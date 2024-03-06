@@ -43,7 +43,7 @@ public class Collection {
 	@NotNull
 	private double amount;
 	@NotBlank
-	private String itemName;	
+	private String itemName = "NA";	
 	private String paymentChannel = "Cash";
 	private String paymentReferenceNo = "NA";
 	

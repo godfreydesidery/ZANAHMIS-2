@@ -168,6 +168,10 @@ public class PatientBillResource {
 			registrationBill.setCreatedOn(dayService.getDay().getId());
 			registrationBill.setCreatedAt(dayService.getTimeStamp());
 			
+			if(registrationBill.getBillItem() == null) {
+				registrationBill.setBillItem("NA");
+			}
+			
 			registrationBill = patientBillRepository.save(registrationBill);
 			
 			PatientPaymentDetail pd = new PatientPaymentDetail();
@@ -181,6 +185,8 @@ public class PatientBillResource {
 			pd.setCreatedAt(dayService.getTimeStamp());
 			
 			patientPaymentDetailRepository.save(pd);	
+			
+			
 			
 			Collection collection = new Collection();
 			collection.setAmount(registrationBill.getAmount());
@@ -197,6 +203,13 @@ public class PatientBillResource {
 		
 		for(Consultation c : cs) {
 			PatientBill bill = c.getPatientBill();
+			
+			if(bill.getBillItem() == null) {
+				bill.setBillItem("NA");
+				bill = patientBillRepository.save(bill);
+			}
+			
+			
 			bill.setBalance(0);
 			bill.setPaid(bill.getAmount());
 			bill.setStatus("PAID");
@@ -283,6 +296,11 @@ public class PatientBillResource {
 				pd.setCreatedAt(dayService.getTimeStamp());
 				
 				patientPaymentDetailRepository.save(pd);
+				
+				if(bill.getBillItem() == null) {
+					b.get().setBillItem("NA");
+					//b.get() = patientBillRepository.save(b.get());
+				}
 				
 				Collection collection = new Collection();
 				collection.setAmount(b.get().getAmount());
