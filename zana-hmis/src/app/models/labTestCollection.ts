@@ -4,6 +4,7 @@ import { IPatientBill } from "../domain/patient-bill"
 import { IUser } from "./user"
 
 export interface ILabTestCollection{
+    sn : number
     description : string
     labTestType : ILabTestType
     patientBill : IPatientBill

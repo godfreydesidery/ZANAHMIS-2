@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.orbix.api.domain.Admission;
 import com.orbix.api.domain.Clinician;
+import com.orbix.api.domain.Collection;
 import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.DiagnosisType;
 import com.orbix.api.domain.GoodsReceivedNote;
@@ -632,12 +633,20 @@ public class ReportResource {
 			@RequestBody PatientBillArgs args,
 			HttpServletRequest request){
 		
-		List<String> statuses = new ArrayList<>();
-		statuses.add("VERIFIED");
-		statuses.add("PAID");
-		statuses.add("COVERED");
+		//List<String> statuses = new ArrayList<>();
+		//statuses.add("PAID");
 		
-		List<PatientBill> bills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		List<Collection> collections = new ArrayList<>();
+		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
+			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else {
+			Optional<User> user_ = userRepository.findByNickname(args.getUser().getNickname());
+			collections = collectionRepository.findAllByCreatedByAndCreatedAtBetween(user_.get().getId(), args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}
+		List<PatientBill> bills = new ArrayList<>();
+		for(Collection collection : collections) {
+			bills.add(collection.getPatientBill());
+		}
 		
 		List<LabTest> labTests = labTestRepository.findAllByPatientBillIn(bills);
 		

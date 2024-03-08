@@ -164,7 +164,7 @@ public class PatientBillResource {
 			registrationBill.setPaid(registrationBill.getAmount());
 			registrationBill.setStatus("PAID");
 			
-			registrationBill.setCreatedby(userService.getUser(request).getId());
+			registrationBill.setCreatedBy(userService.getUser(request).getId());
 			registrationBill.setCreatedOn(dayService.getDay().getId());
 			registrationBill.setCreatedAt(dayService.getTimeStamp());
 			
@@ -214,7 +214,7 @@ public class PatientBillResource {
 			bill.setPaid(bill.getAmount());
 			bill.setStatus("PAID");
 			
-			bill.setCreatedby(userService.getUser(request).getId());
+			bill.setCreatedBy(userService.getUser(request).getId());
 			bill.setCreatedOn(dayService.getDay().getId());
 			bill.setCreatedAt(dayService.getTimeStamp());
 			
@@ -232,6 +232,7 @@ public class PatientBillResource {
 			patientPaymentDetailRepository.save(pd);
 			
 			Collection collection = new Collection();
+			collection.setPatientBill(bill);
 			collection.setAmount(bill.getAmount());
 			collection.setItemName(bill.getBillItem());
 			collection.setPaymentChannel("Cash");
@@ -303,6 +304,7 @@ public class PatientBillResource {
 				}
 				
 				Collection collection = new Collection();
+				collection.setPatientBill(bill);
 				collection.setAmount(b.get().getAmount());
 				collection.setItemName(b.get().getBillItem());
 				collection.setPaymentChannel("Cash");

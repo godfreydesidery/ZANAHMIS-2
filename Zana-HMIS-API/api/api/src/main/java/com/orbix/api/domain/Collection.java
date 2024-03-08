@@ -52,6 +52,11 @@ public class Collection {
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     private Patient patient;
 	
+	@ManyToOne(targetEntity = PatientBill.class, fetch = FetchType.EAGER,  optional = true)
+    @JoinColumn(name = "patient_bill_id", nullable = true , updatable = true)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private PatientBill patientBill;
+	
 	@Column(name = "created_by_user_id", nullable = false , updatable = false)
     private Long createdBy;
 	@Column(name = "created_on_day_id", nullable = false , updatable = false)

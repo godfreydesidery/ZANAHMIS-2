@@ -57,6 +57,10 @@ public interface CollectionRepository extends JpaRepository <Collection, Long> {
 					nativeQuery = true					
 			)
 	List<CollectionReport> getCollectionReportByCashier(LocalDateTime from, LocalDateTime to, String nickname);
+
+	List<Collection> findAllByCreatedAtBetween(LocalDateTime atStartOfDay, LocalDateTime plusDays);
+
+	List<Collection> findAllByCreatedByAndCreatedAtBetween(Long id, LocalDateTime atStartOfDay, LocalDateTime plusDays);
 	
 	
 }

@@ -199,22 +199,18 @@
                                                                     <td>ID</td>
                                                                     <td>P Name</td>
                                                                     <td>F No</td>
-                                                                    <td>Phone No</td>
+                                                                    <td>Test</td>
                                                                     <td>Amount</td>
-                                                                    <td>Payment Type</td>
-                                                                    <td>Cashier</td>
                                                                     <td>Date/Time</td>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 <tr *ngFor="let labTestCollection of labTestCollections">
-                                                                    <td></td>
+                                                                    <td>{{labTestCollection.sn}}</td>
                                                                     <td>{{labTestCollection.patient.firstName}} {{labTestCollection.patient.middleName}} {{labTestCollection.patient.lastName}}</td>
                                                                     <td>{{labTestCollection.patient.no}}</td>
-                                                                    <td>{{labTestCollection.patient.phoneNo}}</td>
-                                                                    <td style="text-align: right;">{{labTestCollection.patientBill.amount}}</td>
-                                                                    <td></td>
-                                                                    <td></td>
+                                                                    <td>{{labTestCollection.labTestType.name}}</td>
+                                                                    <td style="text-align: right;">{{labTestCollection.patientBill.amount | currency:'':''}}</td>
                                                                     <td></td>
                                                                 </tr>
                                                             </tbody>
@@ -223,11 +219,9 @@
                                                                     <td></td>
                                                                     <td></td>
                                                                     <td></td>
+                                                                    <td></td>
                                                                     <td style="font-weight: bold; text-align: center;">Total</td>
                                                                     <td style="text-align: right;"></td>
-                                                                    <td></td>
-                                                                    <td></td>
-                                                                    <td></td>
                                                                 </tr>
                                                             </tfoot>
                                                         </table>

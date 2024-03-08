@@ -58,4 +58,7 @@ public interface PatientBillRepository extends JpaRepository<PatientBill, Long> 
 	List<PatientBill> findAllByCreatedAtBetweenAndStatusIn(LocalDateTime atStartOfDay, LocalDateTime plusDays,
 			List<String> statuses);
 
+	List<PatientBill> findAllByCreatedByAndCreatedAtBetweenAndStatusIn(Long id, LocalDateTime atStartOfDay,
+			LocalDateTime plusDays, List<String> statuses);
+
 }

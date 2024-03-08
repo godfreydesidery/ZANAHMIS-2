@@ -254,7 +254,7 @@ public class PatientServiceImpl implements PatientService {
 		/**
 		 * Add forensic data to registration patientBill
 		 */
-		regBill.setCreatedby(userService.getUser(request).getId());
+		regBill.setCreatedBy(userService.getUser(request).getId());
 		regBill.setCreatedOn(dayService.getDay().getId());
 		regBill.setCreatedAt(dayService.getTimeStamp());
 		/**
@@ -442,7 +442,7 @@ public class PatientServiceImpl implements PatientService {
 		/**
 		 * Add forensic data to registration patientBill
 		 */
-		conBill.setCreatedby(userService.getUser(request).getId());
+		conBill.setCreatedBy(userService.getUser(request).getId());
 		conBill.setCreatedOn(dayService.getDay().getId());
 		conBill.setCreatedAt(dayService.getTimeStamp());
 		/**
@@ -569,7 +569,7 @@ public class PatientServiceImpl implements PatientService {
 			conBill.setPaymentType("INSURANCE");
 			conBill.setInsurancePlan(p.getInsurancePlan());
 			conBill.setMembershipNo(p.getMembershipNo());
-			conBill.setCreatedby(userService.getUser(request).getId());
+			conBill.setCreatedBy(userService.getUser(request).getId());
 			conBill.setCreatedOn(dayService.getDay().getId());
 			conBill.setCreatedAt(dayService.getTimeStamp());
 			
@@ -771,7 +771,7 @@ public class PatientServiceImpl implements PatientService {
 		patientBill.setDescription("Lab Test: "+test.getLabTestType().getName());
 		patientBill.setStatus("UNPAID");
 		
-		patientBill.setCreatedby(userService.getUser(request).getId());
+		patientBill.setCreatedBy(userService.getUser(request).getId());
 		patientBill.setCreatedOn(dayService.getDay().getId());
 		patientBill.setCreatedAt(dayService.getTimeStamp());
 		
@@ -990,7 +990,7 @@ public class PatientServiceImpl implements PatientService {
 		patientBill.setBillItem("Radiology");
 		patientBill.setDescription("Radiology: "+radio.getRadiologyType().getName());
 		patientBill.setStatus("UNPAID");		
-		patientBill.setCreatedby(userService.getUser(request).getId());
+		patientBill.setCreatedBy(userService.getUser(request).getId());
 		patientBill.setCreatedOn(dayService.getDay().getId());
 		patientBill.setCreatedAt(dayService.getTimeStamp());
 		patientBill.setPatient(patient);
@@ -1219,7 +1219,7 @@ public class PatientServiceImpl implements PatientService {
 		patientBill.setBillItem("Procedure");
 		patientBill.setDescription("Procedure: "+procedure.getProcedureType().getName());
 		patientBill.setStatus("UNPAID");		
-		patientBill.setCreatedby(userService.getUser(request).getId());
+		patientBill.setCreatedBy(userService.getUser(request).getId());
 		patientBill.setCreatedOn(dayService.getDay().getId());
 		patientBill.setCreatedAt(dayService.getTimeStamp());
 		patientBill.setPatient(patient);
@@ -1416,7 +1416,7 @@ public class PatientServiceImpl implements PatientService {
 		patientBill.setBillItem("Medication");
 		patientBill.setDescription("Medicine: "+prescription.getMedicine().getName());
 		patientBill.setStatus("UNPAID");		
-		patientBill.setCreatedby(userService.getUser(request).getId());
+		patientBill.setCreatedBy(userService.getUser(request).getId());
 		patientBill.setCreatedOn(dayService.getDay().getId());
 		patientBill.setCreatedAt(dayService.getTimeStamp());
 		patientBill.setPatient(patient);
@@ -1617,7 +1617,7 @@ public class PatientServiceImpl implements PatientService {
 		/**
 		 * Add forensic data to registration patientBill
 		 */
-		wardBedBill.setCreatedby(userService.getUser(request).getId());
+		wardBedBill.setCreatedBy(userService.getUser(request).getId());
 		wardBedBill.setCreatedOn(dayService.getDay().getId());
 		wardBedBill.setCreatedAt(dayService.getTimeStamp());
 		/**
@@ -1733,7 +1733,7 @@ public class PatientServiceImpl implements PatientService {
 					supplementaryWardBedBill.setDescription("Ward Bed / Room (Top up)");
 					supplementaryWardBedBill.setPrincipalPatientBill(wardBedBill);
 					
-					supplementaryWardBedBill.setCreatedby(userService.getUser(request).getId());
+					supplementaryWardBedBill.setCreatedBy(userService.getUser(request).getId());
 					supplementaryWardBedBill.setCreatedOn(dayService.getDay().getId());
 					supplementaryWardBedBill.setCreatedAt(dayService.getTimeStamp());
 					
@@ -1928,7 +1928,7 @@ public class PatientServiceImpl implements PatientService {
 		patientBill.setBillItem("Procedure");
 		patientBill.setDescription("Dressing: "+chart.getProcedureType().getName());
 		patientBill.setStatus("UNPAID");		
-		patientBill.setCreatedby(userService.getUser(request).getId());
+		patientBill.setCreatedBy(userService.getUser(request).getId());
 		patientBill.setCreatedOn(dayService.getDay().getId());
 		patientBill.setCreatedAt(dayService.getTimeStamp());
 		patientBill.setPatient(patient);
@@ -2135,7 +2135,7 @@ public class PatientServiceImpl implements PatientService {
 		patientBill.setBillItem("Medication");
 		patientBill.setDescription("Consumable: "+chart.getMedicine().getName());
 		patientBill.setStatus("UNPAID");		
-		patientBill.setCreatedby(userService.getUser(request).getId());
+		patientBill.setCreatedBy(userService.getUser(request).getId());
 		patientBill.setCreatedOn(dayService.getDay().getId());
 		patientBill.setCreatedAt(dayService.getTimeStamp());
 		patientBill.setPatient(patient);

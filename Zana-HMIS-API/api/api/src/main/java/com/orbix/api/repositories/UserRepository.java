@@ -43,4 +43,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	 */
 	List<User> findAllByFirstNameContainingOrMiddleNameContainingOrLastNameContaining(String value, String value2,
 			String value3);
+
+	Optional<User> findByNickname(String nickname);
 }

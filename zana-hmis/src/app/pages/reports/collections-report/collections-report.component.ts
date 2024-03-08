@@ -289,8 +289,8 @@ export class CollectionsReportComponent {
         this.totalAmount = 0
         this.labTestCollections.forEach(element => {
          // this.totalAmount = this.totalAmount + element.amount
-          //element.sn = sn
-          //sn = sn + 1
+          element.sn = sn
+          sn = sn + 1
 
         })
         console.log(this.labTestCollections)
