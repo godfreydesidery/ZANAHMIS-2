@@ -42,6 +42,7 @@ import { IProcedureCollection } from 'src/app/models/procedureCollection';
 import { IConsultationCollection } from 'src/app/models/consultationCollection';
 import { IRegistrationCollection } from 'src/app/models/registrationCollection';
 import { IAdmissionBedCollection } from 'src/app/models/admissionBedCollection';
+import { IPrescriptionCollection } from 'src/app/models/prescriptionCollection';
 var pdfFonts = require('pdfmake/build/vfs_fonts.js'); 
 const fs = require('file-saver');
 
@@ -438,7 +439,7 @@ export class CollectionsReportComponent {
     this.loadPrescriptionCollectionReport(this.startDate, this.endDate)
   }
   prescriptionTotal : number = 0
-  prescriptionCollections : IProcedureCollection[] = []
+  prescriptionCollections : IPrescriptionCollection[] = []
   async loadPrescriptionCollectionReport(from : Date, to : Date){   
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -464,7 +465,7 @@ export class CollectionsReportComponent {
     }
 
     this.spinner.show()
-    await this.http.post<IProcedureCollection[]>(API_URL+'/reports/prescription_collection_report', args, options)
+    await this.http.post<IPrescriptionCollection[]>(API_URL+'/reports/prescription_collection_report', args, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
@@ -658,6 +659,688 @@ export class CollectionsReportComponent {
         this.msgBox.showErrorMessage(error, '')
       }
     )
+  }
+
+
+
+
+  printLabTestCollectionReport = async () => {
+
+    if(this.labTestCollections.length === 0){
+      this.msgBox.showErrorMessage3('No data to export')
+      return
+    }
+
+    this.documentHeader = await this.data.getDocumentHeader()
+    var header = ''
+    var footer = ''
+    var title  = 'Lab Test Collection Report'
+    var logo : any = ''
+    var total : number = 0
+    var discount : number = 0
+    var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Patient Name', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'File No', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Lab Test', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Amount', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cashier', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Date', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
+    
+    this.labTestCollections.forEach((element) => {
+      var detail = [
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : (element?.patient?.firstName +' '+ element.patient?.middleName +' '+ element.patient?.lastName).toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element?.patient?.no.toString(), fontSize : 7, fillColor : '#ffffff'},  
+        {text : element?.labTestType?.name.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.patientBill.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.cashier.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.dateTime.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+      ]
+      report.push(detail)
+    })
+
+    var summary = [
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'},  
+      {text : 'Total', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : this.labTestTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+    ]
+
+    report.push(summary)
+   
+    const docDefinition : any = {
+      header: '',
+      footer: function (currentPage: { toString: () => string; }, pageCount: string) {
+        return currentPage.toString() + " of " + pageCount;
+      },
+      //watermark : { text : '', color: 'blue', opacity: 0.1, bold: true, italics: false },
+        content : [
+          {
+            columns : 
+            [
+              this.documentHeader
+            ]
+          },
+          '  ',
+          {text : title, fontSize : 14, bold : true, alignment : 'center'},
+          this.data.getHorizontalLine(),
+          ' ',
+          'Cashier: ' + this.nickname,
+          ' ',
+          {
+            layout : 'noBorders',
+            table : {
+              widths : [80, 80],
+              body : [
+                [
+                  {text : 'From: '+this.startDate.toString(), fontSize : 9}, 
+                  {text : 'To: '+this.endDate.toString(), fontSize : 9} 
+                ],
+              ]
+            },
+          },
+          '  ',
+          {
+            //layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [30, 120, 50, 70, 60, 60, 60],
+                body : report
+            }
+        }, 
+      ]     
+    };
+    pdfMake.createPdf(docDefinition).print()
+  }
+
+  printRadiologyCollectionReport = async () => {
+
+    if(this.radiologyCollections.length === 0){
+      this.msgBox.showErrorMessage3('No data to export')
+      return
+    }
+
+    this.documentHeader = await this.data.getDocumentHeader()
+    var header = ''
+    var footer = ''
+    var title  = 'Radiology Collection Report'
+    var logo : any = ''
+    var total : number = 0
+    var discount : number = 0
+    var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Patient Name', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'File No', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Radiology', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Amount', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cashier', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Date', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
+    
+    this.radiologyCollections.forEach((element) => {
+      var detail = [
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : (element?.patient?.firstName +' '+ element.patient?.middleName +' '+ element.patient?.lastName).toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element?.patient?.no.toString(), fontSize : 7, fillColor : '#ffffff'},  
+        {text : element?.radiologyType?.name.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.patientBill.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.cashier.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.dateTime.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+      ]
+      report.push(detail)
+    })
+
+    var summary = [
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'},  
+      {text : 'Total', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : this.radiologyTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+    ]
+
+    report.push(summary)
+   
+    const docDefinition : any = {
+      header: '',
+      footer: function (currentPage: { toString: () => string; }, pageCount: string) {
+        return currentPage.toString() + " of " + pageCount;
+      },
+      //watermark : { text : '', color: 'blue', opacity: 0.1, bold: true, italics: false },
+        content : [
+          {
+            columns : 
+            [
+              this.documentHeader
+            ]
+          },
+          '  ',
+          {text : title, fontSize : 14, bold : true, alignment : 'center'},
+          this.data.getHorizontalLine(),
+          ' ',
+          'Cashier: ' + this.nickname,
+          ' ',
+          {
+            layout : 'noBorders',
+            table : {
+              widths : [80, 80],
+              body : [
+                [
+                  {text : 'From: '+this.startDate.toString(), fontSize : 9}, 
+                  {text : 'To: '+this.endDate.toString(), fontSize : 9} 
+                ],
+              ]
+            },
+          },
+          '  ',
+          {
+            //layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [30, 120, 50, 70, 60, 60, 60],
+                body : report
+            }
+        }, 
+      ]     
+    };
+    pdfMake.createPdf(docDefinition).print()
+  }
+
+  printProcedureCollectionReport = async () => {
+
+    if(this.procedureCollections.length === 0){
+      this.msgBox.showErrorMessage3('No data to export')
+      return
+    }
+
+    this.documentHeader = await this.data.getDocumentHeader()
+    var header = ''
+    var footer = ''
+    var title  = 'Procedure Collection Report'
+    var logo : any = ''
+    var total : number = 0
+    var discount : number = 0
+    var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Patient Name', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'File No', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Procedure', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Amount', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cashier', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Date', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
+    
+    this.procedureCollections.forEach((element) => {
+      var detail = [
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : (element?.patient?.firstName +' '+ element.patient?.middleName +' '+ element.patient?.lastName).toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element?.patient?.no.toString(), fontSize : 7, fillColor : '#ffffff'},  
+        {text : element?.procedureType?.name.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.patientBill.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.cashier.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.dateTime.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+      ]
+      report.push(detail)
+    })
+
+    var summary = [
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'},  
+      {text : 'Total', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : this.procedureTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+    ]
+
+    report.push(summary)
+   
+    const docDefinition : any = {
+      header: '',
+      footer: function (currentPage: { toString: () => string; }, pageCount: string) {
+        return currentPage.toString() + " of " + pageCount;
+      },
+      //watermark : { text : '', color: 'blue', opacity: 0.1, bold: true, italics: false },
+        content : [
+          {
+            columns : 
+            [
+              this.documentHeader
+            ]
+          },
+          '  ',
+          {text : title, fontSize : 14, bold : true, alignment : 'center'},
+          this.data.getHorizontalLine(),
+          ' ',
+          'Cashier: ' + this.nickname,
+          ' ',
+          {
+            layout : 'noBorders',
+            table : {
+              widths : [80, 80],
+              body : [
+                [
+                  {text : 'From: '+this.startDate.toString(), fontSize : 9}, 
+                  {text : 'To: '+this.endDate.toString(), fontSize : 9} 
+                ],
+              ]
+            },
+          },
+          '  ',
+          {
+            //layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [30, 120, 50, 70, 60, 60, 60],
+                body : report
+            }
+        }, 
+      ]     
+    };
+    pdfMake.createPdf(docDefinition).print()
+  }
+
+
+  printPrescriptionCollectionReport = async () => {
+
+    if(this.prescriptionCollections.length === 0){
+      this.msgBox.showErrorMessage3('No data to export')
+      return
+    }
+
+    this.documentHeader = await this.data.getDocumentHeader()
+    var header = ''
+    var footer = ''
+    var title  = 'Medication Collection Report'
+    var logo : any = ''
+    var total : number = 0
+    var discount : number = 0
+    var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Patient Name', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'File No', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Prescription', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Amount', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cashier', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Date', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
+    
+    this.prescriptionCollections.forEach((element) => {
+      var detail = [
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : (element?.patient?.firstName +' '+ element.patient?.middleName +' '+ element.patient?.lastName).toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element?.patient?.no.toString(), fontSize : 7, fillColor : '#ffffff'},  
+        {text : element?.medicine?.name.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.patientBill.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.cashier.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.dateTime.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+      ]
+      report.push(detail)
+    })
+
+    var summary = [
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'},  
+      {text : 'Total', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : this.prescriptionTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+    ]
+
+    report.push(summary)
+   
+    const docDefinition : any = {
+      header: '',
+      footer: function (currentPage: { toString: () => string; }, pageCount: string) {
+        return currentPage.toString() + " of " + pageCount;
+      },
+      //watermark : { text : '', color: 'blue', opacity: 0.1, bold: true, italics: false },
+        content : [
+          {
+            columns : 
+            [
+              this.documentHeader
+            ]
+          },
+          '  ',
+          {text : title, fontSize : 14, bold : true, alignment : 'center'},
+          this.data.getHorizontalLine(),
+          ' ',
+          'Cashier: ' + this.nickname,
+          ' ',
+          {
+            layout : 'noBorders',
+            table : {
+              widths : [80, 80],
+              body : [
+                [
+                  {text : 'From: '+this.startDate.toString(), fontSize : 9}, 
+                  {text : 'To: '+this.endDate.toString(), fontSize : 9} 
+                ],
+              ]
+            },
+          },
+          '  ',
+          {
+            //layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [30, 120, 50, 70, 60, 60, 60],
+                body : report
+            }
+        }, 
+      ]     
+    };
+    pdfMake.createPdf(docDefinition).print()
+  }
+
+  printAdmissionBedCollectionReport = async () => {
+
+    if(this.admissionBedCollections.length === 0){
+      this.msgBox.showErrorMessage3('No data to export')
+      return
+    }
+
+    this.documentHeader = await this.data.getDocumentHeader()
+    var header = ''
+    var footer = ''
+    var title  = 'Admission Bed Collection Report'
+    var logo : any = ''
+    var total : number = 0
+    var discount : number = 0
+    var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Patient Name', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'File No', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Amount', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cashier', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Date', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
+    
+    this.admissionBedCollections.forEach((element) => {
+      var detail = [
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : (element?.patient?.firstName +' '+ element.patient?.middleName +' '+ element.patient?.lastName).toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element?.patient?.no.toString(), fontSize : 7, fillColor : '#ffffff'},  
+        {text : element.patientBill.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.cashier.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.dateTime.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+      ]
+      report.push(detail)
+    })
+
+    var summary = [
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'},  
+      {text : 'Total', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : this.admissionBedTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+    ]
+
+    report.push(summary)
+   
+    const docDefinition : any = {
+      header: '',
+      footer: function (currentPage: { toString: () => string; }, pageCount: string) {
+        return currentPage.toString() + " of " + pageCount;
+      },
+      //watermark : { text : '', color: 'blue', opacity: 0.1, bold: true, italics: false },
+        content : [
+          {
+            columns : 
+            [
+              this.documentHeader
+            ]
+          },
+          '  ',
+          {text : title, fontSize : 14, bold : true, alignment : 'center'},
+          this.data.getHorizontalLine(),
+          ' ',
+          'Cashier: ' + this.nickname,
+          ' ',
+          {
+            layout : 'noBorders',
+            table : {
+              widths : [80, 80],
+              body : [
+                [
+                  {text : 'From: '+this.startDate.toString(), fontSize : 9}, 
+                  {text : 'To: '+this.endDate.toString(), fontSize : 9} 
+                ],
+              ]
+            },
+          },
+          '  ',
+          {
+            //layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [30, 120, 50, 60, 60, 60],
+                body : report
+            }
+        }, 
+      ]     
+    };
+    pdfMake.createPdf(docDefinition).print()
+  }
+
+
+  printConsultationCollectionReport = async () => {
+
+    if(this.consultationCollections.length === 0){
+      this.msgBox.showErrorMessage3('No data to export')
+      return
+    }
+
+    this.documentHeader = await this.data.getDocumentHeader()
+    var header = ''
+    var footer = ''
+    var title  = 'Consultation Collection Report'
+    var logo : any = ''
+    var total : number = 0
+    var discount : number = 0
+    var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Patient Name', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'File No', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Amount', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cashier', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Date', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
+    
+    this.consultationCollections.forEach((element) => {
+      var detail = [
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : (element?.patient?.firstName +' '+ element.patient?.middleName +' '+ element.patient?.lastName).toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element?.patient?.no.toString(), fontSize : 7, fillColor : '#ffffff'},  
+        {text : element.patientBill.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.cashier.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.dateTime.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+      ]
+      report.push(detail)
+    })
+
+    var summary = [
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : 'Total', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : this.consultationTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+    ]
+
+    report.push(summary)
+   
+    const docDefinition : any = {
+      header: '',
+      footer: function (currentPage: { toString: () => string; }, pageCount: string) {
+        return currentPage.toString() + " of " + pageCount;
+      },
+      //watermark : { text : '', color: 'blue', opacity: 0.1, bold: true, italics: false },
+        content : [
+          {
+            columns : 
+            [
+              this.documentHeader
+            ]
+          },
+          '  ',
+          {text : title, fontSize : 14, bold : true, alignment : 'center'},
+          this.data.getHorizontalLine(),
+          ' ',
+          'Cashier: ' + this.nickname,
+          ' ',
+          {
+            layout : 'noBorders',
+            table : {
+              widths : [80, 80],
+              body : [
+                [
+                  {text : 'From: '+this.startDate.toString(), fontSize : 9}, 
+                  {text : 'To: '+this.endDate.toString(), fontSize : 9} 
+                ],
+              ]
+            },
+          },
+          '  ',
+          {
+            //layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [30, 120, 50, 60, 60, 60],
+                body : report
+            }
+        }, 
+      ]     
+    };
+    pdfMake.createPdf(docDefinition).print()
+  }
+
+  printRegistrationCollectionReport = async () => {
+
+    if(this.consultationCollections.length === 0){
+      this.msgBox.showErrorMessage3('No data to export')
+      return
+    }
+
+    this.documentHeader = await this.data.getDocumentHeader()
+    var header = ''
+    var footer = ''
+    var title  = 'Registration Collection Report'
+    var logo : any = ''
+    var total : number = 0
+    var discount : number = 0
+    var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Patient Name', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'File No', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Amount', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cashier', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Date', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
+    
+    this.registrationCollections.forEach((element) => {
+      var detail = [
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : (element?.patient?.firstName +' '+ element.patient?.middleName +' '+ element.patient?.lastName).toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element?.patient?.no.toString(), fontSize : 7, fillColor : '#ffffff'},  
+        {text : element.patientBill.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.cashier.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+        {text : element.dateTime.toString(), fontSize : 7, fillColor : '#ffffff'}, 
+      ]
+      report.push(detail)
+    })
+
+    var summary = [
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : 'Total', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : this.registrationTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+      {text : '', fontSize : 7, fillColor : '#ffffff'}, 
+    ]
+
+    report.push(summary)
+   
+    const docDefinition : any = {
+      header: '',
+      footer: function (currentPage: { toString: () => string; }, pageCount: string) {
+        return currentPage.toString() + " of " + pageCount;
+      },
+      //watermark : { text : '', color: 'blue', opacity: 0.1, bold: true, italics: false },
+        content : [
+          {
+            columns : 
+            [
+              this.documentHeader
+            ]
+          },
+          '  ',
+          {text : title, fontSize : 14, bold : true, alignment : 'center'},
+          this.data.getHorizontalLine(),
+          ' ',
+          'Cashier: ' + this.nickname,
+          ' ',
+          {
+            layout : 'noBorders',
+            table : {
+              widths : [80, 80],
+              body : [
+                [
+                  {text : 'From: '+this.startDate.toString(), fontSize : 9}, 
+                  {text : 'To: '+this.endDate.toString(), fontSize : 9} 
+                ],
+              ]
+            },
+          },
+          '  ',
+          {
+            //layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [30, 120, 50, 60, 60, 60],
+                body : report
+            }
+        }, 
+      ]     
+    };
+    pdfMake.createPdf(docDefinition).print()
   }
 
 

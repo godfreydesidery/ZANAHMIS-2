@@ -135,7 +135,7 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
+                                                        <button class="btn btn-success" *ngIf="registrationCollections.length > 0" (click)="printRegistrationCollectionReport()">Print</button>
                                                         
                                                     </div>
                                                 </div>
@@ -174,7 +174,7 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
+                                                        <button class="btn btn-success" *ngIf="consultationCollections.length > 0" (click)="printConsultationCollectionReport()">Print</button>
                                                         
                                                     </div>
                                                 </div>
@@ -215,7 +215,7 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
+                                                        <button class="btn btn-success" *ngIf="labTestCollections.length > 0" (click)="printLabTestCollectionReport()">Print</button>
                                                         
                                                     </div>
                                                 </div>
@@ -256,7 +256,7 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
+                                                        <button class="btn btn-success" *ngIf="radiologyCollections.length > 0" (click)="printRadiologyCollectionReport()">Print</button>
                                                         
                                                     </div>
                                                 </div>
@@ -297,7 +297,7 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
+                                                        <button class="btn btn-success" *ngIf="procedureCollections.length > 0" (click)="printProcedureCollectionReport()">Print</button>
                                                         
                                                     </div>
                                                 </div>
@@ -321,7 +321,7 @@
                                                                     <td>{{prescriptionCollection.sn}}</td>
                                                                     <td>{{prescriptionCollection.patient.firstName}} {{prescriptionCollection.patient.middleName}} {{prescriptionCollection.patient.lastName}}</td>
                                                                     <td>{{prescriptionCollection.patient.no}}</td>
-                                                                    <td>{{prescriptionCollection.procedureType.name}}</td>
+                                                                    <td>{{prescriptionCollection.medicine.name}}</td>
                                                                     <td style="text-align: right;">{{prescriptionCollection.patientBill.amount | currency:'':''}}</td>
                                                                     <td>{{prescriptionCollection.cashier}}</td>
                                                                     <td>{{prescriptionCollection.dateTime}}</td>
@@ -338,7 +338,7 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
+                                                        <button class="btn btn-success" *ngIf="prescriptionCollections.length > 0" (click)="printPrescriptionCollectionReport()">Print</button>
                                                         
                                                     </div>
                                                 </div>
@@ -376,7 +376,7 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-                                                        <button class="btn btn-success">Print</button>
+                                                        <button class="btn btn-success" *ngIf="admissionBedCollections.length > 0" (click)="printAdmissionBedCollectionReport()">Print</button>
                                                         
                                                     </div>
                                                 </div>
