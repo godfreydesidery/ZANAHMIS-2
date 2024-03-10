@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.orbix.api.domain.Admission;
+import com.orbix.api.domain.AdmissionBed;
 import com.orbix.api.domain.Clinician;
 import com.orbix.api.domain.Collection;
 import com.orbix.api.domain.Consultation;
@@ -44,14 +45,22 @@ import com.orbix.api.domain.Prescription;
 import com.orbix.api.domain.Procedure;
 import com.orbix.api.domain.Radiology;
 import com.orbix.api.domain.RadiologyType;
+import com.orbix.api.domain.Registration;
 import com.orbix.api.domain.StoreStockCard;
 import com.orbix.api.domain.Supplier;
 import com.orbix.api.domain.User;
+import com.orbix.api.domain.WardBed;
 import com.orbix.api.exceptions.NotFoundException;
+import com.orbix.api.models.AdmissionBedCollectionModel;
+import com.orbix.api.models.ConsultationCollectionModel;
 import com.orbix.api.models.LabTestCollectionModel;
 import com.orbix.api.models.LabTestModel;
 import com.orbix.api.models.PharmacyStockCardModel;
+import com.orbix.api.models.PrescriptionCollectionModel;
 import com.orbix.api.models.PrescriptionModel;
+import com.orbix.api.models.ProcedureCollectionModel;
+import com.orbix.api.models.RadiologyCollectionModel;
+import com.orbix.api.models.RegistrationCollectionModel;
 import com.orbix.api.models.StoreStockCardModel;
 import com.orbix.api.reports.FastMovingDrugs;
 import com.orbix.api.reports.models.CollectionReport;
@@ -59,6 +68,7 @@ import com.orbix.api.reports.models.GrnReport;
 import com.orbix.api.reports.models.LabTestTypeReport;
 import com.orbix.api.reports.models.LpoReport;
 import com.orbix.api.reports.service.LocalPurchaseOrderReportService;
+import com.orbix.api.repositories.AdmissionBedRepository;
 import com.orbix.api.repositories.ClinicianRepository;
 import com.orbix.api.repositories.CollectionRepository;
 import com.orbix.api.repositories.ConsultationRepository;
@@ -74,8 +84,10 @@ import com.orbix.api.repositories.PharmacyStockCardRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
 import com.orbix.api.repositories.ProcedureRepository;
 import com.orbix.api.repositories.RadiologyRepository;
+import com.orbix.api.repositories.RegistrationRepository;
 import com.orbix.api.repositories.StoreStockCardRepository;
 import com.orbix.api.repositories.UserRepository;
+import com.orbix.api.repositories.WardBedRepository;
 import com.orbix.api.service.DayService;
 import com.orbix.api.service.UserService;
 
@@ -98,6 +110,7 @@ public class ReportResource {
 	private final UserRepository userRepository;
 	
 	private final ConsultationRepository consultationRepository;
+	private final RegistrationRepository registrationRepository;
 	private final ProcedureRepository procedureRepository;
 	private final RadiologyRepository radiologyRepository;
 	private final ClinicianRepository clinicianRepository;
@@ -106,6 +119,8 @@ public class ReportResource {
 	private final PatientRepository patientRepository;
 	private final PatientBillRepository patientBillRepository;
 	private final LabTestTypeRepository labTestTypeRepository;
+	
+	private final AdmissionBedRepository admissionBedRepository;
 	
 	private final LocalPurchaseOrderRepository localPurchaseOrderRepository;
 	private final GoodsReceivedNoteRepository goodsReceivedNoteRepository;
@@ -633,9 +648,6 @@ public class ReportResource {
 			@RequestBody PatientBillArgs args,
 			HttpServletRequest request){
 		
-		//List<String> statuses = new ArrayList<>();
-		//statuses.add("PAID");
-		
 		List<Collection> collections = new ArrayList<>();
 		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
 			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
@@ -659,13 +671,297 @@ public class ReportResource {
 			model.setLabTestType(l.getLabTestType());
 			model.setPatientBill(l.getPatientBill());
 			model.setPatient(l.getPatient());
+			
+			for(Collection collection : collections) {
+				if(collection.getPatientBill() != null) {
+					if(collection.getPatientBill().getId() == l.getPatientBill().getId()) {
+						Optional<User> user_ = userRepository.findById(collection.getCreatedBy());
+						model.setCashier(user_.get().getNickname());
+						model.setDateTime(collection.getCreatedAt().toString());
+					}
+				}
+				
+			}
+			
 			models.add(model);
 		}
 		
 		return ResponseEntity.ok().body(models);
 	}
 	
+	@PostMapping("/reports/radiology_collection_report")
+	public ResponseEntity<List<RadiologyCollectionModel>>getRadiologyCollectionReport(
+			@RequestBody PatientBillArgs args,
+			HttpServletRequest request){
+		
+		List<Collection> collections = new ArrayList<>();
+		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
+			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else {
+			Optional<User> user_ = userRepository.findByNickname(args.getUser().getNickname());
+			collections = collectionRepository.findAllByCreatedByAndCreatedAtBetween(user_.get().getId(), args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}
+		List<PatientBill> bills = new ArrayList<>();
+		for(Collection collection : collections) {
+			bills.add(collection.getPatientBill());
+		}
+		
+		List<Radiology> radiologies = radiologyRepository.findAllByPatientBillIn(bills);
+		
+		List<RadiologyCollectionModel> models = new ArrayList<>();
+		for(Radiology l : radiologies) {
+			
+			RadiologyCollectionModel model = new RadiologyCollectionModel();
+			model.setId(l.getId());
+			model.setDescription(l.getDescription());
+			model.setRadiologyType(l.getRadiologyType());
+			model.setPatientBill(l.getPatientBill());
+			model.setPatient(l.getPatient());
+			
+			for(Collection collection : collections) {
+				if(collection.getPatientBill() != null) {
+					if(collection.getPatientBill().getId() == l.getPatientBill().getId()) {
+						Optional<User> user_ = userRepository.findById(collection.getCreatedBy());
+						model.setCashier(user_.get().getNickname());
+						model.setDateTime(collection.getCreatedAt().toString());
+					}
+				}
+				
+			}
+			
+			models.add(model);
+		}
+		
+		return ResponseEntity.ok().body(models);
+	}
 	
+	@PostMapping("/reports/procedure_collection_report")
+	public ResponseEntity<List<ProcedureCollectionModel>>getProcedureCollectionReport(
+			@RequestBody PatientBillArgs args,
+			HttpServletRequest request){
+		
+		List<Collection> collections = new ArrayList<>();
+		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
+			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else {
+			Optional<User> user_ = userRepository.findByNickname(args.getUser().getNickname());
+			collections = collectionRepository.findAllByCreatedByAndCreatedAtBetween(user_.get().getId(), args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}
+		List<PatientBill> bills = new ArrayList<>();
+		for(Collection collection : collections) {
+			bills.add(collection.getPatientBill());
+		}
+		
+		List<Procedure> procedures = procedureRepository.findAllByPatientBillIn(bills);
+		
+		List<ProcedureCollectionModel> models = new ArrayList<>();
+		for(Procedure l : procedures) {
+			
+			ProcedureCollectionModel model = new ProcedureCollectionModel();
+			model.setId(l.getId());
+			model.setDescription(l.getType());
+			model.setProcedureType(l.getProcedureType());
+			model.setPatientBill(l.getPatientBill());
+			model.setPatient(l.getPatient());
+			
+			for(Collection collection : collections) {
+				if(collection.getPatientBill() != null) {
+					if(collection.getPatientBill().getId() == l.getPatientBill().getId()) {
+						Optional<User> user_ = userRepository.findById(collection.getCreatedBy());
+						model.setCashier(user_.get().getNickname());
+						model.setDateTime(collection.getCreatedAt().toString());
+					}
+				}
+				
+			}
+			
+			models.add(model);
+		}
+		
+		return ResponseEntity.ok().body(models);
+	}
+	
+	@PostMapping("/reports/prescription_collection_report")
+	public ResponseEntity<List<PrescriptionCollectionModel>>getMediationCollectionReport(
+			@RequestBody PatientBillArgs args,
+			HttpServletRequest request){
+		
+		List<Collection> collections = new ArrayList<>();
+		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
+			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else {
+			Optional<User> user_ = userRepository.findByNickname(args.getUser().getNickname());
+			collections = collectionRepository.findAllByCreatedByAndCreatedAtBetween(user_.get().getId(), args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}
+		List<PatientBill> bills = new ArrayList<>();
+		for(Collection collection : collections) {
+			bills.add(collection.getPatientBill());
+		}
+		
+		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientBillIn(bills);
+		
+		List<PrescriptionCollectionModel> models = new ArrayList<>();
+		for(Prescription l : prescriptions) {
+			
+			PrescriptionCollectionModel model = new PrescriptionCollectionModel();
+			model.setId(l.getId());
+			model.setDescription(l.getMedicine().getName());
+			model.setMedicine(l.getMedicine());
+			model.setPatientBill(l.getPatientBill());
+			model.setPatient(l.getPatient());
+			
+			for(Collection collection : collections) {
+				if(collection.getPatientBill() != null) {
+					if(collection.getPatientBill().getId() == l.getPatientBill().getId()) {
+						Optional<User> user_ = userRepository.findById(collection.getCreatedBy());
+						model.setCashier(user_.get().getNickname());
+						model.setDateTime(collection.getCreatedAt().toString());
+					}
+				}
+				
+			}
+			
+			models.add(model);
+		}
+		
+		return ResponseEntity.ok().body(models);
+	}
+	
+	@PostMapping("/reports/admission_bed_collection_report")
+	public ResponseEntity<List<AdmissionBedCollectionModel>>getWardBedCollectionReport(
+			@RequestBody PatientBillArgs args,
+			HttpServletRequest request){
+		
+		List<Collection> collections = new ArrayList<>();
+		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
+			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else {
+			Optional<User> user_ = userRepository.findByNickname(args.getUser().getNickname());
+			collections = collectionRepository.findAllByCreatedByAndCreatedAtBetween(user_.get().getId(), args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}
+		List<PatientBill> bills = new ArrayList<>();
+		for(Collection collection : collections) {
+			bills.add(collection.getPatientBill());
+		}
+		
+		List<AdmissionBed> admissionBeds = admissionBedRepository.findAllByPatientBillIn(bills);
+		
+		List<AdmissionBedCollectionModel> models = new ArrayList<>();
+		for(AdmissionBed l : admissionBeds) {
+			
+			AdmissionBedCollectionModel model = new AdmissionBedCollectionModel();
+			model.setId(l.getId());
+			model.setDescription("Admission Bed");
+			model.setPatientBill(l.getPatientBill());
+			model.setPatient(l.getPatient());
+			
+			for(Collection collection : collections) {
+				if(collection.getPatientBill() != null) {
+					if(collection.getPatientBill().getId() == l.getPatientBill().getId()) {
+						Optional<User> user_ = userRepository.findById(collection.getCreatedBy());
+						model.setCashier(user_.get().getNickname());
+						model.setDateTime(collection.getCreatedAt().toString());
+					}
+				}
+				
+			}
+			
+			models.add(model);
+		}
+		
+		return ResponseEntity.ok().body(models);
+	}
+	
+	@PostMapping("/reports/consultation_collection_report")
+	public ResponseEntity<List<ConsultationCollectionModel>>getConsultationCollectionReport(
+			@RequestBody PatientBillArgs args,
+			HttpServletRequest request){
+		
+		List<Collection> collections = new ArrayList<>();
+		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
+			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else {
+			Optional<User> user_ = userRepository.findByNickname(args.getUser().getNickname());
+			collections = collectionRepository.findAllByCreatedByAndCreatedAtBetween(user_.get().getId(), args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}
+		List<PatientBill> bills = new ArrayList<>();
+		for(Collection collection : collections) {
+			bills.add(collection.getPatientBill());
+		}
+		
+		List<Consultation> consultations = consultationRepository.findAllByPatientBillIn(bills);
+		
+		List<ConsultationCollectionModel> models = new ArrayList<>();
+		for(Consultation l : consultations) {
+			
+			ConsultationCollectionModel model = new ConsultationCollectionModel();
+			model.setId(l.getId());
+			model.setDescription("Consultation");
+			model.setPatientBill(l.getPatientBill());
+			model.setPatient(l.getPatient());
+			
+			for(Collection collection : collections) {
+				if(collection.getPatientBill() != null) {
+					if(collection.getPatientBill().getId() == l.getPatientBill().getId()) {
+						Optional<User> user_ = userRepository.findById(collection.getCreatedBy());
+						model.setCashier(user_.get().getNickname());
+						model.setDateTime(collection.getCreatedAt().toString());
+					}
+				}
+				
+			}
+			
+			models.add(model);
+		}
+		
+		return ResponseEntity.ok().body(models);
+	}
+	
+	@PostMapping("/reports/registration_collection_report")
+	public ResponseEntity<List<RegistrationCollectionModel>>getRegistrationCollectionReport(
+			@RequestBody PatientBillArgs args,
+			HttpServletRequest request){
+		
+		List<Collection> collections = new ArrayList<>();
+		if(args.user.getNickname() == null || args.user.getNickname().equals("")) {
+			collections = collectionRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else {
+			Optional<User> user_ = userRepository.findByNickname(args.getUser().getNickname());
+			collections = collectionRepository.findAllByCreatedByAndCreatedAtBetween(user_.get().getId(), args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}
+		List<PatientBill> bills = new ArrayList<>();
+		for(Collection collection : collections) {
+			bills.add(collection.getPatientBill());
+		}
+		
+		List<Registration> registrations = registrationRepository.findAllByPatientBillIn(bills);
+		
+		List<RegistrationCollectionModel> models = new ArrayList<>();
+		for(Registration l : registrations) {
+			
+			RegistrationCollectionModel model = new RegistrationCollectionModel();
+			model.setId(l.getId());
+			model.setDescription("Registration");
+			model.setPatientBill(l.getPatientBill());
+			model.setPatient(l.getPatient());
+			
+			for(Collection collection : collections) {
+				if(collection.getPatientBill() != null) {
+					if(collection.getPatientBill().getId() == l.getPatientBill().getId()) {
+						Optional<User> user_ = userRepository.findById(collection.getCreatedBy());
+						model.setCashier(user_.get().getNickname());
+						model.setDateTime(collection.getCreatedAt().toString());
+					}
+				}
+				
+			}
+			
+			models.add(model);
+		}
+		
+		return ResponseEntity.ok().body(models);
+	}
+		
 }
 
 @Data

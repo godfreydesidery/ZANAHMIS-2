@@ -14,6 +14,7 @@ import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.Medicine;
 import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Patient;
+import com.orbix.api.domain.PatientBill;
 import com.orbix.api.domain.Prescription;
 import com.orbix.api.reports.FastMovingDrugs;
 
@@ -183,5 +184,7 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
 			)
 	List<FastMovingDrugs> getSlowMovingDrugs(LocalDateTime atStartOfDay,
 			LocalDateTime plusDays);
+
+	List<Prescription> findAllByPatientBillIn(List<PatientBill> bills);
 
 }

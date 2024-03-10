@@ -12,6 +12,7 @@ import com.orbix.api.domain.Admission;
 import com.orbix.api.domain.AdmissionBed;
 import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.NonConsultation;
+import com.orbix.api.domain.PatientBill;
 
 /**
  * @author Godfrey
@@ -57,5 +58,7 @@ public interface AdmissionBedRepository extends JpaRepository <AdmissionBed, Lon
 	 * @return
 	 */
 	List<AdmissionBed> findAllByAdmissionAndStatus(Admission adm, String string);
+
+	List<AdmissionBed> findAllByPatientBillIn(List<PatientBill> bills);
 
 }

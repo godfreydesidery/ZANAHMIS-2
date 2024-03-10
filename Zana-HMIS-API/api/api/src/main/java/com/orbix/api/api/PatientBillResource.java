@@ -189,8 +189,9 @@ public class PatientBillResource {
 			
 			
 			Collection collection = new Collection();
+			collection.setPatientBill(registrationBill);
 			collection.setAmount(registrationBill.getAmount());
-			collection.setItemName(registrationBill.getBillItem());
+			collection.setItemName("Registration");
 			collection.setPaymentChannel("Cash");
 			collection.setPaymentReferenceNo("NA");
 			collection.setPatient(patient);
@@ -234,7 +235,7 @@ public class PatientBillResource {
 			Collection collection = new Collection();
 			collection.setPatientBill(bill);
 			collection.setAmount(bill.getAmount());
-			collection.setItemName(bill.getBillItem());
+			collection.setItemName("Consultation");
 			collection.setPaymentChannel("Cash");
 			collection.setPaymentReferenceNo("NA");
 			collection.setPatient(patient);

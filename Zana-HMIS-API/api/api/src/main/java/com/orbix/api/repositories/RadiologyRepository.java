@@ -14,6 +14,7 @@ import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.LabTest;
 import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Patient;
+import com.orbix.api.domain.PatientBill;
 import com.orbix.api.domain.Radiology;
 import com.orbix.api.domain.RadiologyType;
 
@@ -143,5 +144,7 @@ public interface RadiologyRepository extends JpaRepository<Radiology, Long> {
 	 */
 	List<Radiology> findAllByClinicianAndCreatedAtBetween(Clinician clinician, LocalDateTime atStartOfDay,
 			LocalDateTime plusDays);
+
+	List<Radiology> findAllByPatientBillIn(List<PatientBill> bills);
 
 }

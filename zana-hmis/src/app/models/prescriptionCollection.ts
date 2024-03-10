@@ -1,12 +1,12 @@
-import { ILabTestType } from "../domain/lab-test-type"
+import { IMedicine } from "../domain/medicine"
 import { IPatient } from "../domain/patient"
 import { IPatientBill } from "../domain/patient-bill"
-import { IUser } from "./user"
 
-export interface ILabTestCollection{
+
+export interface IPrescriptionCollection{
     sn : number
     description : string
-    labTestType : ILabTestType
+    medicine : IMedicine
     patientBill : IPatientBill
     patient : IPatient
     //user : IUser

@@ -24,11 +24,6 @@ public interface WardRepository extends JpaRepository <Ward, Long>{
 	 */
 	Optional<Ward> findByName(String name);
 
-	/**
-	 * @param wardCategory
-	 * @param wardType
-	 * @return
-	 */
 	List<Ward> findAllByWardCategoryAndWardType(WardCategory wardCategory, WardType wardType);
 
 }

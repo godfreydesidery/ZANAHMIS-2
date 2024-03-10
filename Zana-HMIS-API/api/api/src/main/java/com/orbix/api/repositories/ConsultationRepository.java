@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.orbix.api.domain.Clinician;
 import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.Patient;
+import com.orbix.api.domain.PatientBill;
 
 /**
  * @author Godfrey
@@ -93,6 +94,8 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 	 */
 	List<Consultation> findAllByClinicianAndCreatedAtBetween(Clinician clinician, LocalDateTime atStartOfDay,
 			LocalDateTime plusDays);
+
+	List<Consultation> findAllByPatientBillIn(List<PatientBill> bills);
 
 	/**
 	 * @param p

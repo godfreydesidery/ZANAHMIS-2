@@ -14,6 +14,7 @@ import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.Medicine;
 import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Patient;
+import com.orbix.api.domain.PatientBill;
 import com.orbix.api.domain.Procedure;
 import com.orbix.api.domain.ProcedureType;
 
@@ -128,6 +129,8 @@ public interface ProcedureRepository extends JpaRepository<Procedure, Long> {
 	 */
 	List<Procedure> findAllByClinicianAndCreatedAtBetween(Clinician clinician, LocalDateTime atStartOfDay,
 			LocalDateTime plusDays);
+
+	List<Procedure> findAllByPatientBillIn(List<PatientBill> bills);
 
 
 

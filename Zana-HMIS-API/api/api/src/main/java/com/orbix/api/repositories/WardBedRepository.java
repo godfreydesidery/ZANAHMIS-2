@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.orbix.api.domain.PatientBill;
 import com.orbix.api.domain.Ward;
 import com.orbix.api.domain.WardBed;
 

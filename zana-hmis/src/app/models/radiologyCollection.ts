@@ -1,12 +1,12 @@
-import { ILabTestType } from "../domain/lab-test-type"
+import { IRadiologyType } from "../domain/radiology-type"
 import { IPatient } from "../domain/patient"
 import { IPatientBill } from "../domain/patient-bill"
 import { IUser } from "./user"
 
-export interface ILabTestCollection{
+export interface IRadiologyCollection{
     sn : number
     description : string
-    labTestType : ILabTestType
+    radiologyType : IRadiologyType
     patientBill : IPatientBill
     patient : IPatient
     //user : IUser
