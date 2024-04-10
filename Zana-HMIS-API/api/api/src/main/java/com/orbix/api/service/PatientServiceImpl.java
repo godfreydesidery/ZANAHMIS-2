@@ -67,6 +67,7 @@ import com.orbix.api.domain.Procedure;
 import com.orbix.api.domain.ProcedureType;
 import com.orbix.api.domain.ProcedureTypeInsurancePlan;
 import com.orbix.api.domain.Radiology;
+import com.orbix.api.domain.RadiologyAttachment;
 import com.orbix.api.domain.RadiologyType;
 import com.orbix.api.domain.RadiologyTypeInsurancePlan;
 import com.orbix.api.domain.Registration;
@@ -113,6 +114,7 @@ import com.orbix.api.repositories.PrescriptionRepository;
 import com.orbix.api.repositories.ProcedureRepository;
 import com.orbix.api.repositories.ProcedureTypeInsurancePlanRepository;
 import com.orbix.api.repositories.ProcedureTypeRepository;
+import com.orbix.api.repositories.RadiologyAttachmentRepository;
 import com.orbix.api.repositories.RadiologyRepository;
 import com.orbix.api.repositories.RadiologyTypeInsurancePlanRepository;
 import com.orbix.api.repositories.RadiologyTypeRepository;
@@ -183,6 +185,7 @@ public class PatientServiceImpl implements PatientService {
 	private final PatientNursingCarePlanRepository patientNursingCarePlanRepository;
 	private final ConsultationTransferRepository consultationTransferRepository;
 	private final LabTestAttachmentRepository labTestAttachmentRepository;
+	private final RadiologyAttachmentRepository radiologyAttachmentRepository;
 	
 	@Override
 	public List<Patient> getAll() {
@@ -2624,6 +2627,21 @@ public class PatientServiceImpl implements PatientService {
 	public ResponseEntity<Map<String, String>> saveLabTestAttachment(LabTest labTest, MultipartFile file, String name, HttpServletRequest request) {
 		
 		log.info("handling request parts: {}", file);
+		
+		List<LabTestAttachment> labTestAttachments = labTestAttachmentRepository.findAllByLabTest(labTest);
+		if(labTestAttachments.size()== 5) {
+			throw new InvalidOperationException("Can not add more than 5 attachments");
+		}
+		
+		if(!labTest.getStatus().equals("COLLECTED")) {
+			throw new InvalidOperationException("Can only attach for collected tests");
+		}
+		
+		Long maxFileSize = 10485760L; //10mb
+		
+		if(file.getSize() > maxFileSize) {
+			throw new InvalidEntryException("File exceeds maximum file size allowed");
+		}
 
 	    try {
 	      
@@ -2672,10 +2690,7 @@ public class PatientServiceImpl implements PatientService {
 	          .path(file.getOriginalFilename())
 	          .toUriString();
 
-	      var result = Map.of(
-	          "filename", file.getOriginalFilename(),
-	          "fileUri", fileUri
-	      );
+	      
 	      
 	      
 	      
@@ -2702,5 +2717,106 @@ public class PatientServiceImpl implements PatientService {
 	      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	  }
+	
+	
+	
+	
+	
+	@Override
+	public ResponseEntity<Map<String, String>> saveRadiologyAttachment(Radiology radiology, MultipartFile file, String name, HttpServletRequest request) {
+		
+		log.info("handling request parts: {}", file);
+		
+		List<RadiologyAttachment> radiologyAttachments = radiologyAttachmentRepository.findAllByRadiology(radiology);
+		if(radiologyAttachments.size()== 5) {
+			throw new InvalidOperationException("Can not add more than 5 attachments");
+		}
+		
+		if(!radiology.getStatus().equals("ACCEPTED")) {
+			throw new InvalidOperationException("Can only attach for accepted tests");
+		}
+		
+		Long maxFileSize = 10485760L; //10mb
+		
+		if(file.getSize() > maxFileSize) {
+			throw new InvalidEntryException("File exceeds maximum file size allowed");
+		}
+
+	    try {
+	      
+	      //File f = new ClassPathResource("").getFile();
+	      
+	      List<CompanyProfile> comps = companyProfileRepository.findAll();
+	      CompanyProfile companyProfile = null;
+	      for(CompanyProfile comp : comps) {
+	    	  companyProfile = comp;
+	      }
+	      
+	      if(companyProfile == null) {
+	    	  throw new NotFoundException("Company Profile not found");
+	      }
+	      if(companyProfile.getPublicPath() == null) {
+	    	  throw new NotFoundException("Driver not found. Contact Administrator");
+	      }
+	      if(companyProfile.getPublicPath().equals("")) {
+	    	  throw new NotFoundException("Driver not found. Contact System Administrator");
+	      }
+	      
+	      //final Path path = Paths.get(f.getAbsolutePath() + File.separator + "static" + File.separator + "image");
+	      final Path path = Paths.get(companyProfile.getPublicPath());
+
+	      if (!Files.exists(path)) {
+	        Files.createDirectories(path);
+	      }
+	      
+	      //Path filePath = path.resolve(file.getOriginalFilename());
+	      
+	      
+	      
+	      String fileRawName = ("RAD" + radiology.getId().toString() + radiology.getPatient().getNo() + String.valueOf(Math.random()) + LocalDateTime.now().toString())
+	    		  .trim().replace("/", "").replace(".", "").replace(":", "").replace("-", "");
+	      String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
+	      
+	      String fileName = fileRawName + "." + fileExtension; 
+	    		  	      
+	      Path filePath = path.resolve(fileName);
+	      
+	      
+	      Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+	      
+	      String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+	          .path("/image/")
+	          .path(file.getOriginalFilename())
+	          .toUriString();
+
+	      
+	      
+	      
+	      
+	      //now put here lab attachments logic
+	      
+	      RadiologyAttachment radiologyAttachment = new RadiologyAttachment();
+	      radiologyAttachment.setName(name);
+	      radiologyAttachment.setFileName(fileName);
+	      radiologyAttachment.setRadiology(radiology);
+	      
+	      
+	      //labTestAttachment.setCreatedBy(userService.getUser(request).getId());
+	      radiologyAttachment.setCreatedBy(radiology.getAcceptedby());
+	      radiologyAttachment.setCreatedOn(dayService.getDay().getId());
+	      radiologyAttachment.setCreatedAt(dayService.getTimeStamp());
+	      
+	      radiologyAttachmentRepository.save(radiologyAttachment);
+	      
+	      //return ok().body(result);
+	      return null;
+
+	    } catch (IOException e) {
+	      log.error(e.getMessage());
+	      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	  }
+	
+	
 		
 }

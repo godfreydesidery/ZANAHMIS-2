@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
@@ -32,6 +33,7 @@ import { IWorkingDiagnosis } from 'src/app/domain/working-diagnosis';
 import { AgePipe } from 'src/app/pipes/age.pipe';
 import { ShowDateTimePipe } from 'src/app/pipes/date_time.pipe';
 import { SearchFilterPipe } from 'src/app/pipes/search-filter-pipe';
+import { DownloadFileService } from 'src/app/services/download-file.service';
 import { MsgBoxService } from 'src/app/services/msg-box.service';
 import { environment } from 'src/environments/environment';
 
@@ -49,7 +51,8 @@ const API_URL = environment.apiUrl;
     SearchFilterPipe,
     AgePipe,
     ShowDateTimePipe,
-    RouterLink
+    RouterLink,
+    PdfViewerModule
   ],
 })
 export class DoctorCrackingComponent implements OnInit {
@@ -182,7 +185,8 @@ export class DoctorCrackingComponent implements OnInit {
     private auth : AuthService,
     private http :HttpClient,
     private spinner : NgxSpinnerService,
-    private msgBox : MsgBoxService
+    private msgBox : MsgBoxService,
+    private downloadService : DownloadFileService,
     ) { }
 
   async ngOnInit(): Promise<void> {
@@ -1690,6 +1694,66 @@ export class DoctorCrackingComponent implements OnInit {
         console.log(error)
       }
     )
+  }
+
+  attachmentUrl : any = ''
+
+ fileExtension : string = ''
+
+  async downloadRadiologyFile(fileName : string) {
+    
+    //calling service
+    
+    (await (this.downloadService.downloadRadiologyAttachment(fileName)))
+    .subscribe(response => {
+
+        console.log(response)
+        var binaryData = []
+        binaryData.push(response.data)
+        var url = window.URL.createObjectURL(new Blob(binaryData, {type: "application/*"}))
+        
+        this.attachmentUrl = url
+        
+        var ext = response.filename.substr(response.filename.lastIndexOf('.') + 1)
+        if(ext === 'pdf'){
+          this.fileExtension = 'pdf'
+        }else{
+          this.fileExtension = ext
+        }
+        console.log(ext)
+
+    }, (error: any) => {
+
+        console.log(error)
+    })
+  }
+
+  async downloadLabTestFile(fileName : string) {
+    
+    //calling service
+    
+    (await (this.downloadService.downloadLabTestAttachment(fileName)))
+    .subscribe(response => {
+
+        console.log(response)
+        var binaryData = []
+        binaryData.push(response.data)
+        var url = window.URL.createObjectURL(new Blob(binaryData, {type: "application/*"}))
+        
+        this.attachmentUrl = url
+        
+        var ext = response.filename.substr(response.filename.lastIndexOf('.') + 1)
+        if(ext === 'pdf'){
+          this.fileExtension = 'pdf'
+        }else{
+          this.fileExtension = ext
+        }
+        console.log(ext)
+
+    }, (error: any) => {
+
+        console.log(error)
+    })
   }
 
 

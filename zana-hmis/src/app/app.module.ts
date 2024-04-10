@@ -145,6 +145,7 @@ import { StorePersonComponent } from './pages/admin/personnel/store-person/store
 import { StoreItemStockStatusComponent } from './pages/store/store-item-stock-status/store-item-stock-status.component';
 import { GoodsReceivedNoteReportComponent } from './pages/store/reports/goods-received-note-report/goods-received-note-report.component';
 import { StoreStockCardReportComponent } from './pages/store/reports/store-stock-card-report/store-stock-card-report.component';
+import { CashierComponent } from './pages/admin/personnel/cashier/cashier.component';
 
 @NgModule({
   declarations: [
@@ -154,7 +155,7 @@ import { StoreStockCardReportComponent } from './pages/store/reports/store-stock
     
     MainPageComponent,
     
-    LabPatientListComponent,
+    LabPatientListComponent
    
    
   ],

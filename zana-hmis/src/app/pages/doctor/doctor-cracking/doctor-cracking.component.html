@@ -162,6 +162,7 @@
                                                     <th>Payment Status</th>
                                                     <th>Status</th>
                                                     <th>Report</th>
+                                                    <th>Attachments</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -178,6 +179,15 @@
                                                         <td>
                                                             <a (click)="showLabTestReport(labTest.id, labTest.labTestType.name, labTest.report)" *ngIf="(labTest.patientBill?.status === 'COVERED' || labTest.patientBill?.status === 'PAID') && (labTest.report === null || labTest.report === '')" data-toggle="modal" data-target="#add-report-to-lab-test-modal"><i class="fa fa-file"></i></a>
                                                             <a (click)="showLabTestReport(labTest.id, labTest.labTestType.name, labTest.report)" *ngIf="(labTest.patientBill?.status === 'COVERED' || labTest.patientBill?.status === 'PAID') && (labTest.report != null && labTest.report != '')" data-toggle="modal" data-target="#add-report-to-lab-test-modal"><i class="fa fa-pencil"></i></a>
+                                                        </td>
+                                                        <td>
+                                                            <table>
+                                                                <tr *ngFor="let attachment of labTest.labTestAttachments">
+                                                                    <td>
+                                                                        <a (click)="downloadLabTestFile(attachment.fileName)"  data-toggle="modal" data-target="#view-attachment-modal"><i class="fa fa-eye"></i>{{attachment.name}}</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </td>
                                                         <td>
                                                             
@@ -210,6 +220,7 @@
                                                     <th>Payment Status</th>
                                                     <th>Status</th>
                                                     <th>Report</th>
+                                                    <th>Attachments</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -226,6 +237,15 @@
                                                         <td>
                                                             <a (click)="showRadiologyReport(radiology.id, radiology.radiologyType.name, radiology.report)" *ngIf="(radiology.patientBill?.status === 'COVERED' || radiology.patientBill?.status === 'PAID') && (radiology.report === null || radiology.report === '')" data-toggle="modal" data-target="#add-report-to-radiology-modal"><i class="fa fa-file"></i></a>
                                                             <a (click)="showRadiologyReport(radiology.id, radiology.radiologyType.name, radiology.report)" *ngIf="(radiology.patientBill?.status === 'COVERED' || radiology.patientBill?.status === 'PAID') && (radiology.report != '' && radiology.report != null)" data-toggle="modal" data-target="#add-report-to-radiology-modal"><i class="fa fa-pencil"></i></a>
+                                                        </td>
+                                                        <td>
+                                                            <table>
+                                                                <tr *ngFor="let attachment of radiology.radiologyAttachments">
+                                                                    <td>
+                                                                        <a (click)="downloadRadiologyFile(attachment.fileName)"  data-toggle="modal" data-target="#view-attachment-modal"><i class="fa fa-eye"></i>{{attachment.name}}</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </td>
                                                         <td>
                                                              
@@ -815,7 +835,7 @@
 
 
    <!-- Modal success -->
-   <div class="modal fade modal-success" id="add-report-to-radiology-modal" tabindex="-1" role="dialog">
+<div class="modal fade modal-success" id="add-report-to-radiology-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -944,7 +964,7 @@
 </div>
 
   <!-- Modal success -->
-  <div class="modal fade modal-success" id="transfer-modal" tabindex="-1" role="dialog">
+<div class="modal fade modal-success" id="transfer-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -1059,7 +1079,26 @@
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    </div>
+</div><!-- /.modal -->
 
-  
+  <!-- Modal success -->
+<div class="modal fade modal-success" id="view-attachment-modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg" role="document" style="width: 75%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title"></h2>
+            </div>
+            <div class="modal-body">
+                <img [src]="attachmentUrl" *ngIf="fileExtension != 'pdf'" style="height: 100%; width: 100%;">                
+                <pdf-viewer [src]="attachmentUrl"  *ngIf="fileExtension === 'pdf'" [render-text]="true" [fit-to-page]="true" [autoresize]="true" [zoom-scale]="'page-width'" [original-size]="false" style="height: 100%; width: 100%;"></pdf-viewer>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 

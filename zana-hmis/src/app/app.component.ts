@@ -383,6 +383,7 @@ export class AppComponent {
         {path : 'clinician', loadComponent : () => import('./pages/admin/personnel/clinician/clinician.component').then(m => m.ClinicianComponent), canActivate: [AuthGuard]},
         {path : 'store-person', loadComponent : () => import('./pages/admin/personnel/store-person/store-person.component').then(m => m.StorePersonComponent), canActivate: [AuthGuard]},
         {path : 'pharmacist', loadComponent : () => import('./pages/admin/personnel/pharmacist/pharmacist.component').then(m => m.PharmacistComponent), canActivate: [AuthGuard]},
+        {path : 'cashier', loadComponent : () => import('./pages/admin/personnel/cashier/cashier.component').then(m => m.CashierComponent), canActivate: [AuthGuard]},
         {path : 'diagnosis-type', loadComponent : () => import('./pages/admin/medical-operations/diagnosis-type/diagnosis-type.component').then(m => m.DiagnosisTypeComponent), canActivate: [AuthGuard]},
         {path : 'lab-test-type', loadComponent : () => import('./pages/admin/medical-operations/lab-test-type/lab-test-type.component').then(m => m.LabTestTypeComponent), canActivate: [AuthGuard]},
         {path : 'lab-test-type-range', loadComponent : () => import('./pages/admin/medical-operations/lab-test-type-range/lab-test-type-range.component').then(m => m.LabTestTypeRangeComponent), canActivate: [AuthGuard]},

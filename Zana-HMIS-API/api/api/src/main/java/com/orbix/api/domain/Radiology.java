@@ -4,6 +4,7 @@
 package com.orbix.api.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,9 +14,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -136,4 +141,10 @@ public class Radiology {
 	@Column(name = "verified_on_day_id", nullable = true , updatable = true)
     private Long verifiedOn;
 	private LocalDateTime verifiedAt;
+	
+	@OneToMany(targetEntity = RadiologyAttachment.class, mappedBy = "radiology", fetch = FetchType.EAGER, orphanRemoval = true)
+    @Valid
+    @JsonIgnoreProperties("radiology")
+	@Fetch(FetchMode.SUBSELECT)
+    private List<RadiologyAttachment> radiologyAttachments;
 }

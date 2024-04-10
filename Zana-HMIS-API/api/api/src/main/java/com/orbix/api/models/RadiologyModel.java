@@ -4,6 +4,8 @@
 package com.orbix.api.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -54,5 +56,7 @@ public class RadiologyModel {
     private String held;
 	private String rejectComment;	
     private String verified;
+    
+    List<RadiologyAttachmentModel> radiologyAttachments = new ArrayList<>();
 	
 }

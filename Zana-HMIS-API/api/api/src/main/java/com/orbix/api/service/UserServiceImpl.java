@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.orbix.api.accessories.Formater;
+import com.orbix.api.domain.Cashier;
 import com.orbix.api.domain.Clinician;
 import com.orbix.api.domain.Nurse;
 import com.orbix.api.domain.Pharmacist;
@@ -36,6 +37,7 @@ import com.orbix.api.exceptions.InvalidOperationException;
 import com.orbix.api.exceptions.MissingInformationException;
 import com.orbix.api.exceptions.NotFoundException;
 import com.orbix.api.models.RecordModel;
+import com.orbix.api.repositories.CashierRepository;
 import com.orbix.api.repositories.ClinicianRepository;
 import com.orbix.api.repositories.NurseRepository;
 import com.orbix.api.repositories.PharmacistRepository;
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private final ClinicianRepository clinicianRepository;
 	private final PharmacistRepository pharmacistRepository;
 	private final NurseRepository nurseRepository;
+	private final CashierRepository cashierRepository;
 	private final StorePersonRepository storePersonRepository;
 
 	@Override
@@ -204,6 +207,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 					nurse = cl.get();
 					nurse.setActive(true);
 					nurseRepository.save(nurse);
+				}
+			}
+			
+			if(role.getName().equals("CASHIER")) {
+				Optional<Cashier> cl = cashierRepository.findByUser(user);
+				Cashier cashier;
+				if(cl.isEmpty()) {
+					cashier = new Cashier();
+					cashier.setUser(user);
+					cashier.setCode(user.getCode());
+					cashier.setFirstName(user.getFirstName());
+					cashier.setMiddleName(user.getMiddleName());
+					cashier.setLastName(user.getLastName());
+					cashier.setNickname(user.getNickname());
+					
+					cashier.setActive(true);
+					
+					cashier.setCreatedBy(getUser(request).getId());
+					cashier.setCreatedOn(dayService.getDay().getId());
+					cashier.setCreatedAt(dayService.getTimeStamp());
+					
+					cashierRepository.save(cashier);
+				}else {
+					cashier = cl.get();
+					cashier.setActive(true);
+					cashierRepository.save(cashier);
 				}
 			}
 			

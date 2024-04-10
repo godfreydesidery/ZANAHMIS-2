@@ -79,6 +79,7 @@ import com.orbix.api.domain.PrescriptionBatch;
 import com.orbix.api.domain.Procedure;
 import com.orbix.api.domain.ProcedureType;
 import com.orbix.api.domain.Radiology;
+import com.orbix.api.domain.RadiologyAttachment;
 import com.orbix.api.domain.RadiologyType;
 import com.orbix.api.domain.ReferralPlan;
 import com.orbix.api.domain.StoreItemBatch;
@@ -108,6 +109,7 @@ import com.orbix.api.models.PatientObservationChartModel;
 import com.orbix.api.models.PatientPrescriptionChartModel;
 import com.orbix.api.models.PrescriptionModel;
 import com.orbix.api.models.ProcedureModel;
+import com.orbix.api.models.RadiologyAttachmentModel;
 import com.orbix.api.models.RadiologyModel;
 import com.orbix.api.models.WorkingDiagnosisModel;
 import com.orbix.api.repositories.AdmissionRepository;
@@ -125,6 +127,7 @@ import com.orbix.api.repositories.ExternalMedicalProviderRepository;
 import com.orbix.api.repositories.FinalDiagnosisRepository;
 import com.orbix.api.repositories.GeneralExaminationRepository;
 import com.orbix.api.repositories.InsurancePlanRepository;
+import com.orbix.api.repositories.LabTestAttachmentRepository;
 import com.orbix.api.repositories.LabTestRepository;
 import com.orbix.api.repositories.LabTestTypeRepository;
 import com.orbix.api.repositories.MedicineRepository;
@@ -152,6 +155,7 @@ import com.orbix.api.repositories.PrescriptionBatchRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
 import com.orbix.api.repositories.ProcedureRepository;
 import com.orbix.api.repositories.ProcedureTypeRepository;
+import com.orbix.api.repositories.RadiologyAttachmentRepository;
 import com.orbix.api.repositories.RadiologyRepository;
 import com.orbix.api.repositories.RadiologyTypeRepository;
 import com.orbix.api.repositories.ReferralPlanRepository;
@@ -231,6 +235,9 @@ public class PatientResource {
 	private final ExternalMedicalProviderRepository externalMedicalProviderRepository;
 	
 	private final PrescriptionBatchRepository prescriptionBatchRepository;
+	
+	private final LabTestAttachmentRepository labTestAttachmentRepository;
+	private final RadiologyAttachmentRepository radiologyAttachmentRepository;
 	
 	
 	@GetMapping("/patients")
@@ -1763,6 +1770,21 @@ public class PatientResource {
 			model.setLevel(l.getLevel());
 			model.setUnit(l.getUnit());
 			model.setStatus(l.getStatus());
+			
+			
+			List<LabTestAttachmentModel> labTestAttachmentModels = new ArrayList<>();
+			for(LabTestAttachment labTestAttachment : l.getLabTestAttachments()) {
+				LabTestAttachmentModel attachmentModel = new LabTestAttachmentModel();
+				attachmentModel.setId(labTestAttachment.getId());
+				attachmentModel.setFileName(labTestAttachment.getFileName());
+				attachmentModel.setName(labTestAttachment.getName());
+				attachmentModel.setLabTest(l);
+				
+				labTestAttachmentModels.add(attachmentModel);
+			}
+			
+			model.setLabTestAttachments(labTestAttachmentModels);
+			
 
 			if(l.getCreatedAt() != null) {
 				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
@@ -1840,6 +1862,22 @@ public class PatientResource {
 			model.setDiagnosisType(r.getDiagnosisType());			
 			model.setPatientBill(r.getPatientBill());
 			model.setAttachment(r.getAttachment());
+			
+			
+			List<RadiologyAttachmentModel> radiologyAttachmentModels = new ArrayList<>();
+			for(RadiologyAttachment radiologyAttachment : r.getRadiologyAttachments()) {
+				RadiologyAttachmentModel attachmentModel = new RadiologyAttachmentModel();
+				attachmentModel.setId(radiologyAttachment.getId());
+				attachmentModel.setFileName(radiologyAttachment.getFileName());
+				attachmentModel.setName(radiologyAttachment.getName());
+				attachmentModel.setRadiology(r);
+				
+				radiologyAttachmentModels.add(attachmentModel);
+			}
+			
+			model.setRadiologyAttachments(radiologyAttachmentModels);
+			
+			
 			if(r.getCreatedAt() != null) {
 				model.setCreated(r.getCreatedAt().toString()+" | "+userService.getUserById(r.getCreatedby()).getNickname());
 			}else {
@@ -3553,6 +3591,20 @@ public class PatientResource {
 				radio.setStatus(radiology.getStatus());
 				
 				
+				List<RadiologyAttachmentModel> radiologyAttachmentModels = new ArrayList<>();
+				for(RadiologyAttachment radiologyAttachment : radiology.getRadiologyAttachments()) {
+					RadiologyAttachmentModel attachmentModel = new RadiologyAttachmentModel();
+					attachmentModel.setId(radiologyAttachment.getId());
+					attachmentModel.setFileName(radiologyAttachment.getFileName());
+					attachmentModel.setName(radiologyAttachment.getName());
+					attachmentModel.setRadiology(radiology);
+					
+					radiologyAttachmentModels.add(attachmentModel);
+				}
+				
+				radio.setRadiologyAttachments(radiologyAttachmentModels);
+				
+				
 				if(radiology.getCreatedAt() != null) {
 					radio.setCreated(radiology.getCreatedAt().toString()+" | "+userService.getUserById(radiology.getCreatedby()).getNickname());
 				}else {
@@ -5175,9 +5227,11 @@ public class PatientResource {
 			throw new NotFoundException("Lab test not found");
 		}
 		
-		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/save_lab_test").toUriString());
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/upload_lab_test_attachment").toUriString());
 		return ResponseEntity.created(uri).body(patientService.saveLabTestAttachment(t.get(), file, name, request));
 	}
+	
+	
 	
 	@GetMapping("/patients/download_lab_test_attachment")
 	//@PreAuthorize("hasAnyAuthority('PRODUCT-CREATE')")
@@ -5229,9 +5283,92 @@ public class PatientResource {
 	}
 	
 	
-	@GetMapping("/patients/delete_lab_test_attachment")
+	@PostMapping("/patients/delete_lab_test_attachment")
 	//@PreAuthorize("hasAnyAuthority('PRODUCT-CREATE')")
 	public void deleteLabTestAttachment(
+			@RequestParam(name = "attachment_id") Long attachmentId,
+			HttpServletResponse response,
+			HttpServletRequest request) throws ResourceNotFoundException, IOException {
+		
+		Optional<LabTestAttachment> labTestAttachment = labTestAttachmentRepository.findById(attachmentId);
+		if(labTestAttachment.isEmpty()) {
+			throw new NotFoundException("Attachment not found");
+		}else {
+			if(labTestAttachment.get().getLabTest().getStatus().equals("VERIFIED")) {
+				throw new InvalidOperationException("Could not delete. Lab Test already verified");
+			}
+			labTestAttachmentRepository.deleteById(attachmentId);
+		}
+		
+		
+		//List<CompanyProfile> comps = companyProfileRepository.findAll();
+	    //CompanyProfile companyProfile = null;
+	    //for(CompanyProfile comp : comps) {
+	    	//companyProfile = comp;
+	    //}
+	    
+	  //if(companyProfile == null) {
+    	  //throw new NotFoundException("Company Profile not found");
+      //}
+      //if(companyProfile.getPublicPath() == null) {
+    	  //throw new NotFoundException("Driver not found. Contact Administrator");
+      //}
+      //if(companyProfile.getPublicPath().equals("")) {
+    	  //throw new NotFoundException("Driver not found. Contact System Administrator");
+      //}
+      
+      //final Path path = Paths.get(companyProfile.getPublicPath());
+      
+      //String fileLocation = companyProfile.getPublicPath();
+      
+      //File downloadFile= new File(fileLocation + fileName);
+
+      //byte[] isr = Files.readAllBytes(downloadFile.toPath());
+      //ByteArrayOutputStream out = new ByteArrayOutputStream(isr.length);
+      //out.write(isr, 0, isr.length);
+
+      //response.setContentType("application/*");
+     // // Use 'inline' for preview and 'attachement' for download in browser.
+      //response.addHeader("Content-Disposition", "inline; filename=" + fileName);
+
+      //OutputStream os = null;
+      //try {
+          //os = response.getOutputStream();
+          //out.writeTo(os);
+          //os.flush();
+          //os.close();
+      //} catch (IOException e) {
+          //e.printStackTrace();
+      //}
+      
+	}
+	
+	
+	
+	
+	
+	@PostMapping("/patients/upload_radiology_attachment")
+	//@PreAuthorize("hasAnyAuthority('PRODUCT-CREATE')")
+	public ResponseEntity<ResponseEntity<Map<String, String>>> saveRadiologyAttachment(
+			@RequestPart("file") MultipartFile file,
+			@RequestParam(name = "radiology_id") Long radiologyId,
+			@RequestParam(name = "name") String name,
+			HttpServletRequest request){
+		Optional<Radiology> r = radiologyRepository.findById(radiologyId);
+		
+		if(r.isEmpty()) {
+			throw new NotFoundException("Radiology not found");
+		}
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/upload_radiology_attachment").toUriString());
+		return ResponseEntity.created(uri).body(patientService.saveRadiologyAttachment(r.get(), file, name, request));
+	}
+	
+	
+	
+	@GetMapping("/patients/download_radiology_attachment")
+	//@PreAuthorize("hasAnyAuthority('PRODUCT-CREATE')")
+	public void getRadiologyAttachment(
 			@RequestParam(name = "file_name") String fileName,
 			HttpServletResponse response,
 			HttpServletRequest request) throws ResourceNotFoundException, IOException {
@@ -5246,7 +5383,7 @@ public class PatientResource {
     	  throw new NotFoundException("Company Profile not found");
       }
       if(companyProfile.getPublicPath() == null) {
-    	  throw new NotFoundException("Driver not found. Contact Administrator");
+    	  throw new NotFoundException("Driver not found. Contact System Administrator");
       }
       if(companyProfile.getPublicPath().equals("")) {
     	  throw new NotFoundException("Driver not found. Contact System Administrator");
@@ -5279,6 +5416,65 @@ public class PatientResource {
 	}
 	
 	
+	@PostMapping("/patients/delete_radiology_attachment")
+	//@PreAuthorize("hasAnyAuthority('PRODUCT-CREATE')")
+	public void deleteRadiologyAttachment(
+			@RequestParam(name = "attachment_id") Long attachmentId,
+			HttpServletResponse response,
+			HttpServletRequest request) throws ResourceNotFoundException, IOException {
+		
+		Optional<RadiologyAttachment> radiologyAttachment = radiologyAttachmentRepository.findById(attachmentId);
+		if(radiologyAttachment.isEmpty()) {
+			throw new NotFoundException("Attachment not found");
+		}else {
+			if(radiologyAttachment.get().getRadiology().getStatus().equals("VERIFIED")) {
+				throw new InvalidOperationException("Could not delete. Radiology already verified");
+			}
+			radiologyAttachmentRepository.deleteById(attachmentId);
+		}
+		
+		
+		//List<CompanyProfile> comps = companyProfileRepository.findAll();
+	    //CompanyProfile companyProfile = null;
+	    //for(CompanyProfile comp : comps) {
+	    	//companyProfile = comp;
+	    //}
+	    
+	  //if(companyProfile == null) {
+    	  //throw new NotFoundException("Company Profile not found");
+      //}
+      //if(companyProfile.getPublicPath() == null) {
+    	  //throw new NotFoundException("Driver not found. Contact Administrator");
+      //}
+      //if(companyProfile.getPublicPath().equals("")) {
+    	  //throw new NotFoundException("Driver not found. Contact System Administrator");
+      //}
+      
+      //final Path path = Paths.get(companyProfile.getPublicPath());
+      
+      //String fileLocation = companyProfile.getPublicPath();
+      
+      //File downloadFile= new File(fileLocation + fileName);
+
+      //byte[] isr = Files.readAllBytes(downloadFile.toPath());
+      //ByteArrayOutputStream out = new ByteArrayOutputStream(isr.length);
+      //out.write(isr, 0, isr.length);
+
+      //response.setContentType("application/*");
+     // // Use 'inline' for preview and 'attachement' for download in browser.
+      //response.addHeader("Content-Disposition", "inline; filename=" + fileName);
+
+      //OutputStream os = null;
+      //try {
+          //os = response.getOutputStream();
+          //out.writeTo(os);
+          //os.flush();
+          //os.close();
+      //} catch (IOException e) {
+          //e.printStackTrace();
+      //}
+      
+	}
 	
 	
 }

@@ -330,6 +330,7 @@ export class LabTestComponent implements OnInit {
       });
   
     this.selectedFiles = undefined!;
+    this.name = ''
   }
 
 
@@ -368,6 +369,29 @@ export class LabTestComponent implements OnInit {
 
         console.log(error)
     })
+  }
+
+
+  async deleteFile(attachment : ILabTestAttachment){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.spinner.show()
+    await this.http.post<boolean>(API_URL+'/patients/delete_lab_test_attachment?attachment_id='+attachment.id, null, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      async data => {
+        this.msgBox.showSuccessMessage('Success')
+        this.labTests = []
+        await this.loadLabTestsByPatient(this.id)
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
   }
 
   public grant(privilege : string[]) : boolean{

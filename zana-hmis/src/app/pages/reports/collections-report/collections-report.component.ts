@@ -102,7 +102,7 @@ export class CollectionsReportComponent {
   ) {(window as any).pdfMake.vfs = pdfFonts.pdfMake.vfs;}
 
   ngOnInit(): void {
-    this.loadUsers()
+    this.loadUsersByCashiers()
   }
 
 
@@ -213,12 +213,12 @@ export class CollectionsReportComponent {
     )
   }
 
-  async loadUsers(){
+  async loadUsersByCashiers(){
     this.users = []
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
-    await this.http.get<IUser[]>(API_URL+'/users', options)
+    await this.http.get<IUser[]>(API_URL+'/users/get_by_cashiers', options)
     .toPromise()
     .then(
       data => {

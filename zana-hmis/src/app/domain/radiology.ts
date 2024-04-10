@@ -10,6 +10,7 @@ import { IUser } from "./user"
 import { IDiagnosisType } from "./diagnosis-type"
 import { Byte } from "src/custom-packages/util"
 import { IInsurancePlan } from "./insurance-plan"
+import { IRadiologyAttachment } from "./radiology-attachment"
 
 export interface IRadiology {
     id          : any
@@ -31,6 +32,8 @@ export interface IRadiology {
     radiologyType   : IRadiologyType
 
     insurancePlan   : IInsurancePlan
+
+    radiologyAttachments : IRadiologyAttachment[]
     
     //createdBy       : IUser
     //createdOn       : IDay

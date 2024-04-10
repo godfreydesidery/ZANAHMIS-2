@@ -21,4 +21,14 @@ export class DownloadFileService {
         };
     }));
   }
+
+  async downloadRadiologyAttachment(filename: string): Promise<Observable<any>> {
+    return this.http.get(API_URL + `/patients/download_radiology_attachment?file_name=` + filename, { responseType: 'blob' })
+    .pipe(map((response)=>{
+        return {
+            filename: filename,
+            data: response
+        };
+    }));
+  }
 }

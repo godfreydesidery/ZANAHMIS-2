@@ -1,0 +1,164 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Cashier Register</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn"> 
+                        <!--<button type="button" class="btn btn-success m-r-2 m-b-5" data-toggle="modal" data-target="#add-edit-modal" (click)="clear()">New</button>-->
+                    </div>
+                </div>
+                <div class="panel-body">
+                    
+                    <div class="col-sm-12" style="height: 100%; overflow: scroll;">
+                        <div class="row">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                            </div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered table-small">
+                            <thead>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>First Name</td>
+                                    <td>Middle Name</td>
+                                    <td>Last Name</td>
+                                    <td>Type</td>
+                                    <td>Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let cashier of cashiers | searchFilter : filterRecords">
+                                    <td>{{cashier.code}}</td>
+                                    <td>{{cashier.firstName}}</td>
+                                    <td>{{cashier.middleName}}</td>
+                                    <td>{{cashier.lastName}}</td>
+                                    <td>{{cashier.type}}</td>
+                                    <td>
+                                        <button class="btn btn-primary" (click)="getCashier(cashier.id)" data-toggle="modal" data-target="#add-edit-modal" style="margin: 1px;">Edit</button>
+                                        <!--<button class="btn btn-primary" (click)="getCashier(cashier.id)" (click)="clearUser()" data-toggle="modal" data-target="#assign-user-profile" style="margin: 1px;">Assign User Profile</button>-->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             </div>
+         </div>
+     </div>     
+ </section> <!-- /.content -->
+
+ <!-- Modal success -->
+ <div class="modal fade modal-success" id="add-edit-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title" *ngIf="id === null">Add Cashier</h1>
+                <h1 class="modal-title" *ngIf="id != null">Edit Cashier</h1>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" [(ngModel)]="id">
+                        <div class="col-xs-12">
+                            <label>Code*</label>
+                            <input type="text" class="form-control" [(ngModel)]="code" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>First Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="firstName" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Middle Name</label>
+                            <input type="text" class="form-control" [(ngModel)]="middleName" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Last Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="lastName" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Type</label>
+                            <select class="form-control" [(ngModel)]="type">
+                                <option></option>
+                                <option>General Cashier</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" (click)="saveCashier()"><span *ngIf="id != null">Update</span><span *ngIf="id === null">Add</span></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- Modal success -->
+ <div class="modal fade modal-success" id="assign-user-profile" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title">Assign User Profile to Cashier</h1>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" [(ngModel)]="id">
+                        <div class="col-xs-12">
+                            <label>Cashier Code*</label>
+                            <input type="text" class="form-control" [(ngModel)]="code" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>First Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="firstName">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Middle Name</label>
+                            <input type="text" class="form-control" [(ngModel)]="middleName">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Last Name*</label>
+                            <input type="text" class="form-control" [(ngModel)]="lastName">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>User Code</label>
+                            <input type="text" class="form-control" [(ngModel)]="userCode">
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" (click)="assignUserProfile()" data-dismiss="modal">Save</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
