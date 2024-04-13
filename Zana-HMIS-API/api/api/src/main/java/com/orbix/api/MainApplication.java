@@ -350,7 +350,7 @@ public class MainApplication {
 	@Bean
 	public CommonsMultipartResolver multipartResolver() {
 	    CommonsMultipartResolver multipart = new CommonsMultipartResolver();
-	    multipart.setMaxUploadSize(3 * 1024 * 1024);
+	    multipart.setMaxUploadSize(50 * 1024 * 1024); //maximum 50MB
 	    return multipart;
 	}
 
@@ -361,5 +361,7 @@ public class MainApplication {
 	    multipartFilter.setMultipartResolverBeanName("multipartResolver");
 	    return multipartFilter;
 	}
+	
+	
 	
 }

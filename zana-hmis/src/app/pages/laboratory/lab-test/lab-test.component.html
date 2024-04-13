@@ -72,7 +72,7 @@
                                         <hr>
                                         <div class="row">
                                             <div class="col-sm-12" style="text-align: center;">
-                                                Attachments (max 5 attachments)
+                                                Attachments (max 5 attachments, .jepg or pdf, max 50MB)
                                                 <!--<div>Temporarily disabled</div>-->
                                             </div>
                                         </div>
@@ -135,8 +135,8 @@
                 <h2 class="modal-title"></h2>
             </div>
             <div class="modal-body">
-                <img [src]="attachmentUrl" *ngIf="fileExtension != 'pdf'" style="height: 100%; width: 100%;">                
-                <pdf-viewer [src]="attachmentUrl"  *ngIf="fileExtension === 'pdf'" [original-size]="false" style="height: 100%; width: 100%;"></pdf-viewer>
+                <img [src]="attachmentUrl" *ngIf="fileExtension != 'pdf'" style="height: 100%; width: 100%;">
+                <pdf-viewer [src]="attachmentUrl" *ngIf="fileExtension === 'pdf'" [render-text]="true" [fit-to-page]="true" [autoresize]="true" [zoom-scale]="'page-width'" [original-size]="true" style="height: 100%; width: 100%;"></pdf-viewer>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>

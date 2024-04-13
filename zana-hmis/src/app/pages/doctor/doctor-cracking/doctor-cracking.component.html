@@ -162,7 +162,7 @@
                                                     <th>Payment Status</th>
                                                     <th>Status</th>
                                                     <th>Report</th>
-                                                    <th>Attachments</th>
+                                                    <!--<th>Attachments</th>-->
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -180,7 +180,7 @@
                                                             <a (click)="showLabTestReport(labTest.id, labTest.labTestType.name, labTest.report)" *ngIf="(labTest.patientBill?.status === 'COVERED' || labTest.patientBill?.status === 'PAID') && (labTest.report === null || labTest.report === '')" data-toggle="modal" data-target="#add-report-to-lab-test-modal"><i class="fa fa-file"></i></a>
                                                             <a (click)="showLabTestReport(labTest.id, labTest.labTestType.name, labTest.report)" *ngIf="(labTest.patientBill?.status === 'COVERED' || labTest.patientBill?.status === 'PAID') && (labTest.report != null && labTest.report != '')" data-toggle="modal" data-target="#add-report-to-lab-test-modal"><i class="fa fa-pencil"></i></a>
                                                         </td>
-                                                        <td>
+                                                        <!--<td>
                                                             <table>
                                                                 <tr *ngFor="let attachment of labTest.labTestAttachments">
                                                                     <td>
@@ -188,7 +188,7 @@
                                                                     </td>
                                                                 </tr>
                                                             </table>
-                                                        </td>
+                                                        </td>-->
                                                         <td>
                                                             
                                                             <a (click)="deleteLabTest(labTest.id)"><i class="fa fa-trash text-danger"></i></a>
@@ -220,7 +220,7 @@
                                                     <th>Payment Status</th>
                                                     <th>Status</th>
                                                     <th>Report</th>
-                                                    <th>Attachments</th>
+                                                    <!--<th>Attachments</th>-->
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -238,7 +238,7 @@
                                                             <a (click)="showRadiologyReport(radiology.id, radiology.radiologyType.name, radiology.report)" *ngIf="(radiology.patientBill?.status === 'COVERED' || radiology.patientBill?.status === 'PAID') && (radiology.report === null || radiology.report === '')" data-toggle="modal" data-target="#add-report-to-radiology-modal"><i class="fa fa-file"></i></a>
                                                             <a (click)="showRadiologyReport(radiology.id, radiology.radiologyType.name, radiology.report)" *ngIf="(radiology.patientBill?.status === 'COVERED' || radiology.patientBill?.status === 'PAID') && (radiology.report != '' && radiology.report != null)" data-toggle="modal" data-target="#add-report-to-radiology-modal"><i class="fa fa-pencil"></i></a>
                                                         </td>
-                                                        <td>
+                                                        <!--<td>
                                                             <table>
                                                                 <tr *ngFor="let attachment of radiology.radiologyAttachments">
                                                                     <td>
@@ -246,7 +246,7 @@
                                                                     </td>
                                                                 </tr>
                                                             </table>
-                                                        </td>
+                                                        </td>-->
                                                         <td>
                                                              
                                                             <a (click)="deleteRadiology(radiology?.id)"><i class="fa fa-trash text-danger"></i></a>
@@ -702,6 +702,7 @@
                                     <td>Range</td>
                                     <td>Level</td>
                                     <td>Unit</td>
+                                    <td>Attachments</td>
                                     <td>Status</td>
                                     <td>Summary</td>
                                 </tr>
@@ -714,6 +715,15 @@
                                     <td>{{labTest?.range}}</td>
                                     <td>{{labTest?.level}}</td>
                                     <td>{{labTest?.unit}}</td>
+                                    <td>
+                                        <table>
+                                            <tr *ngFor="let attachment of labTest.labTestAttachments">
+                                                <td>
+                                                    <a style="cursor: pointer;" (click)="downloadLabTestFile(attachment.fileName)"  data-toggle="modal" data-target="#view-attachment-modal"><i class="fa fa-eye"></i>{{attachment.name}}</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                     <td>{{labTest?.status}}</td>
                                     <td>
                                         <table>
@@ -884,7 +894,7 @@
                                     <td>Radiology Test</td>
                                     <td>Result</td>
                                     <td>Doctor Report</td>
-                                    <td></td>
+                                    <td>Attachments</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -904,9 +914,11 @@
                                     </td>
                                     <td>
                                         <table>
-                                            <tbody>
-                                                <tr><td><small>Atachment: </small></td></tr>
-                                            </tbody>
+                                            <tr *ngFor="let attachment of radiology.radiologyAttachments">
+                                                <td>
+                                                    <a style="cursor: pointer;" (click)="downloadRadiologyFile(attachment.fileName)"  data-toggle="modal" data-target="#view-attachment-modal"><i class="fa fa-eye"></i>{{attachment.name}}</a>
+                                                </td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -1092,7 +1104,7 @@
             </div>
             <div class="modal-body">
                 <img [src]="attachmentUrl" *ngIf="fileExtension != 'pdf'" style="height: 100%; width: 100%;">                
-                <pdf-viewer [src]="attachmentUrl"  *ngIf="fileExtension === 'pdf'" [render-text]="true" [fit-to-page]="true" [autoresize]="true" [zoom-scale]="'page-width'" [original-size]="false" style="height: 100%; width: 100%;"></pdf-viewer>
+                <pdf-viewer [src]="attachmentUrl" *ngIf="fileExtension === 'pdf'" [render-text]="true" [fit-to-page]="true" [autoresize]="true" [zoom-scale]="'page-width'" [original-size]="true" style="height: 100%; width: 100%;"></pdf-viewer>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>

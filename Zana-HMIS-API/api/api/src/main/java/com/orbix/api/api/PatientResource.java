@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -179,6 +180,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/zana-hmis-api")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@MultipartConfig
 @Transactional
 public class PatientResource {
 	private final PatientService patientService;

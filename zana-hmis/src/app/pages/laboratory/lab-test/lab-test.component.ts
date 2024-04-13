@@ -301,6 +301,8 @@ export class LabTestComponent implements OnInit {
 
   upload(labTest : ILabTest) {
 
+    //var name = name1
+
     if(this.name === ''){
       this.msgBox.showErrorMessage3('Please provide tittle name')
       return
