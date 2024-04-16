@@ -22,10 +22,10 @@
                         </div>
                         <hr>
                     </div>
-                    <div class="col-sm-12" *ngFor="let radiology of radiologies">
+                    <div class="col-sm-6" *ngFor="let radiology of radiologies">
                         <div class="row" style="margin: 1mm; background-color: rgb(246, 246, 248);">
-                            <div class="col-sm-4">
-                                <h4><b>{{radiology.radiologyType?.name}}</b></h4>
+                            <div class="col-sm-12">
+                                <h3 class="text-primary"><b>{{radiology.radiologyType?.name}}</b></h3>
                                 <span>Status: </span><span><small>{{radiology.status}}</small></span><br><br>
                                 <span>Diagnosis: {{radiology?.diagnosisType?.name}} <span *ngIf="radiology?.diagnosisType?.name === null">NONE</span></span><br><br>
                                 <span>Description: {{radiology?.description}} <span *ngIf="radiology?.description === ''">NONE</span></span><br><br>
@@ -43,25 +43,22 @@
                                  <hr>
                             </div>
                             
-                            <div class="col-sm-8">
+                            <div class="col-sm-12">
                                 <div class="row" style="padding-left: 3mm; padding-right: 3mm;">
                                     <div class="col-sm-12">
                                         <span>Results</span>
                                         <textarea class="form-control" *ngIf="radiology?.status === 'ACCEPTED'" [(ngModel)]="radiology.result" placeholder="Input Results" style="height: 5cm;"></textarea>
                                         <textarea class="form-control" *ngIf="radiology?.status === 'VERIFIED'" [(ngModel)]="radiology.result" placeholder="Input Results" style="height: 5cm;" readonly></textarea>
                                     </div>
-                                    <div class="col-sm-8">
-
-
-
-
-
-                                        <div class="row">
-                                            <div class="col-sm-12" style="text-align: center;">
-                                                Attachments (max 5 attachments, .jepg or pdf, max 50MB)
-                                                <!--<div>Temporarily disabled</div>-->
-                                            </div>
-                                        </div>
+                                    <div class="col-sm-12">
+                                        <br>
+                                        <button class="btn btn-success form-control" (click)="saveRadiologyResults(radiology)">Save/Update Results</button>
+                                    </div>
+                                    <div class="col-sm-12" style="text-align: center;">
+                                        Attachments (max 5 attachments, .jepg or pdf, max 50MB)
+                                        <!--<div>Temporarily disabled</div>-->
+                                    </div>
+                                    <div class="col-sm-12">
                                         <div class="table table-striped table-small">
                                             <thead>
                                                 <tr>
@@ -84,7 +81,7 @@
                                                     </td>
                                                     <td>
                                                         <input type="file" class="form-control" (change)="selectFile($event)"/>
-                                                        <div class="alert alert-light" role="alert">{{ message }}</div>
+                                                        <!--<div class="alert alert-light" role="alert">{{ message }}</div>-->
                                                     </td>
                                                     <td>
                                                         <button class="btn btn-success" [disabled]="!selectedFiles" (click)="upload(radiology)">Upload</button>
@@ -92,17 +89,8 @@
                                                 </tr>
                                             </tbody>
                                         </div>
-                                        
-
-
-
-
-
-
-
                                     </div>
-                                    <div class="col-sm-4">
-                                        <br>
+                                    <div class="col-sm-12">
                                         <button class="btn btn-primary" (click)="verifyRadiology(radiology)">Verify Results</button>
                                     </div>
                                     <div class="col-sm-12">

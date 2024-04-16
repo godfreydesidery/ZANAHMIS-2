@@ -69,6 +69,10 @@
                                         <input type="text" class="form-control" [(ngModel)]="labTest.unit" placeholder="Unit">
                                     </div>
                                     <div class="col-sm-12">
+                                        <br>
+                                        <button class="btn btn-success form-control" (click)="saveLabTestResults(labTest)">Save/Update Results</button>
+                                    </div>
+                                    <div class="col-sm-12">
                                         <hr>
                                         <div class="row">
                                             <div class="col-sm-12" style="text-align: center;">
@@ -98,7 +102,7 @@
                                                     </td>
                                                     <td>
                                                         <input type="file" class="form-control" (change)="selectFile($event)"/>
-                                                        <div class="alert alert-light" role="alert">{{ message }}</div>
+                                                        <!--<div class="alert alert-light" role="alert">{{ message }}</div>-->
                                                     </td>
                                                     <td>
                                                         <button class="btn btn-success" [disabled]="!selectedFiles" (click)="upload(labTest)">Upload</button>

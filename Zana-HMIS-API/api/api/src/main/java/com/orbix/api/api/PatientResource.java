@@ -3449,7 +3449,27 @@ public class PatientResource {
 		t.get().setStatus("VERIFIED");
 		labTestRepository.save(t.get());
 		return true;
-	}	
+	}
+	
+	@PostMapping("/patients/save_lab_test_results")
+	public boolean saveLabTestResult(
+			@RequestBody LLabTest test,
+			HttpServletRequest request){
+		Optional<LabTest> t = labTestRepository.findById(test.getId());
+		if(!t.isPresent()) {
+			throw new NotFoundException("Lab Test not found");
+		}
+		if(!t.get().getStatus().equals("COLLECTED")) {
+			throw new InvalidOperationException("Could not update, only COLLECTED tests can be saved/updated");
+		}
+		t.get().setResult(test.getResult());
+		t.get().setLevel(test.getLevel());
+		t.get().setRange(test.getRange());
+		t.get().setUnit(test.getUnit());
+		
+		labTestRepository.save(t.get());
+		return true;
+	}
 	
 	@PostMapping("/patients/hold_lab_test") 
 	public boolean holdLabTest(
@@ -3741,7 +3761,27 @@ public class PatientResource {
 		radiology.get().setStatus("VERIFIED");
 		radiologyRepository.save(radiology.get());
 		return true;
-	}	
+	}
+	
+	@PostMapping("/patients/save_radiology_results") 
+	public boolean saveRadiologyResult(
+			@RequestBody LRadiology radio,
+			HttpServletRequest request){
+		Optional<Radiology> radiology = radiologyRepository.findById(radio.getId());
+		if(!radiology.isPresent()) {
+			throw new NotFoundException("Radiology not found");
+		}
+		if(!radiology.get().getStatus().equals("ACCEPTED")) {
+			throw new InvalidOperationException("Could not update, only ACCEPTED radiologies can be updated");
+		}
+		radiology.get().setResult(radio.getResult());
+		//radiology.get().setDiagnosisType(radio.getDiagnosisType());
+		//radiology.get().setDescription(radio.getDescription());
+		radiology.get().setAttachment(radio.getAttachment());
+				
+		radiologyRepository.save(radiology.get());
+		return true;
+	}
 	
 	@PostMapping("/patients/collect_radiology111") 
 	public boolean collectRadiology(

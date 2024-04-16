@@ -57,7 +57,7 @@ export class LabTestComponent implements OnInit {
   selectedFiles!: FileList;
   currentFile!: File;
   progress = 0;
-  message = '';
+  //message = '';
   name = ''
 
   fileInfos!: Observable<any>;
@@ -270,6 +270,34 @@ export class LabTestComponent implements OnInit {
     this.loadLabTestsByPatient(this.id)
   }
 
+  async saveLabTestResults(labTest : ILabTest){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    var test  = {
+      id : labTest.id,
+      result : labTest.result,
+      range : labTest.range,
+      level : labTest.level,
+      unit : labTest.unit
+    }
+    this.spinner.show()
+    await this.http.post<boolean>(API_URL+'/patients/save_lab_test_results', test, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        this.msgBox.showSuccessMessage('Updated successifully')
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+    this.loadLabTestsByPatient(this.id)
+  }
+
   async saveReasonForRejection(id : any, reason : string){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -314,19 +342,19 @@ export class LabTestComponent implements OnInit {
     this.uploadService.uploadLabTestAttachment(this.currentFile, labTest, this.name).subscribe(
       async event => {
         if (event.type === HttpEventType.UploadProgress) {
-          this.progress = Math.round(100 * event.loaded / event.total!);
+          //this.progress = Math.round(100 * event.loaded / event.total!);
         } else if (event instanceof HttpResponse) {
-          this.message = event.body.message;
+          //this.message = event.body.message;
           //this.fileInfos = this.uploadService.getFiles();
         }
         this.labTests = []
         await this.loadLabTestsByPatient(this.id)
-        //this.msgBox.showSuccessMessage('Upload Successiful')
+        //this.msgBox.showSuccessMessage('Uploaded Successifully')
       },
       err => {
         console.log(err)
         this.progress = 0;
-        this.message = 'Could not upload the file!';
+        //this.message = 'Could not upload the file!';
         this.currentFile = undefined!;
         this.msgBox.showErrorMessage(err, '')
       });

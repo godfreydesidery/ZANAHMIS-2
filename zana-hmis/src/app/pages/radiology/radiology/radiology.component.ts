@@ -56,7 +56,7 @@ export class RadiologyComponent {
   selectedFiles!: FileList;
   currentFile!: File;
   progress = 0;
-  message = '';
+  //message = '';
   name = ''
 
   fileInfos!: Observable<any>;
@@ -273,6 +273,32 @@ export class RadiologyComponent {
   }
 
 
+  async saveRadiologyResults(radiology : IRadiology){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    var radio  = {
+      id          : radiology.id,
+      result      : radiology.result
+    }
+    this.spinner.show()
+    await this.http.post<boolean>(API_URL+'/patients/save_radiology_results', radio, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        this.msgBox.showSuccessMessage('Updated successifully')
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+    this.loadRadiologiesByPatient(this.id)
+  }
+
+
 
 
 
@@ -293,19 +319,19 @@ export class RadiologyComponent {
     this.uploadService.uploadRadiologyAttachment(this.currentFile, radiology, this.name).subscribe(
       async event => {
         if (event.type === HttpEventType.UploadProgress) {
-          this.progress = Math.round(100 * event.loaded / event.total!);
+          //this.progress = Math.round(100 * event.loaded / event.total!);
         } else if (event instanceof HttpResponse) {
-          this.message = event.body.message;
+          //this.message = event.body.message;
           //this.fileInfos = this.uploadService.getFiles();
         }
         this.radiologies = []
         await this.loadRadiologiesByPatient(this.id)
-        //this.msgBox.showSuccessMessage('Upload Successiful')
+        //this.msgBox.showSuccessMessage('Uploaded Successifully')
       },
       err => {
         console.log(err)
         this.progress = 0;
-        this.message = 'Could not upload the file!';
+        //this.message = 'Could not upload the file!';
         this.currentFile = undefined!;
         this.msgBox.showErrorMessage(err, '')
       });
