@@ -4170,7 +4170,7 @@ public class PatientResource {
 		for(LabTest l : labTests) {
 			LabTestModel model= new LabTestModel();
 			model.setId(l.getId());
-			model.setResult(l.getResult());
+			model.setResult(l.getResult());			
 			model.setReport(l.getReport());
 			model.setDescription(l.getDescription());
 			model.setLabTestType(l.getLabTestType());
@@ -4179,6 +4179,16 @@ public class PatientResource {
 			model.setLevel(l.getLevel());
 			model.setUnit(l.getUnit());
 			model.setStatus(l.getStatus());
+			
+			List<LabTestAttachmentModel> labTestAttachmentModels = new ArrayList<>();
+			for(LabTestAttachment labTestAttachment : l.getLabTestAttachments()) {
+				LabTestAttachmentModel labTestAttachmentModel = new LabTestAttachmentModel();
+				labTestAttachmentModel.setId(labTestAttachment.getId());
+				labTestAttachmentModel.setFileName(labTestAttachment.getFileName());
+				labTestAttachmentModel.setName(labTestAttachment.getName());
+				labTestAttachmentModels.add(labTestAttachmentModel);
+			}
+			model.setLabTestAttachments(labTestAttachmentModels);
 
 			if(l.getCreatedAt() != null) {
 				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
@@ -4250,6 +4260,19 @@ public class PatientResource {
 			model.setDiagnosisType(r.getDiagnosisType());			
 			model.setPatientBill(r.getPatientBill());
 			model.setAttachment(r.getAttachment());
+			
+			
+			List<RadiologyAttachmentModel> radiologyAttachmentModels = new ArrayList<>();
+			for(RadiologyAttachment radiologyAttachment : r.getRadiologyAttachments()) {
+				RadiologyAttachmentModel radiologyAttachmentModel = new RadiologyAttachmentModel();
+				radiologyAttachmentModel.setId(radiologyAttachment.getId());
+				radiologyAttachmentModel.setFileName(radiologyAttachment.getFileName());
+				radiologyAttachmentModel.setName(radiologyAttachment.getName());
+				radiologyAttachmentModels.add(radiologyAttachmentModel);
+			}
+			model.setRadiologyAttachments(radiologyAttachmentModels);
+			
+			
 			if(r.getCreatedAt() != null) {
 				model.setCreated(r.getCreatedAt().toString()+" | "+userService.getUserById(r.getCreatedby()).getNickname());
 			}else {

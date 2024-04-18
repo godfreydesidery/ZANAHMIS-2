@@ -109,7 +109,6 @@ export class PatientRegisterComponent implements OnInit {
 
   procedures : IProcedure[] = []
   procedureTypeNames : string[] = []
-  procedureTypeName : string = ''
 
   diagnosisTypeNames : string[] = []
 
@@ -1181,7 +1180,7 @@ export class PatientRegisterComponent implements OnInit {
     }
     var procedure  = {
       procedureType : {
-        id : null,
+        id : this.procedureTypeId,
         code : '',
         name : this.procedureTypeName
       },
@@ -1912,7 +1911,7 @@ export class PatientRegisterComponent implements OnInit {
     }
     this.radiologyTypes = []
     this.spinner.show()
-    await this.http.get<IProcedureType>(API_URL+'/radiology_types/get?id='+id, options)
+    await this.http.get<IRadiologyType>(API_URL+'/radiology_types/get?id='+id, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
@@ -1979,6 +1978,60 @@ export class PatientRegisterComponent implements OnInit {
       }
     )
   }
+
+
+  procedureTypeId : any =  null
+  procedureTypeCode : string = ''
+  procedureTypeName : string = ''
+  procedureTypes : IProcedureType[] = []
+  async loadProcedureTypesLike(value : string){
+    this.procedureTypes = []
+    if(value.length < 3){
+      return
+    }
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.procedureTypes = []
+    await this.http.get<IProcedureType[]>(API_URL+'/procedure_types/load_procedure_types_like_and_minor?name_like='+value, options)
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.procedureTypes = data!
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+  async getProcedureType(id : any){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.procedureTypes = []
+    this.spinner.show()
+    await this.http.get<IProcedureType>(API_URL+'/procedure_types/get?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      (data) => {
+        this.procedureTypeId = data?.id
+        this.procedureTypeCode = data!.code
+        this.procedureTypeName = data!.name
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+  }
+
+
 
   consultationTransfers : IConsultationTransfer[] = []
   async loadTransfers(){//for unpaid registration

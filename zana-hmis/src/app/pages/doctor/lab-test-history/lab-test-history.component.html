@@ -31,6 +31,7 @@
                                         <td>Ordered At/By</td>
                                         <td>Lab Test</td>
                                         <td>Result</td>
+                                        <td>Attachments</td>
                                         <td>Report</td>
                                         <td>Description</td>
                                         <td>Range</td>
@@ -44,6 +45,15 @@
                                         <td>{{history?.created}}</td>
                                         <td>{{history?.labTestType?.name}}</td>
                                         <td>{{history?.result}}</td>
+                                        <td>
+                                            <table>
+                                                <tr *ngFor="let attachment of history.labTestAttachments">
+                                                    <td>
+                                                        <a style="cursor: pointer;" (click)="downloadLabTestFile(attachment.fileName)"  data-toggle="modal" data-target="#view-attachment-modal"><button class="btn btn-success btn-outline">View</button></a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
                                         <td>{{history?.report}}</td>
                                         <td>{{history?.description}}</td>
                                         <td>{{history?.range}}</td>
@@ -60,3 +70,23 @@
         </div>
     </div>     
 </section> <!-- /.content -->
+
+
+<!-- Modal success -->
+<div class="modal fade modal-success" id="view-attachment-modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg" role="document" style="width: 75%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title"></h2>
+            </div>
+            <div class="modal-body">
+                <img [src]="attachmentUrl" *ngIf="fileExtension != 'pdf'" style="height: 100%; width: 100%;">                
+                <pdf-viewer [src]="attachmentUrl" *ngIf="fileExtension === 'pdf'" [render-text]="true" [fit-to-page]="true" [autoresize]="true" [zoom-scale]="'page-width'" [original-size]="true" style="height: 100%; width: 100%;"></pdf-viewer>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

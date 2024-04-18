@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.orbix.api.domain.Dressing;
 import com.orbix.api.domain.Medicine;
 import com.orbix.api.domain.ProcedureType;
 import com.orbix.api.domain.ProcedureType;
+import com.orbix.api.repositories.DressingRepository;
 import com.orbix.api.repositories.ProcedureTypeRepository;
 import com.orbix.api.repositories.ProcedureTypeRepository;
 import com.orbix.api.service.DayService;
@@ -47,6 +49,8 @@ public class ProcedureTypeResource {
 	private final ProcedureTypeService procedureTypeService;
 	private final UserService userService;
 	private final DayService dayService;
+	
+	private final DressingRepository dressingRepository;
 	
 	
 	@GetMapping("/procedure_types")
@@ -86,6 +90,21 @@ public class ProcedureTypeResource {
 			HttpServletRequest request){
 		List<ProcedureType> procedureTypes = new ArrayList<ProcedureType>();
 		procedureTypes = procedureTypeRepository.findAllByNameContaining(value);
+		return ResponseEntity.ok().body(procedureTypes);
+	}
+	
+	@GetMapping("/procedure_types/load_procedure_types_like_and_minor")
+	public ResponseEntity<List<ProcedureType>> getProcedureTypeAndMinorNameContains(
+			@RequestParam(name = "name_like") String value,
+			HttpServletRequest request){
+		
+		List<ProcedureType> procedureTypes = procedureTypeRepository.findAllByNameContaining(value);		
+		List<Dressing> dressings = dressingRepository.findAllByProcedureTypeIn(procedureTypes);
+		
+		procedureTypes = new ArrayList<>();
+		for(Dressing dressing : dressings) {
+			procedureTypes.add(dressing.getProcedureType());
+		}		
 		return ResponseEntity.ok().body(procedureTypes);
 	}
 }
