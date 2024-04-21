@@ -42,7 +42,7 @@ public class RadiologyTypeServiceImpl implements RadiologyTypeService{
 		radiologyType.setName(radiologyType.getName().trim().replaceAll("\\s+", " "));
 		
 		if(radiologyType.getId() == null) {
-			radiologyType.setCreatedby(userService.getUser(request).getId());
+			radiologyType.setCreatedBy(userService.getUser(request).getId());
 			radiologyType.setCreatedOn(dayService.getDay().getId());
 			radiologyType.setCreatedAt(dayService.getTimeStamp());
 			

@@ -12,6 +12,7 @@ import com.orbix.api.domain.Admission;
 import com.orbix.api.domain.ClinicalNote;
 import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.GeneralExamination;
+import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Patient;
 
 /**
@@ -50,5 +51,12 @@ public interface GeneralExaminationRepository extends JpaRepository<GeneralExami
 	 * @return
 	 */
 	List<GeneralExamination> findAllByConsultationInOrAdmissionIn(List<Consultation> cons, List<Admission> adms);
+
+	Optional<GeneralExamination> findByNonConsultation(NonConsultation nonConsultation);
+
+	List<GeneralExamination> findAllByNonConsultation(NonConsultation nonConsultation);
+
+	List<GeneralExamination> findAllByConsultationInOrNonConsultationInOrAdmissionIn(List<Consultation> cons,
+			List<NonConsultation> nonCons, List<Admission> adms);
 
 }

@@ -42,7 +42,7 @@ public class TheatreServiceImpl implements TheatreService {
 		theatre.setName(theatre.getName());
 		
 		if(theatre.getId() == null) {
-			theatre.setCreatedby(userService.getUser(request).getId());
+			theatre.setCreatedBy(userService.getUser(request).getId());
 			theatre.setCreatedOn(dayService.getDay().getId());
 			theatre.setCreatedAt(dayService.getTimeStamp());
 			

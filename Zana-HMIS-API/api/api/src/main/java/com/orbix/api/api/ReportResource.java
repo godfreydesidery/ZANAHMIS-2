@@ -218,7 +218,7 @@ public class ReportResource {
 				prescriptionModel.setApproved("");
 			}
 			if(prescription.getCreatedAt() != null) {
-				prescriptionModel.setCreated(prescription.getCreatedAt().toString()+" | "+userService.getUserById(prescription.getCreatedby()).getNickname());
+				prescriptionModel.setCreated(prescription.getCreatedAt().toString()+" | "+userService.getUserById(prescription.getCreatedBy()).getNickname());
 			}else {
 				prescriptionModel.setCreated("");
 			}
@@ -450,7 +450,7 @@ public class ReportResource {
 		List<Radiology> doctorRadiologies = new ArrayList<>();
 		
 		for(Radiology radiology : radiologies) {
-			User user = userRepository.findById(radiology.getCreatedby()).get();
+			User user = userRepository.findById(radiology.getCreatedBy()).get();
 			Optional<Clinician> cl = clinicianRepository.findByUser(user);
 			
 			PatientBill patientBill = radiology.getPatientBill();

@@ -40,7 +40,7 @@ public class ExternalMedicalProviderServiceImpl implements ExternalMedicalProvid
 		externalMedicalProvider.setName(externalMedicalProvider.getName());
 		
 		if(externalMedicalProvider.getId() == null) {
-			externalMedicalProvider.setCreatedby(userService.getUser(request).getId());
+			externalMedicalProvider.setCreatedBy(userService.getUser(request).getId());
 			externalMedicalProvider.setCreatedOn(dayService.getDay().getId());
 			externalMedicalProvider.setCreatedAt(dayService.getTimeStamp());
 			

@@ -374,7 +374,7 @@ public class UpdatePatient implements Runnable{
 									patientInvoice.setInsurancePlan(adm.getPatient().getInsurancePlan());
 									patientInvoice.setStatus("PENDING");
 									
-									patientInvoice.setCreatedby(wardBedBill.getCreatedBy());
+									patientInvoice.setCreatedBy(wardBedBill.getCreatedBy());
 									patientInvoice.setCreatedOn(dayService.getDay().getId());
 									patientInvoice.setCreatedAt(dayService.getTimeStamp());
 									
@@ -391,7 +391,7 @@ public class UpdatePatient implements Runnable{
 									patientInvoiceDetail.setDescription("Ward Bed / Room");
 									patientInvoiceDetail.setQty(1);
 									
-									patientInvoiceDetail.setCreatedby(wardBedBill.getCreatedBy());
+									patientInvoiceDetail.setCreatedBy(wardBedBill.getCreatedBy());
 									patientInvoiceDetail.setCreatedOn(dayService.getDay().getId());
 									patientInvoiceDetail.setCreatedAt(dayService.getTimeStamp());
 									
@@ -407,7 +407,7 @@ public class UpdatePatient implements Runnable{
 									patientInvoiceDetail.setDescription("Ward Bed / Room");
 									patientInvoiceDetail.setQty(1);
 									
-									patientInvoiceDetail.setCreatedby(wardBedBill.getCreatedBy());
+									patientInvoiceDetail.setCreatedBy(wardBedBill.getCreatedBy());
 									patientInvoiceDetail.setCreatedOn(dayService.getDay().getId());
 									patientInvoiceDetail.setCreatedAt(dayService.getTimeStamp());
 									
@@ -444,7 +444,7 @@ public class UpdatePatient implements Runnable{
 										patientInvoice.setInsurancePlan(null);
 										patientInvoice.setStatus("PENDING");
 										
-										patientInvoice.setCreatedby(wardBedBill.getCreatedBy());
+										patientInvoice.setCreatedBy(wardBedBill.getCreatedBy());
 										patientInvoice.setCreatedOn(dayService.getDay().getId());
 										patientInvoice.setCreatedAt(dayService.getTimeStamp());
 										
@@ -461,7 +461,7 @@ public class UpdatePatient implements Runnable{
 										patientInvoiceDetail.setDescription("Ward Bed / Room (Top up)");
 										patientInvoiceDetail.setQty(1);
 										
-										patientInvoiceDetail.setCreatedby(wardBedBill.getCreatedBy());
+										patientInvoiceDetail.setCreatedBy(wardBedBill.getCreatedBy());
 										patientInvoiceDetail.setCreatedOn(dayService.getDay().getId());
 										patientInvoiceDetail.setCreatedAt(dayService.getTimeStamp());
 										
@@ -477,7 +477,7 @@ public class UpdatePatient implements Runnable{
 										patientInvoiceDetail.setDescription("Ward Bed / Room (Top up)");
 										patientInvoiceDetail.setQty(1);
 										
-										patientInvoiceDetail.setCreatedby(wardBedBill.getCreatedBy());
+										patientInvoiceDetail.setCreatedBy(wardBedBill.getCreatedBy());
 										patientInvoiceDetail.setCreatedOn(dayService.getDay().getId());
 										patientInvoiceDetail.setCreatedAt(dayService.getTimeStamp());
 										
@@ -498,7 +498,7 @@ public class UpdatePatient implements Runnable{
 								patientInvoice.setInsurancePlan(null);
 								patientInvoice.setStatus("PENDING");
 								
-								patientInvoice.setCreatedby(wardBedBill.getCreatedBy());
+								patientInvoice.setCreatedBy(wardBedBill.getCreatedBy());
 								patientInvoice.setCreatedOn(dayService.getDay().getId());
 								patientInvoice.setCreatedAt(dayService.getTimeStamp());
 								
@@ -515,7 +515,7 @@ public class UpdatePatient implements Runnable{
 								patientInvoiceDetail.setDescription("Ward Bed / Room");
 								patientInvoiceDetail.setQty(1);
 								
-								patientInvoiceDetail.setCreatedby(wardBedBill.getCreatedBy());
+								patientInvoiceDetail.setCreatedBy(wardBedBill.getCreatedBy());
 								patientInvoiceDetail.setCreatedOn(dayService.getDay().getId());
 								patientInvoiceDetail.setCreatedAt(dayService.getTimeStamp());
 								
@@ -531,7 +531,7 @@ public class UpdatePatient implements Runnable{
 								patientInvoiceDetail.setDescription("Ward Bed / Room");
 								patientInvoiceDetail.setQty(1);
 								
-								patientInvoiceDetail.setCreatedby(wardBedBill.getCreatedBy());
+								patientInvoiceDetail.setCreatedBy(wardBedBill.getCreatedBy());
 								patientInvoiceDetail.setCreatedOn(dayService.getDay().getId());
 								patientInvoiceDetail.setCreatedAt(dayService.getTimeStamp());
 								

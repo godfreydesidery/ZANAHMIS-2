@@ -42,7 +42,7 @@ public class ProcedureTypeServiceImpl implements ProcedureTypeService{
 		procedureType.setName(procedureType.getName().trim().replaceAll("\\s+", " "));
 		
 		if(procedureType.getId() == null) {
-			procedureType.setCreatedby(userService.getUser(request).getId());
+			procedureType.setCreatedBy(userService.getUser(request).getId());
 			procedureType.setCreatedOn(dayService.getDay().getId());
 			procedureType.setCreatedAt(dayService.getTimeStamp());
 			

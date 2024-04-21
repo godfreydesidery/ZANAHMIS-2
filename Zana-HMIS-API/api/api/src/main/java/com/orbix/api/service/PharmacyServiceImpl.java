@@ -53,7 +53,7 @@ public class PharmacyServiceImpl implements PharmacyService{
 		pharmacy.setName(pharmacy.getName());
 		
 		if(pharmacy.getId() == null) {
-			pharmacy.setCreatedby(userService.getUser(request).getId());
+			pharmacy.setCreatedBy(userService.getUser(request).getId());
 			pharmacy.setCreatedOn(dayService.getDay().getId());
 			pharmacy.setCreatedAt(dayService.getTimeStamp());
 			

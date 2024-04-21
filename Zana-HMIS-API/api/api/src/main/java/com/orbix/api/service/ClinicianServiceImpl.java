@@ -56,7 +56,7 @@ public class ClinicianServiceImpl implements ClinicianService{
 		clinician.setUser(u.get());
 
 		if(clinician.getId() == null) {
-			clinician.setCreatedby(userService.getUser(request).getId());
+			clinician.setCreatedBy(userService.getUser(request).getId());
 			clinician.setCreatedOn(dayService.getDay().getId());
 			clinician.setCreatedAt(dayService.getTimeStamp());
 			

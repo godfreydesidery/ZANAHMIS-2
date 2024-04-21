@@ -44,6 +44,7 @@ export class LabTestHistoryComponent {
   filterRecords : string = ''
 
   consultationId : any = null
+  nonConsultationId : any = null
   admissionId : any = null
 
   constructor(private auth : AuthService,
@@ -58,6 +59,7 @@ export class LabTestHistoryComponent {
     this.getLabTestHistory()
 
     this.consultationId = localStorage.getItem('consultation-id')
+    this.nonConsultationId = localStorage.getItem('non-consultation-id')
     this.admissionId = localStorage.getItem('admission-id')
   } 
   

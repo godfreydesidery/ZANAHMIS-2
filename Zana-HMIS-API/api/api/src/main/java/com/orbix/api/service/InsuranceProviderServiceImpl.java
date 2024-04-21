@@ -41,7 +41,7 @@ public class InsuranceProviderServiceImpl implements InsuranceProviderService{
 		insuranceProvider.setName(insuranceProvider.getName());
 		
 		if(insuranceProvider.getId() == null) {
-			insuranceProvider.setCreatedby(userService.getUser(request).getId());
+			insuranceProvider.setCreatedBy(userService.getUser(request).getId());
 			insuranceProvider.setCreatedOn(dayService.getDay().getId());
 			insuranceProvider.setCreatedAt(dayService.getTimeStamp());
 			

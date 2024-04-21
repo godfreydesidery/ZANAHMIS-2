@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 					
 					clinician.setActive(true);
 					
-					clinician.setCreatedby(getUser(request).getId());
+					clinician.setCreatedBy(getUser(request).getId());
 					clinician.setCreatedOn(dayService.getDay().getId());
 					clinician.setCreatedAt(dayService.getTimeStamp());
 					
@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 					
 					pharmacist.setActive(true);
 					
-					pharmacist.setCreatedby(getUser(request).getId());
+					pharmacist.setCreatedBy(getUser(request).getId());
 					pharmacist.setCreatedOn(dayService.getDay().getId());
 					pharmacist.setCreatedAt(dayService.getTimeStamp());
 					
@@ -198,7 +198,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 					
 					nurse.setActive(true);
 					
-					nurse.setCreatedby(getUser(request).getId());
+					nurse.setCreatedBy(getUser(request).getId());
 					nurse.setCreatedOn(dayService.getDay().getId());
 					nurse.setCreatedAt(dayService.getTimeStamp());
 					

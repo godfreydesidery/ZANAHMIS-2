@@ -185,7 +185,7 @@ public class InsurancePlanResource {
 					plan.setInsurancePlan(i.get());
 					plan.setLabTestType(t);
 					
-					plan.setCreatedby(userService.getUserId(request));
+					plan.setCreatedBy(userService.getUserId(request));
 					plan.setCreatedOn(dayService.getDayId());
 					plan.setCreatedAt(dayService.getTimeStamp());
 					
@@ -317,7 +317,7 @@ public class InsurancePlanResource {
 					plan.setInsurancePlan(i.get());
 					plan.setProcedureType(t);
 					
-					plan.setCreatedby(userService.getUserId(request));
+					plan.setCreatedBy(userService.getUserId(request));
 					plan.setCreatedOn(dayService.getDayId());
 					plan.setCreatedAt(dayService.getTimeStamp());
 					
@@ -448,7 +448,7 @@ public class InsurancePlanResource {
 					plan.setInsurancePlan(i.get());
 					plan.setRadiologyType(t);
 					
-					plan.setCreatedby(userService.getUserId(request));
+					plan.setCreatedBy(userService.getUserId(request));
 					plan.setCreatedOn(dayService.getDayId());
 					plan.setCreatedAt(dayService.getTimeStamp());
 					
@@ -579,7 +579,7 @@ public class InsurancePlanResource {
 					plan.setInsurancePlan(i.get());
 					plan.setMedicine(t);
 					
-					plan.setCreatedby(userService.getUserId(request));
+					plan.setCreatedBy(userService.getUserId(request));
 					plan.setCreatedOn(dayService.getDayId());
 					plan.setCreatedAt(dayService.getTimeStamp());
 					
@@ -709,7 +709,7 @@ public class InsurancePlanResource {
 					plan.setInsurancePlan(i.get());
 					plan.setClinic(t);
 					
-					plan.setCreatedby(userService.getUserId(request));
+					plan.setCreatedBy(userService.getUserId(request));
 					plan.setCreatedOn(dayService.getDayId());
 					plan.setCreatedAt(dayService.getTimeStamp());
 					
@@ -842,7 +842,7 @@ public class InsurancePlanResource {
 					plan.setRegistrationFee(0);
 					plan.setInsurancePlan(i.get());
 					
-					plan.setCreatedby(userService.getUserId(request));
+					plan.setCreatedBy(userService.getUserId(request));
 					plan.setCreatedOn(dayService.getDayId());
 					plan.setCreatedAt(dayService.getTimeStamp());
 					
@@ -965,7 +965,7 @@ public class InsurancePlanResource {
 					plan.setInsurancePlan(i.get());
 					plan.setWardType(t);
 					
-					plan.setCreatedby(userService.getUserId(request));
+					plan.setCreatedBy(userService.getUserId(request));
 					plan.setCreatedOn(dayService.getDayId());
 					plan.setCreatedAt(dayService.getTimeStamp());
 					

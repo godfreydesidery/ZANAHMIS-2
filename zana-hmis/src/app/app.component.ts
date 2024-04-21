@@ -278,7 +278,18 @@ export class AppComponent {
         {path : 'nurse-outpatient-list', loadComponent : () => import('./pages/nurse/nurse-outpatient-list/nurse-outpatient-list.component').then(m => m.NurseOutpatientListComponent)},
         {path : 'nurse-outsider-list', loadComponent : () => import('./pages/nurse/nurse-outsider-list/nurse-outsider-list.component').then(m => m.NurseOutsiderListComponent)},
         {path : 'nurse-inpatient-chart', loadComponent : () => import('./pages/nurse/nurse-inpatient-chart/nurse-inpatient-chart.component').then(m => m.NurseInpatientChartComponent)},
-        {path : 'nursing-history-menu', loadComponent : () => import('./pages/nurse/nursing-history-menu/nursing-history-menu.component').then(m => m.NursingHistoryMenuComponent)}
+        {path : 'nurse-outsider-chart', loadComponent : () => import('./pages/nurse/nurse-outsider-chart/nurse-outsider-chart.component').then(m => m.NurseOutsiderChartComponent)},
+        {path : 'nursing-history-menu', loadComponent : () => import('./pages/nurse/nursing-history-menu/nursing-history-menu.component').then(m => m.NursingHistoryMenuComponent)},
+
+        {path : 'patient-history-menu', loadComponent : () => import('./pages/doctor/patient-history-menu/patient-history-menu.component').then(m => m.PatientHistoryMenuComponent), canActivate: [AuthGuard]},
+        {path : 'clinical-note-history', loadComponent : () => import('./pages/doctor/clinical-note-history/clinical-note-history.component').then(m => m.ClinicalNoteHistoryComponent), canActivate: [AuthGuard]},
+        {path : 'general-examination-history', loadComponent : () => import('./pages/doctor/general-examination-history/general-examination-history.component').then(m => m.GeneralExaminationHistoryComponent), canActivate: [AuthGuard]},
+        {path : 'lab-test-history', loadComponent : () => import('./pages/doctor/lab-test-history/lab-test-history.component').then(m => m.LabTestHistoryComponent), canActivate: [AuthGuard]},
+        {path : 'radiology-history', loadComponent : () => import('./pages/doctor/radiology-history/radiology-history.component').then(m => m.RadiologyHistoryComponent), canActivate: [AuthGuard]},
+        {path : 'procedure-history', loadComponent : () => import('./pages/doctor/procedure-history/procedure-history.component').then(m => m.ProcedureHistoryComponent), canActivate: [AuthGuard]},
+        {path : 'prescription-history', loadComponent : () => import('./pages/doctor/prescription-history/prescription-history.component').then(m => m.PrescriptionHistoryComponent), canActivate: [AuthGuard]},
+        {path : 'working-diagnosis-history', loadComponent : () => import('./pages/doctor/working-diagnosis-history/working-diagnosis-history.component').then(m => m.WorkingDiagnosisHistoryComponent), canActivate: [AuthGuard]},
+        {path : 'final-diagnosis-history', loadComponent : () => import('./pages/doctor/final-diagnosis-history/final-diagnosis-history.component').then(m => m.FinalDiagnosisHistoryComponent), canActivate: [AuthGuard]},
       )
     }
     loadLaboratoryModule(){

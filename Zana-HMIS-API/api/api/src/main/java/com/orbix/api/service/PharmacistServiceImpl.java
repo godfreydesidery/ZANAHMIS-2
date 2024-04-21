@@ -56,7 +56,7 @@ public class PharmacistServiceImpl implements PharmacistService{
 		pharmacist.setNickname(pharmacist.getFirstName()+ " "+pharmacist.getMiddleName()+ " "+pharmacist.getLastName()+" "+pharmacist.getCode());
 		
 		if(pharmacist.getId() == null) {
-			pharmacist.setCreatedby(userService.getUser(request).getId());
+			pharmacist.setCreatedBy(userService.getUser(request).getId());
 			pharmacist.setCreatedOn(dayService.getDay().getId());
 			pharmacist.setCreatedAt(dayService.getTimeStamp());
 			

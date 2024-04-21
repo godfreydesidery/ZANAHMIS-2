@@ -71,7 +71,7 @@ public class User {
 	
 
 	@Column(name = "created_by_user_id", nullable = true , updatable = false)
-    private Long createdby;
+    private Long createdBy;
 	@Column(name = "created_on_day_id", nullable = true , updatable = false)
     private Long createdOn;
 	private LocalDateTime createdAt = LocalDateTime.now();
@@ -197,16 +197,16 @@ public class User {
 		this.roles = roles;
 	}
 	/**
-	 * @return the createdby
+	 * @return the createdBy
 	 */
 	public Long getCreatedby() {
-		return createdby;
+		return createdBy;
 	}
 	/**
-	 * @param createdby the createdby to set
+	 * @param createdBy the createdBy to set
 	 */
-	public void setCreatedby(Long createdby) {
-		this.createdby = createdby;
+	public void setCreatedby(Long createdBy) {
+		this.createdBy = createdBy;
 	}
 	/**
 	 * @return the createdOn

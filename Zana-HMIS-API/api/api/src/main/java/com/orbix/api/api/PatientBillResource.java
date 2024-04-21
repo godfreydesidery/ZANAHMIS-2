@@ -152,7 +152,7 @@ public class PatientBillResource {
 		PatientPayment payment = new PatientPayment();
 		payment.setAmount(totalAmount);
 		
-		payment.setCreatedby(userService.getUser(request).getId());
+		payment.setCreatedBy(userService.getUser(request).getId());
 		payment.setCreatedOn(dayService.getDay().getId());
 		payment.setCreatedAt(dayService.getTimeStamp());
 		
@@ -169,7 +169,7 @@ public class PatientBillResource {
 			registrationBill.setCreatedAt(dayService.getTimeStamp());
 			
 			if(registrationBill.getBillItem() == null) {
-				registrationBill.setBillItem("NA");
+				registrationBill.setBillItem("Registration");
 			}
 			
 			registrationBill = patientBillRepository.save(registrationBill);
@@ -180,7 +180,7 @@ public class PatientBillResource {
 			pd.setDescription("Registration Payment");
 			pd.setStatus("RECEIVED");
 			
-			pd.setCreatedby(userService.getUser(request).getId());
+			pd.setCreatedBy(userService.getUser(request).getId());
 			pd.setCreatedOn(dayService.getDay().getId());
 			pd.setCreatedAt(dayService.getTimeStamp());
 			
@@ -206,7 +206,7 @@ public class PatientBillResource {
 			PatientBill bill = c.getPatientBill();
 			
 			if(bill.getBillItem() == null) {
-				bill.setBillItem("NA");
+				bill.setBillItem("Consultation");
 				bill = patientBillRepository.save(bill);
 			}
 			
@@ -226,7 +226,7 @@ public class PatientBillResource {
 			pd.setDescription("Consultation Payment");
 			pd.setStatus("RECEIVED");
 			
-			pd.setCreatedby(userService.getUser(request).getId());
+			pd.setCreatedBy(userService.getUser(request).getId());
 			pd.setCreatedOn(dayService.getDay().getId());
 			pd.setCreatedAt(dayService.getTimeStamp());
 			
@@ -266,7 +266,7 @@ public class PatientBillResource {
 		PatientPayment payment = new PatientPayment();
 		payment.setAmount(totalAmount);
 		
-		payment.setCreatedby(userService.getUser(request).getId());
+		payment.setCreatedBy(userService.getUser(request).getId());
 		payment.setCreatedOn(dayService.getDay().getId());
 		payment.setCreatedAt(dayService.getTimeStamp());
 		payment.setStatus("RECEIVED");
@@ -293,7 +293,7 @@ public class PatientBillResource {
 				pd.setDescription(b.get().getDescription());
 				pd.setStatus("RECEIVED");
 				
-				pd.setCreatedby(userService.getUser(request).getId());
+				pd.setCreatedBy(userService.getUser(request).getId());
 				pd.setCreatedOn(dayService.getDay().getId());
 				pd.setCreatedAt(dayService.getTimeStamp());
 				

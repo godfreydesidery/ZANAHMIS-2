@@ -48,7 +48,7 @@ public class WardCategoryServiceImpl implements WardCategoryService {
 		
 		
 		if(wardCategory.getId() == null) {
-			wardCategory.setCreatedby(userService.getUser(request).getId());
+			wardCategory.setCreatedBy(userService.getUser(request).getId());
 			wardCategory.setCreatedOn(dayService.getDay().getId());
 			wardCategory.setCreatedAt(dayService.getTimeStamp());
 			

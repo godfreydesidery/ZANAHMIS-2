@@ -60,7 +60,7 @@ public class MedicineServiceImpl implements MedicineService{
 		medicine.setName(medicine.getName().trim().replaceAll("\\s+", " "));
 		
 		if(medicine.getId() == null) {
-			medicine.setCreatedby(userService.getUser(request).getId());
+			medicine.setCreatedBy(userService.getUser(request).getId());
 			medicine.setCreatedOn(dayService.getDay().getId());
 			medicine.setCreatedAt(dayService.getTimeStamp());
 			

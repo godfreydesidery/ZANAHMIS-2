@@ -57,4 +57,6 @@ public interface NonConsultationRepository extends JpaRepository<NonConsultation
 	 */
 	List<NonConsultation> findAllByStatusIn(List<String> conStatuses);
 
+	List<NonConsultation> findAllByPatient(Patient patient);
+
 }

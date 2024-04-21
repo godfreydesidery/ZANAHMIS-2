@@ -48,7 +48,7 @@
                                             
                                         </td>
                                         <td>{{nonConsultation?.patient?.gender}}</td>
-                                        <td><a class="btn btn-success" >Attend</a></td>
+                                        <td><a class="btn btn-success"  (click)="postNonConsultation(nonConsultation.id)">Attend</a></td>
                                     </tr>
                                 </tbody>
                             </table>   

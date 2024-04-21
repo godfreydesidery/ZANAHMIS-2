@@ -52,7 +52,7 @@ public class LabTestTypeServiceImpl implements LabTestTypeService{
 			testType.setUom(labTestType.getUom());
 		}else {
 			testType = labTestType;
-			testType.setCreatedby(userService.getUser(request).getId());
+			testType.setCreatedBy(userService.getUser(request).getId());
 			testType.setCreatedOn(dayService.getDay().getId());
 			testType.setCreatedAt(dayService.getTimeStamp());
 			

@@ -47,7 +47,7 @@ public class Pharmacy {
 	private boolean active = false;
 	
 	@Column(name = "created_by_user_id", nullable = false , updatable = false)
-    private Long createdby;
+    private Long createdBy;
 	@Column(name = "created_on_day_id", nullable = false , updatable = false)
     private Long createdOn;
 	private LocalDateTime createdAt = LocalDateTime.now();

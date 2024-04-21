@@ -44,7 +44,7 @@ public class ClinicServiceImpl implements ClinicService{
 		clinic.setName(clinic.getName());
 		
 		if(clinic.getId() == null) {
-			clinic.setCreatedby(userService.getUser(request).getId());
+			clinic.setCreatedBy(userService.getUser(request).getId());
 			clinic.setCreatedOn(dayService.getDay().getId());
 			clinic.setCreatedAt(dayService.getTimeStamp());
 			

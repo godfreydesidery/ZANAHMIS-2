@@ -35,6 +35,7 @@ export class PatientHistoryMenuComponent {
   filterRecords : string = ''
 
   consultationId : any = null
+  nonConsultationId : any = null
   admissionId : any = null
 
   constructor(private auth : AuthService,
@@ -45,6 +46,7 @@ export class PatientHistoryMenuComponent {
 
   async ngOnInit(): Promise<void> {
       this.consultationId = localStorage.getItem('consultation-id')
+      this.nonConsultationId = localStorage.getItem('non-consultation-id')
       this.admissionId = localStorage.getItem('admission-id')
   }  
   

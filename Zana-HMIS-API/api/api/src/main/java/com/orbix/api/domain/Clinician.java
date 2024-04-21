@@ -71,7 +71,7 @@ public class Clinician {
 	private Collection<Clinic> clinics = new ArrayList<>();	
 	
 	@Column(name = "created_by_user_id", nullable = false , updatable = false)
-    private Long createdby;	
+    private Long createdBy;	
 	@Column(name = "created_on_day_id", nullable = false , updatable = false)
     private Long createdOn;
 	private LocalDateTime createdAt = LocalDateTime.now();

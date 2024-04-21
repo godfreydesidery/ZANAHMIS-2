@@ -41,7 +41,7 @@ public class LabTestTypeRangeServiceImpl implements LabTestTypeRangeService{
 		
 		labTestTypeRange.setName(labTestTypeRange.getName());
 		
-		labTestTypeRange.setCreatedby(userService.getUser(request).getId());
+		labTestTypeRange.setCreatedBy(userService.getUser(request).getId());
 		labTestTypeRange.setCreatedOn(dayService.getDay().getId());
 		labTestTypeRange.setCreatedAt(dayService.getTimeStamp());
 		

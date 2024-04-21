@@ -31,10 +31,14 @@ const API_URL = environment.apiUrl;
   ],
 })
 export class NurseOutsiderListComponent {
+  
+
+  nurseId : any = null
+
   nonConsultations : INonConsultation[] = []
 
   filterRecords : string = ''
-  
+
   constructor(private auth : AuthService,
     private http :HttpClient,
     private modalService: NgbModal,
@@ -43,16 +47,22 @@ export class NurseOutsiderListComponent {
     private msgBox : MsgBoxService) { }
 
 
-    ngOnInit(): void {
-      this.loadInpatientList()
+    async ngOnInit(): Promise<void> {
+      await this.loadNurse()
+      if(this.nurseId != null){
+        this.loadOutsiderList()
+      }else{
+        this.msgBox.showErrorMessage3('User not found in nurse register')
+      }
+    }
+
+    async postNonConsultation(id : any){   
+      localStorage.setItem('non-consultation-id', id)
+      localStorage.setItem('nurse-id', this.nurseId)
+      this.router.navigate(['nurse-outsider-chart'])    
     }
   
-    attend(id : any){
-      localStorage.setItem('radiology-patient-id', id)
-      this.router.navigate(['radiology'])
-    }
-  
-    async loadInpatientList(){   
+    async loadOutsiderList(){   
       this.nonConsultations = [] 
       let options = {
         headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -74,6 +84,29 @@ export class NurseOutsiderListComponent {
         }
       )
     } 
+
+    async loadNurse(){    
+      var username = localStorage.getItem('username')!
+      let options = {
+        headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+      }
+      this.spinner.show()
+      await this.http.get<any>(API_URL+'/nurses/load_nurse_by_username?username='+username, options)
+      .pipe(finalize(() => this.spinner.hide()))
+      .toPromise()
+      .then(
+        data => {
+          this.nurseId = data
+        }
+      )
+      .catch(
+        error => {
+          this.msgBox.showErrorMessage(error, 'Could not load nurse')
+        }
+      )
+    }
+
+    
     
     public grant(privilege : string[]) : boolean{
       /**Allow user to perform an action if the user has that priviledge */

@@ -83,7 +83,7 @@ public class RegistrationPlanResource {
 		
 		
 		if(regPlan.getId() == null) {
-			regPlan.setCreatedby(userService.getUser(request).getId());
+			regPlan.setCreatedBy(userService.getUser(request).getId());
 			regPlan.setCreatedOn(dayService.getDay().getId());
 			regPlan.setCreatedAt(dayService.getTimeStamp());
 			

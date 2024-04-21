@@ -44,7 +44,7 @@ public class WardTypeServiceImpl implements WardTypeService {
 		wardType.setName(wardType.getName());
 		
 		if(wardType.getId() == null) {
-			wardType.setCreatedby(userService.getUser(request).getId());
+			wardType.setCreatedBy(userService.getUser(request).getId());
 			wardType.setCreatedOn(dayService.getDay().getId());
 			wardType.setCreatedAt(dayService.getTimeStamp());
 			

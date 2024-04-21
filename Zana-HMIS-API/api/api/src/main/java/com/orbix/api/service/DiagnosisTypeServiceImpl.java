@@ -41,7 +41,7 @@ public class DiagnosisTypeServiceImpl implements DiagnosisTypeService{
 		diagnosisType.setName(diagnosisType.getName());
 		
 		if(diagnosisType.getId() == null) {
-			diagnosisType.setCreatedby(userService.getUser(request).getId());
+			diagnosisType.setCreatedBy(userService.getUser(request).getId());
 			diagnosisType.setCreatedOn(dayService.getDay().getId());
 			diagnosisType.setCreatedAt(dayService.getTimeStamp());
 			

@@ -593,7 +593,7 @@ public class PatientResource {
 			patientCreditNote.setStatus("PENDING");
 			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
 			
-			patientCreditNote.setCreatedby(userService.getUserId(request));
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
 			patientCreditNote.setCreatedOn(dayService.getDayId());
 			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
 			
@@ -824,6 +824,19 @@ public class PatientResource {
 		}
 	}
 	
+	@GetMapping("/patients/load_non_consultation")    // to do later
+	public ResponseEntity<NonConsultation> loadNonConsultation(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		Optional<NonConsultation> nc = nonConsultationRepository.findById(id);
+		if(nc.isPresent()) {
+			URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/load_non_consultation").toUriString());
+			return ResponseEntity.created(uri).body(nc.get());
+		}else {
+			throw new NotFoundException("Non Consultation not found");
+		}
+	}
+	
 	@GetMapping("/patients/cancel_consultation_transfer")    // to do later
 	public ResponseEntity<Consultation> cancelConsultationTransfer(
 			@RequestParam(name = "id") Long id,
@@ -881,7 +894,7 @@ public class PatientResource {
 				ClinicalNote note = new ClinicalNote();
 				note.setConsultation(c.get());
 				
-				note.setCreatedby(userService.getUser(request).getId());
+				note.setCreatedBy(userService.getUser(request).getId());
 				note.setCreatedOn(dayService.getDay().getId());
 				note.setCreatedAt(dayService.getTimeStamp());
 				
@@ -911,7 +924,7 @@ public class PatientResource {
 				GeneralExamination exam = new GeneralExamination();
 				exam.setConsultation(c.get());
 				
-				exam.setCreatedby(userService.getUser(request).getId());
+				exam.setCreatedBy(userService.getUser(request).getId());
 				exam.setCreatedOn(dayService.getDay().getId());
 				exam.setCreatedAt(dayService.getTimeStamp());
 				
@@ -948,7 +961,7 @@ public class PatientResource {
 				note = new ClinicalNote();
 				note.setAdmission(a.get());
 				
-				note.setCreatedby(userService.getUser(request).getId());
+				note.setCreatedBy(userService.getUser(request).getId());
 				note.setCreatedOn(dayService.getDay().getId());
 				note.setCreatedAt(dayService.getTimeStamp());
 				
@@ -957,6 +970,36 @@ public class PatientResource {
 			}
 		}else {
 			throw new NotFoundException("Admission not found");
+		}
+			
+	}
+	
+	@GetMapping("/patients/load_general_examination_by_non_consultation_id")
+	public ResponseEntity<GeneralExamination> loadGeneralExaminationByNonConsultationId(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		Optional<NonConsultation> nc = nonConsultationRepository.findById(id);		
+		if(nc.isPresent()) {
+			Optional<GeneralExamination> n = generalExaminationRepository.findByNonConsultation(nc.get());
+			if(n.isPresent()) {
+				URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/load_general_examination_by_non_consultation_id").toUriString());
+				return ResponseEntity.created(uri).body(n.get());
+			}else {
+				/**
+				 * Create one, and return it
+				 */
+				GeneralExamination exam = new GeneralExamination();
+				exam.setNonConsultation(nc.get());
+				
+				exam.setCreatedBy(userService.getUser(request).getId());
+				exam.setCreatedOn(dayService.getDay().getId());
+				exam.setCreatedAt(dayService.getTimeStamp());
+				
+				URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/load_general_examination_by_non_consultation_id").toUriString());
+				return ResponseEntity.created(uri).body(generalExaminationRepository.save(exam));
+			}
+		}else {
+			throw new NotFoundException("Non Consultation not found");
 		}
 			
 	}
@@ -985,7 +1028,7 @@ public class PatientResource {
 				exam = new GeneralExamination();
 				exam.setAdmission(a.get());
 				
-				exam.setCreatedby(userService.getUser(request).getId());
+				exam.setCreatedBy(userService.getUser(request).getId());
 				exam.setCreatedOn(dayService.getDay().getId());
 				exam.setCreatedAt(dayService.getTimeStamp());
 				
@@ -1004,17 +1047,29 @@ public class PatientResource {
 			HttpServletRequest request){
 		
 		Optional<Consultation> c = consultationRepository.findById(cg.getClinicalNote().getConsultation().getId());
+		Optional<NonConsultation> nc = nonConsultationRepository.findById(cg.getClinicalNote().getNonConsultation().getId());
 		Optional<Admission> a = admissionRepository.findById(cg.getClinicalNote().getAdmission().getId());
 		
 		Consultation consultation = null;
+		NonConsultation nonConsultation = null;
 		Admission admission = null;
 		
+		if(c.isPresent() && nc.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		
+		if(c.isPresent() && nc.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		if(nc.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
 		if(c.isPresent() && a.isPresent()) {
-			throw new InvalidOperationException("Patient can not have admission and consultation simultaneously");
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
 		}
 		ClinicalNote note = null;
 		GeneralExamination exam = null;
-		if(c.isPresent() && a.isEmpty()) {
+		if(c.isPresent() && nc.isEmpty() && a.isEmpty()) {
 			List<ClinicalNote> notes = clinicalNoteRepository.findAllByConsultation(c.get());
 			for(ClinicalNote n : notes) {
 				note = n;
@@ -1025,7 +1080,7 @@ public class PatientResource {
 			}
 			consultation = c.get();
 		}
-		if(c.isEmpty() && a.isPresent()) {
+		if(c.isEmpty() && a.isPresent() && nc.isEmpty()) {
 			List<ClinicalNote> notes = clinicalNoteRepository.findAllByAdmission(a.get());
 			for(ClinicalNote n : notes) {
 				note = n;
@@ -1037,7 +1092,19 @@ public class PatientResource {
 			admission = a.get();
 		}
 		
-		if(c.isEmpty() && a.isEmpty()) {
+		if(c.isEmpty() && nc.isPresent() && a.isEmpty()) {
+			List<ClinicalNote> notes = clinicalNoteRepository.findAllByNonConsultation(nc.get());
+			for(ClinicalNote n : notes) {
+				note = n;
+			}
+			List<GeneralExamination> exams = generalExaminationRepository.findAllByNonConsultation(nc.get());
+			for(GeneralExamination e : exams) {
+				exam = e;
+			}
+			nonConsultation = nc.get();
+		}
+		
+		if(c.isEmpty() && a.isEmpty() && nc.isEmpty()) {
 			throw new NotFoundException("No Admission or Consultation found");
 		}
 		//Optional<ClinicalNote> cn = clinicalNoteRepository.findByConsultation(c.get());
@@ -1064,9 +1131,10 @@ public class PatientResource {
 			note.setReviewOfOtherSystems(cg.getClinicalNote().getReviewOfOtherSystems());
 			note.setManagementPlan(cg.getClinicalNote().getManagementPlan());
 			note.setConsultation(consultation);
+			note.setNonConsultation(nonConsultation);
 			note.setAdmission(admission);
 			
-			note.setCreatedby(userService.getUser(request).getId());
+			note.setCreatedBy(userService.getUser(request).getId());
 			note.setCreatedOn(dayService.getDay().getId());
 			note.setCreatedAt(dayService.getTimeStamp());
 			
@@ -1107,9 +1175,10 @@ public class PatientResource {
 			exam.setWeight(cg.getGeneralExamination().getWeight());
 			exam.setDescription(cg.getGeneralExamination().getDescription());
 			exam.setConsultation(consultation);
+			exam.setNonConsultation(nonConsultation);
 			exam.setAdmission(admission);
 			
-			exam.setCreatedby(userService.getUser(request).getId());
+			exam.setCreatedBy(userService.getUser(request).getId());
 			exam.setCreatedOn(dayService.getDay().getId());
 			exam.setCreatedAt(dayService.getTimeStamp());
 			
@@ -1143,7 +1212,7 @@ public class PatientResource {
 		ClinicalNote note = new ClinicalNote();	
 		note.setAdmission(a.get());
 		
-		note.setCreatedby(userService.getUser(request).getId());
+		note.setCreatedBy(userService.getUser(request).getId());
 		note.setCreatedOn(dayService.getDay().getId());
 		note.setCreatedAt(dayService.getTimeStamp());
 		note = clinicalNoteRepository.saveAndFlush(note);
@@ -1151,7 +1220,7 @@ public class PatientResource {
 		GeneralExamination exam = new GeneralExamination();
 		exam.setAdmission(a.get());
 		
-		exam.setCreatedby(userService.getUser(request).getId());
+		exam.setCreatedBy(userService.getUser(request).getId());
 		exam.setCreatedOn(dayService.getDay().getId());
 		exam.setCreatedAt(dayService.getTimeStamp());
 		exam = generalExaminationRepository.saveAndFlush(exam);
@@ -1186,7 +1255,7 @@ public class PatientResource {
 		diagnosis.setPatient(c.get().getPatient());
 		
 		if(diagnosis.getId() == null) {
-			diagnosis.setCreatedby(userService.getUser(request).getId());
+			diagnosis.setCreatedBy(userService.getUser(request).getId());
 			diagnosis.setCreatedOn(dayService.getDay().getId());
 			diagnosis.setCreatedAt(dayService.getTimeStamp());
 		}
@@ -1215,7 +1284,7 @@ public class PatientResource {
 		diagnosis.setPatient(a.get().getPatient());
 		
 		if(diagnosis.getId() == null) {
-			diagnosis.setCreatedby(userService.getUser(request).getId());
+			diagnosis.setCreatedBy(userService.getUser(request).getId());
 			diagnosis.setCreatedOn(dayService.getDay().getId());
 			diagnosis.setCreatedAt(dayService.getTimeStamp());
 		}
@@ -1246,7 +1315,7 @@ public class PatientResource {
 			model.setDiagnosisType(l.getDiagnosisType());
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}			
@@ -1274,7 +1343,7 @@ public class PatientResource {
 			model.setDiagnosisType(l.getDiagnosisType());
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}			
@@ -1304,7 +1373,7 @@ public class PatientResource {
 		diagnosis.setPatient(c.get().getPatient());
 		
 		if(diagnosis.getId() == null) {
-			diagnosis.setCreatedby(userService.getUser(request).getId());
+			diagnosis.setCreatedBy(userService.getUser(request).getId());
 			diagnosis.setCreatedOn(dayService.getDay().getId());
 			diagnosis.setCreatedAt(dayService.getTimeStamp());
 		}
@@ -1332,7 +1401,7 @@ public class PatientResource {
 		diagnosis.setPatient(a.get().getPatient());
 		
 		if(diagnosis.getId() == null) {
-			diagnosis.setCreatedby(userService.getUser(request).getId());
+			diagnosis.setCreatedBy(userService.getUser(request).getId());
 			diagnosis.setCreatedOn(dayService.getDay().getId());
 			diagnosis.setCreatedAt(dayService.getTimeStamp());
 		}
@@ -1362,7 +1431,7 @@ public class PatientResource {
 			model.setDiagnosisType(l.getDiagnosisType());
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}			
@@ -1390,7 +1459,7 @@ public class PatientResource {
 			model.setDiagnosisType(l.getDiagnosisType());
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}			
@@ -1488,7 +1557,7 @@ public class PatientResource {
 		
 		
 		if(radiology.getId() == null) {
-			radiology.setCreatedby(userService.getUser(request).getId());
+			radiology.setCreatedBy(userService.getUser(request).getId());
 			radiology.setCreatedOn(dayService.getDay().getId());
 			radiology.setCreatedAt(dayService.getTimeStamp());
 			
@@ -1563,7 +1632,7 @@ public class PatientResource {
 		}
 		
 		if(procedure.getId() == null) {
-			procedure.setCreatedby(userService.getUser(request).getId());
+			procedure.setCreatedBy(userService.getUser(request).getId());
 			procedure.setCreatedOn(dayService.getDay().getId());
 			procedure.setCreatedAt(dayService.getTimeStamp());
 			
@@ -1605,7 +1674,7 @@ public class PatientResource {
 		}
 		
 		if(prescription.getId() == null) {
-			prescription.setCreatedby(userService.getUser(request).getId());
+			prescription.setCreatedBy(userService.getUser(request).getId());
 			prescription.setCreatedOn(dayService.getDay().getId());
 			prescription.setCreatedAt(dayService.getTimeStamp());
 			
@@ -1881,7 +1950,7 @@ public class PatientResource {
 			
 			
 			if(r.getCreatedAt() != null) {
-				model.setCreated(r.getCreatedAt().toString()+" | "+userService.getUserById(r.getCreatedby()).getNickname());
+				model.setCreated(r.getCreatedAt().toString()+" | "+userService.getUserById(r.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -1952,7 +2021,7 @@ public class PatientResource {
 			model.setTheatre(l.getTheatre());
 
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -2026,7 +2095,7 @@ public class PatientResource {
 			model.setStatus(l.getStatus());
 
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -2100,7 +2169,7 @@ public class PatientResource {
 			model.setNurse(l.getNurse());
 			model.setQty(l.getQty());			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2142,7 +2211,7 @@ public class PatientResource {
 			model.setQty(l.getQty());	
 			model.setStatus(l.getStatus());
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2187,7 +2256,7 @@ public class PatientResource {
 			model.setRespiratoryRate(l.getRespiratoryRate());
 			model.setSaturationOxygen(l.getSaturationOxygen());
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2229,7 +2298,7 @@ public class PatientResource {
 			model.setOutput(l.getOutput());
 			model.setRemark(l.getRemark());			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2275,7 +2344,7 @@ public class PatientResource {
 			model.setUrineOutput(l.getUrineOutput());
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2313,7 +2382,7 @@ public class PatientResource {
 			model.setNurse(l.getNurse());
 			model.setNote(l.getNote());			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2354,7 +2423,7 @@ public class PatientResource {
 			model.setImplementation(l.getImplementation());
 			model.setEvaluation(l.getEvaluation());
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2384,7 +2453,7 @@ public class PatientResource {
 			model.setOutput(l.getOutput());
 			model.setRemark(l.getRemark());
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}		
@@ -2415,7 +2484,7 @@ public class PatientResource {
 			patientCreditNote.setStatus("PENDING");
 			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
 			
-			patientCreditNote.setCreatedby(userService.getUserId(request));
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
 			patientCreditNote.setCreatedOn(dayService.getDayId());
 			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
 			
@@ -2474,7 +2543,7 @@ public class PatientResource {
 			patientCreditNote.setStatus("PENDING");
 			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
 			
-			patientCreditNote.setCreatedby(userService.getUserId(request));
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
 			patientCreditNote.setCreatedOn(dayService.getDayId());
 			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
 			
@@ -2538,7 +2607,7 @@ public class PatientResource {
 			patientCreditNote.setStatus("PENDING");
 			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
 			
-			patientCreditNote.setCreatedby(userService.getUserId(request));
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
 			patientCreditNote.setCreatedOn(dayService.getDayId());
 			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
 			
@@ -2886,9 +2955,13 @@ public class PatientResource {
 		if(r.isEmpty()) {
 			throw new NotFoundException("Procedure not found");
 		}
+		if(procedure.getNote().equals("")){
+			throw new InvalidEntryException("Could not add empty procedure note");
+		}
 		if(r.get().getPatientBill().getStatus().equals("PAID") || r.get().getPatientBill().getStatus().equals("COVERED") || r.get().getPatientBill().getStatus().equals("VERIFIED")) {
 			r.get().setNote(procedure.getNote());
 			r.get().setStatus("VERIFIED");
+			
 			procedureRepository.save(r.get());
 		}else {
 			throw new InvalidOperationException("Could not add procedure note. Payment not verified");
@@ -2917,7 +2990,7 @@ public class PatientResource {
 			patientCreditNote.setStatus("PENDING");
 			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
 			
-			patientCreditNote.setCreatedby(userService.getUserId(request));
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
 			patientCreditNote.setCreatedOn(dayService.getDayId());
 			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
 			
@@ -2984,7 +3057,7 @@ public class PatientResource {
 			patientCreditNote.setStatus("PENDING");
 			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
 			
-			patientCreditNote.setCreatedby(userService.getUserId(request));
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
 			patientCreditNote.setCreatedOn(dayService.getDayId());
 			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
 			
@@ -3051,7 +3124,7 @@ public class PatientResource {
 			patientCreditNote.setStatus("PENDING");
 			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
 			
-			patientCreditNote.setCreatedby(userService.getUserId(request));
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
 			patientCreditNote.setCreatedOn(dayService.getDayId());
 			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
 			
@@ -3558,7 +3631,7 @@ public class PatientResource {
 		
 		visit.setSequence("SUBSEQUENT");
 		
-		visit.setCreatedby(userService.getUser(request).getId());
+		visit.setCreatedBy(userService.getUser(request).getId());
 		visit.setCreatedOn(dayService.getDay().getId());
 		visit.setCreatedAt(dayService.getTimeStamp());
 		
@@ -3567,7 +3640,7 @@ public class PatientResource {
 		if(nc.isEmpty()) {
 			visit = visitRepository.save(visit);
 			
-			nonConsultation.setCreatedby(userService.getUserId(request));
+			nonConsultation.setCreatedBy(userService.getUserId(request));
 			nonConsultation.setCreatedOn(dayService.getDayId());
 			nonConsultation.setCreatedAt(dayService.getTimeStamp());
 			
@@ -3628,7 +3701,7 @@ public class PatientResource {
 				
 				
 				if(radiology.getCreatedAt() != null) {
-					radio.setCreated(radiology.getCreatedAt().toString()+" | "+userService.getUserById(radiology.getCreatedby()).getNickname());
+					radio.setCreated(radiology.getCreatedAt().toString()+" | "+userService.getUserById(radiology.getCreatedBy()).getNickname());
 				}else {
 					radio.setCreated("");
 				}
@@ -3905,7 +3978,7 @@ public class PatientResource {
 				m.setStock(pharmacyMedicine.getStock());
 				
 				if(pres.getCreatedAt() != null) {
-					m.setCreated(pres.getCreatedAt().toString()+" | "+userService.getUserById(pres.getCreatedby()).getNickname());
+					m.setCreated(pres.getCreatedAt().toString()+" | "+userService.getUserById(pres.getCreatedBy()).getNickname());
 				}else {
 					m.setCreated("");
 				}
@@ -3969,7 +4042,7 @@ public class PatientResource {
 				
 				
 				if(procedure.getCreatedAt() != null) {
-					pro.setCreated(procedure.getCreatedAt().toString()+" | "+userService.getUserById(procedure.getCreatedby()).getNickname());
+					pro.setCreated(procedure.getCreatedAt().toString()+" | "+userService.getUserById(procedure.getCreatedBy()).getNickname());
 				}else {
 					pro.setCreated("");
 				}
@@ -4017,9 +4090,10 @@ public class PatientResource {
 			throw new NotFoundException("Patient not found in database");
 		}
 		List<Consultation> cons = consultationRepository.findAllByPatient(p.get());
+		List<NonConsultation> nonCons = nonConsultationRepository.findAllByPatient(p.get());
 		List<Admission> adms = admissionRepository.findAllByPatient(p.get());
-		
-		List<ClinicalNote> clinicalNotes = clinicalNoteRepository.findAllByConsultationInOrAdmissionIn(cons, adms);
+				
+		List<ClinicalNote> clinicalNotes = clinicalNoteRepository.findAllByConsultationInOrNonConsultationInOrAdmissionIn(cons, nonCons, adms);
 		
 		HashSet<ClinicalNote> h = new HashSet<ClinicalNote>(clinicalNotes);
 		
@@ -4040,7 +4114,7 @@ public class PatientResource {
 			model.setConsultation(null);
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -4062,9 +4136,10 @@ public class PatientResource {
 			throw new NotFoundException("Patient not found in database");
 		}
 		List<Consultation> cons = consultationRepository.findAllByPatient(p.get());
+		List<NonConsultation> nonCons = nonConsultationRepository.findAllByPatient(p.get());
 		List<Admission> adms = admissionRepository.findAllByPatient(p.get());
 		
-		List<GeneralExamination> generalExaminations = generalExaminationRepository.findAllByConsultationInOrAdmissionIn(cons, adms);
+		List<GeneralExamination> generalExaminations = generalExaminationRepository.findAllByConsultationInOrNonConsultationInOrAdmissionIn(cons, nonCons, adms);
 		
 		HashSet<GeneralExamination> h = new HashSet<GeneralExamination>(generalExaminations);
 		
@@ -4088,7 +4163,7 @@ public class PatientResource {
 			model.setConsultation(null);
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -4139,7 +4214,7 @@ public class PatientResource {
 			model.setDiagnosisType(l.getDiagnosisType());
 			
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}			
@@ -4274,7 +4349,7 @@ public class PatientResource {
 			
 			
 			if(r.getCreatedAt() != null) {
-				model.setCreated(r.getCreatedAt().toString()+" | "+userService.getUserById(r.getCreatedby()).getNickname());
+				model.setCreated(r.getCreatedAt().toString()+" | "+userService.getUserById(r.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -4335,7 +4410,7 @@ public class PatientResource {
 			model.setTheatre(l.getTheatre());
 
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -4401,7 +4476,7 @@ public class PatientResource {
 			model.setStatus(l.getStatus());
 
 			if(l.getCreatedAt() != null) {
-				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedby()).getNickname());
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
 			}else {
 				model.setCreated("");
 			}
@@ -4469,7 +4544,7 @@ public class PatientResource {
 		model.setStatus(p.get().getStatus());
 
 		if(p.get().getCreatedAt() != null) {
-			model.setCreated(p.get().getCreatedAt().toString()+" | "+userService.getUserById(p.get().getCreatedby()).getNickname());
+			model.setCreated(p.get().getCreatedAt().toString()+" | "+userService.getUserById(p.get().getCreatedBy()).getNickname());
 		}else {
 			model.setCreated("");
 		}

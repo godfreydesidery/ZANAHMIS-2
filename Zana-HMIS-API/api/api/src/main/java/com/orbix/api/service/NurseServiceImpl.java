@@ -53,7 +53,7 @@ public class NurseServiceImpl implements NurseService {
 		nurse.setUser(u.get());
 
 		if(nurse.getId() == null) {
-			nurse.setCreatedby(userService.getUser(request).getId());
+			nurse.setCreatedBy(userService.getUser(request).getId());
 			nurse.setCreatedOn(dayService.getDay().getId());
 			nurse.setCreatedAt(dayService.getTimeStamp());
 			

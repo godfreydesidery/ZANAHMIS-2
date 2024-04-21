@@ -62,7 +62,7 @@ public class WardServiceImpl implements WardService {
 		}
 		
 		if(ward.getId() == null) {
-			ward.setCreatedby(userService.getUser(request).getId());
+			ward.setCreatedBy(userService.getUser(request).getId());
 			ward.setCreatedOn(dayService.getDay().getId());
 			ward.setCreatedAt(dayService.getTimeStamp());
 			
@@ -142,7 +142,7 @@ public class WardServiceImpl implements WardService {
 		wardBed.setActive(true);
 		wardBed.setStatus("EMPTY");
 		
-		wardBed.setCreatedby(userService.getUser(request).getId());
+		wardBed.setCreatedBy(userService.getUser(request).getId());
 		wardBed.setCreatedOn(dayService.getDay().getId());
 		wardBed.setCreatedAt(dayService.getTimeStamp());
 		

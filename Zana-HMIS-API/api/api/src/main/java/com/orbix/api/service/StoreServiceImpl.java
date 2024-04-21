@@ -56,7 +56,7 @@ public class StoreServiceImpl implements StoreService {
 		store.setName(store.getName());
 		
 		if(store.getId() == null) {
-			store.setCreatedby(userService.getUser(request).getId());
+			store.setCreatedBy(userService.getUser(request).getId());
 			store.setCreatedOn(dayService.getDay().getId());
 			store.setCreatedAt(dayService.getTimeStamp());
 			

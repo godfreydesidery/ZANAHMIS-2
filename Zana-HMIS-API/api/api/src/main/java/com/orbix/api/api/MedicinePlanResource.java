@@ -96,7 +96,7 @@ public class MedicinePlanResource {
 		}
 		
 		if(conPlan.getId() == null) {
-			conPlan.setCreatedby(userService.getUser(request).getId());
+			conPlan.setCreatedBy(userService.getUser(request).getId());
 			conPlan.setCreatedOn(dayService.getDay().getId());
 			conPlan.setCreatedAt(dayService.getTimeStamp());
 			

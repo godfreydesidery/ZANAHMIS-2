@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.orbix.api.domain.Admission;
 import com.orbix.api.domain.ClinicalNote;
 import com.orbix.api.domain.Consultation;
+import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Patient;
 
 /**
@@ -49,5 +50,10 @@ public interface ClinicalNoteRepository extends JpaRepository<ClinicalNote, Long
 	 * @return
 	 */
 	List<ClinicalNote> findAllByConsultationInOrAdmissionIn(List<Consultation> cons, List<Admission> adms);
+
+	List<ClinicalNote> findAllByNonConsultation(NonConsultation nonConsultation);
+
+	List<ClinicalNote> findAllByConsultationInOrNonConsultationInOrAdmissionIn(List<Consultation> cons,
+			List<NonConsultation> nonCons, List<Admission> adms);
 
 }

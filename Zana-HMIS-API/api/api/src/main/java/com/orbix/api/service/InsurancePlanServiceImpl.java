@@ -42,7 +42,7 @@ public class InsurancePlanServiceImpl implements InsurancePlanService{
 		
 		
 		if(insurancePlan.getId() == null) {
-			insurancePlan.setCreatedby(userService.getUser(request).getId());
+			insurancePlan.setCreatedBy(userService.getUser(request).getId());
 			insurancePlan.setCreatedOn(dayService.getDay().getId());
 			insurancePlan.setCreatedAt(dayService.getTimeStamp());
 			

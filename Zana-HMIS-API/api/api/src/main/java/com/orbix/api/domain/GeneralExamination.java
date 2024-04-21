@@ -57,13 +57,18 @@ public class GeneralExamination {
     @OnDelete(action = OnDeleteAction.NO_ACTION)	
     private Consultation consultation;
 	
+	@OneToOne(targetEntity = NonConsultation.class, fetch = FetchType.EAGER,  optional = true)
+    @JoinColumn(name = "non_consultation_id", nullable = true , updatable = true)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)	
+    private NonConsultation nonConsultation;
+	
 	@ManyToOne(targetEntity = Admission.class, fetch = FetchType.EAGER,  optional = true)
     @JoinColumn(name = "admission_id", nullable = true , updatable = true)
     @OnDelete(action = OnDeleteAction.NO_ACTION)	
     private Admission admission;
 	
 	@Column(name = "created_by_user_id", nullable = false , updatable = false)
-    private Long createdby;
+    private Long createdBy;
 	@Column(name = "created_on_day_id", nullable = false , updatable = false)
     private Long createdOn;
 	private LocalDateTime createdAt = LocalDateTime.now();
