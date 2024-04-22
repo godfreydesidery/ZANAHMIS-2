@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <div class="header-title">
-        <h1>Dressing</h1>
+        <h1>Minor Procedures</h1>
     </div>
 </section>
 <!-- Main content -->
@@ -17,7 +17,7 @@
                     <div class="col-sm-12" style="height: 100%; overflow: scroll;">
                         <div class="row">
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" [(ngModel)]="procedureTypeName" (ngModelChange)="loadProcedureTypesLike($event)">
+                                <input type="text" class="form-control" [(ngModel)]="procedureTypeName" (ngModelChange)="loadProcedureTypesLike($event)" placeholder="Select Procedure...">
                                 <div class="row"  *ngIf="procedureTypes.length > 0">
                                     <div class="col-sm-12">
                                         <select class="form-control" multiple="multiple">
@@ -27,7 +27,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-1">
-                                <button (click)="addDressing()">Add</button>
+                                <button class="btn btn-success" (click)="addDressing()">Add</button>
                             </div>
                             <div class="col-sm-4"></div>
                             <div class="col-sm-4">
@@ -38,9 +38,8 @@
                         <table class="table table-bordered table-small">
                             <thead>
                                 <tr style="font-weight: bold;">
-                                    <td>Dressing Procedure Type</td>
+                                    <td>Procedure Type</td>
                                     <td>Action</td>
-
                                 </tr>
                             </thead>
 

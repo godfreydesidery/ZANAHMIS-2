@@ -29,7 +29,11 @@
 
                         <div class="row">
                             <div class="col-sm-6">
-                                <label>Patient Vitals</label>
+                                <div class="row">
+                                    <div class="col-sm-12" style="text-align: center;">
+                                        <h4 class="text-primary"><b>Patient Vitals</b></h4>
+                                    </div>
+                                </div>
                                 <div class="jumbotron jumbotron-fluid">                               
                                     <div class="container">
                                         <div class="row">
@@ -62,7 +66,11 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <label>Procedure Details</label>
+                                <div class="row">
+                                    <div class="col-sm-12" style="text-align: center;">
+                                        <h4 class="text-primary"><b>Procedure Details</b></h4>
+                                    </div>
+                                </div>
                                 <div class="jumbotron jumbotron-fluid">
                                     <div class="row">
                                         <div class="col-sm-12">
@@ -88,7 +96,7 @@
                                                             </td>
                                                             <td>{{procedure.status}}</td>
                                                             <td>
-                                                                <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note === null" data-toggle="modal" data-target="#add-procedure-note-to-procedure-modal"><i class="fa fa-file"></i></a>
+                                                                <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note === null" data-toggle="modal" data-target="#add-procedure-note-to-procedure-modal"><i class="fa fa-file"></i> Add Note</a>
                                                                 <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note != null" data-toggle="modal" data-target="#view-procedure-note-to-procedure-modal"><i class="fa fa-eye"></i> View</a>
                                                             </td>
                                                         </tr>
