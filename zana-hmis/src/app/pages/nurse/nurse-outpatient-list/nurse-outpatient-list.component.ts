@@ -31,6 +31,9 @@ const API_URL = environment.apiUrl;
   ],
 })
 export class NurseOutpatientListComponent {
+
+  nurseId : any = null
+
   consultations : IConsultation[] = []
 
   filterRecords : string = ''
@@ -44,15 +47,16 @@ export class NurseOutpatientListComponent {
 
 
     ngOnInit(): void {
-      this.loadInpatientList()
+      this.loadOutpatientList()
     }
   
-    attend(id : any){
-      localStorage.setItem('radiology-patient-id', id)
-      this.router.navigate(['radiology'])
+    async postConsultation(id : any){     
+      localStorage.setItem('consultation-id', id)
+      localStorage.setItem('nurse-id', this.nurseId)
+      this.router.navigate(['nurse-outpatient-chart'])    
     }
   
-    async loadInpatientList(){   
+    async loadOutpatientList(){
       this.consultations = [] 
       let options = {
         headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)

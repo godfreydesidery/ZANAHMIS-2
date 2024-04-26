@@ -1,1 +1,69 @@
-<p>nurse-outpatient-chart works!</p>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Triage and Vital Signs - Outpatient</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <div class="btn-group"> 
+                        <a class="btn btn-primary" routerLink="/nurse-patient-history-menu" (click)="setGlobalPatientId()" style="margin: 1px;"> <i class="fa fa-history"></i>Patient History</a> 
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12 alert alert-primary" role="alert">
+                            <h3 class="text-primary">Designated Clinic: <b>{{consultation?.clinic?.name}}</b>, Name: <b>{{consultation?.patient?.firstName}} {{consultation?.patient?.middleName}} {{consultation?.patient?.lastName}}</b>, File No: <b>{{consultation?.patient?.no}}</b>, <b>Date of Birth: {{consultation.patient.dateOfBirth | date}} Age: {{consultation.patient.dateOfBirth | age}}</b>, {{consultation?.patient?.gender}}, {{consultation.paymentType}} {{consultation?.insurancePlan?.name}}</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Patient Vitals - ({{vitalStatus}})</label>
+                            <div class="jumbotron jumbotron-fluid">                               
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalPressure" placeholder="Pressure(mmHg)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalTemperature" placeholder="Temparature(c)"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalPulseRate" placeholder="Pulse Rate(b/Min)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalWeight" placeholder="Weight(kg)"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalHeight" placeholder="Height(cm)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalBodyMassIndex" placeholder="Body Mass Index(kg/m)"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalBodySurfaceArea" placeholder="Body Surface Area(cmkg)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalBodyMassIndexComment" placeholder="Body Mass Index Comment"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalSaturationOxygen" placeholder="Saturation Oxygen(%)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalRespiratoryRate" placeholder="Respiratory Rate(cycles/Min)"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12" style="margin-bottom: 3mm;"><textarea class="form-control" [(ngModel)]="vitalDescription" placeholder="Description"></textarea></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <button class="btn btn-primary form-control" *ngIf="vitalStatus === 'PENDING' || vitalStatus === 'EMPTY'" (click)="saveVitals()">Save/Update Vitals</button>
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <button class="btn btn-primary form-control" *ngIf="vitalStatus === 'PENDING'" (click)="submitVitals()">Submit to Doctor</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->
+

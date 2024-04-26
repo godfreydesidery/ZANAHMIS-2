@@ -1,0 +1,87 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient History - Radiology</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-outpatient-chart"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-clinical-note-history">Clinical Notes</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-general-examination-history">General Examination</a>
+                    <!--<a class="btn btn-primary btn-outline" routerLink="/working-diagnosis-history">Working Diagnosis</a>-->
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-final-diagnosis-history">Final Diagnosis</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-lab-test-history">Lab Tests</a>
+                    <a class="btn btn-primary" routerLink="/nurse-radiology-history">Radiology Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-procedure-history">Procedures</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-prescription-history">Medications</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table-striped table-small table-bordered">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>Ordered At/By</td>
+                                        <td>Radiology Test</td>
+                                        <td>Result</td>
+                                        <td>Attachments</td>
+                                        <td>Report</td>
+                                        <td>Description</td>
+                                        <td>Diagnosis</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let history of radiologies | searchFilter : filterRecords">
+                                        <td>{{history?.created}}</td>
+                                        <td>{{history?.radiologyType?.name}}</td>
+                                        <td>{{history?.result}}</td>
+                                        <td>
+                                            <table>
+                                                <tr *ngFor="let attachment of history.radiologyAttachments">
+                                                    <td>
+                                                        <a style="cursor: pointer;" (click)="downloadRadiologyFile(attachment.fileName)"  data-toggle="modal" data-target="#view-attachment-modal"><button class="btn btn-success btn-outline">View</button></a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>{{history?.report}}</td>
+                                        <td>{{history?.description}}</td>
+                                        <td>{{history?.diagnosisType?.name}}</td>
+                                        <td>{{history?.status}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->
+
+
+<!-- Modal success -->
+<div class="modal fade modal-success" id="view-attachment-modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg" role="document" style="width: 75%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title"></h2>
+            </div>
+            <div class="modal-body">
+                <img [src]="attachmentUrl" *ngIf="fileExtension != 'pdf'" style="height: 100%; width: 100%;">                
+                <pdf-viewer [src]="attachmentUrl" *ngIf="fileExtension === 'pdf'" [render-text]="true" [fit-to-page]="true" [autoresize]="true" [zoom-scale]="'page-width'" [original-size]="true" style="height: 100%; width: 100%;"></pdf-viewer>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

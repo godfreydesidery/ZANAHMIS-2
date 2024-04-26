@@ -62,6 +62,7 @@ import com.orbix.api.domain.PatientNursingProgressNote;
 import com.orbix.api.domain.PatientObservationChart;
 import com.orbix.api.domain.PatientPaymentDetail;
 import com.orbix.api.domain.PatientPrescriptionChart;
+import com.orbix.api.domain.PatientVital;
 import com.orbix.api.domain.Pharmacy;
 import com.orbix.api.domain.PharmacyMedicine;
 import com.orbix.api.domain.PharmacyMedicineBatch;
@@ -148,6 +149,7 @@ import com.orbix.api.repositories.PatientPaymentDetailRepository;
 import com.orbix.api.repositories.PatientPaymentRepository;
 import com.orbix.api.repositories.PatientPrescriptionChartRepository;
 import com.orbix.api.repositories.PatientRepository;
+import com.orbix.api.repositories.PatientVitalRepository;
 import com.orbix.api.repositories.PharmacyMedicineBatchRepository;
 import com.orbix.api.repositories.PharmacyMedicineRepository;
 import com.orbix.api.repositories.PharmacyRepository;
@@ -240,6 +242,8 @@ public class PatientResource {
 	
 	private final LabTestAttachmentRepository labTestAttachmentRepository;
 	private final RadiologyAttachmentRepository radiologyAttachmentRepository;
+	
+	private final PatientVitalRepository patientVitalRepository;
 	
 	
 	@GetMapping("/patients")
@@ -864,6 +868,197 @@ public class PatientResource {
 		}
 	}
 	
+	
+	////Dohere patient vital, this is draft, no time, update it, called in a meeting
+	
+	
+	
+	@PostMapping("/patients/save_patient_vitals") 
+	public ResponseEntity<PatientVital> savePatientVitals(
+			@RequestBody PatientVital patientVital,
+			HttpServletRequest request){
+		
+		Optional<Consultation> c = consultationRepository.findById(patientVital.getConsultation().getId());
+		Optional<NonConsultation> nc = nonConsultationRepository.findById(patientVital.getNonConsultation().getId());
+		Optional<Admission> a = admissionRepository.findById(patientVital.getAdmission().getId());
+		
+		Consultation consultation = null;
+		NonConsultation nonConsultation = null;
+		Admission admission = null;
+		
+		if(c.isPresent() && nc.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		
+		if(c.isPresent() && nc.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		if(nc.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		if(c.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		
+		PatientVital vital = null;
+		if(c.isPresent() && nc.isEmpty() && a.isEmpty()) {
+			
+			List<PatientVital> vitals = patientVitalRepository.findAllByConsultation(c.get());
+			for(PatientVital v : vitals) {
+				vital = v;
+			}
+			consultation = c.get();
+		}
+		if(c.isEmpty() && a.isPresent() && nc.isEmpty()) {
+			
+			List<PatientVital> vitals = patientVitalRepository.findAllByAdmission(a.get());
+			for(PatientVital v : vitals) {
+				vital = v;
+			}
+			admission = a.get();
+		}
+		
+		if(c.isEmpty() && nc.isPresent() && a.isEmpty()) {
+			
+			List<PatientVital> vitals = patientVitalRepository.findAllByNonConsultation(nc.get());
+			for(PatientVital v : vitals) {
+				vital = v;
+			}
+			nonConsultation = nc.get();
+		}
+		
+		if(c.isEmpty() && a.isEmpty() && nc.isEmpty()) {
+			throw new NotFoundException("No Admission or Consultation or Non Consultation found");
+		}
+		
+		if(vital != null) {
+			if(vital.getStatus().equals("SUBMITTED")) {
+				throw new InvalidOperationException("Could not modify vitals. Vitals already submitted");
+			}
+			vital.setBodyMassIndex(patientVital.getBodyMassIndex());
+			vital.setBodyMassIndexComment(patientVital.getBodyMassIndexComment());
+			vital.setBodySurfaceArea(patientVital.getBodySurfaceArea());
+			vital.setHeight(patientVital.getHeight());
+			vital.setPressure(patientVital.getPressure());
+			vital.setPulseRate(patientVital.getPulseRate());
+			vital.setRespiratoryRate(patientVital.getRespiratoryRate());
+			vital.setSaturationOxygen(patientVital.getSaturationOxygen());
+			vital.setTemperature(patientVital.getTemperature());
+			vital.setWeight(patientVital.getWeight());
+			vital.setDescription(patientVital.getDescription());
+			vital.setStatus("PENDING");
+			
+			vital = patientVitalRepository.save(vital);
+		}else {
+			vital = new PatientVital();
+			vital.setBodyMassIndex(patientVital.getBodyMassIndex());
+			vital.setBodyMassIndexComment(patientVital.getBodyMassIndexComment());
+			vital.setBodySurfaceArea(patientVital.getBodySurfaceArea());
+			vital.setHeight(patientVital.getHeight());
+			vital.setPressure(patientVital.getPressure());
+			vital.setPulseRate(patientVital.getPulseRate());
+			vital.setRespiratoryRate(patientVital.getRespiratoryRate());
+			vital.setSaturationOxygen(patientVital.getSaturationOxygen());
+			vital.setTemperature(patientVital.getTemperature());
+			vital.setWeight(patientVital.getWeight());
+			vital.setDescription(patientVital.getDescription());
+			vital.setConsultation(consultation);
+			vital.setNonConsultation(nonConsultation);
+			vital.setAdmission(admission);
+			vital.setStatus("PENDING");
+			
+			vital.setCreatedBy(userService.getUser(request).getId());
+			vital.setCreatedOn(dayService.getDay().getId());
+			vital.setCreatedAt(dayService.getTimeStamp());
+			
+			vital = patientVitalRepository.save(vital);
+		}
+			
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/save_patient_vitals").toUriString());
+		return ResponseEntity.created(uri).body(vital);
+	}
+	
+	
+	
+	@PostMapping("/patients/submit_patient_vitals") 
+	public ResponseEntity<PatientVital> submitPatientVitals(
+			@RequestBody PatientVital patientVital,
+			HttpServletRequest request){
+		
+		Optional<Consultation> c = consultationRepository.findById(patientVital.getConsultation().getId());
+		Optional<NonConsultation> nc = nonConsultationRepository.findById(patientVital.getNonConsultation().getId());
+		Optional<Admission> a = admissionRepository.findById(patientVital.getAdmission().getId());
+		
+		//Consultation consultation = null;
+		//NonConsultation nonConsultation = null;
+		//Admission admission = null;
+		
+		if(c.isPresent() && nc.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		
+		if(c.isPresent() && nc.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		if(nc.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		if(c.isPresent() && a.isPresent()) {
+			throw new InvalidOperationException("Patient can not have admission and consultation and outsider simultaneously");
+		}
+		
+		PatientVital vital = null;
+		if(c.isPresent() && nc.isEmpty() && a.isEmpty()) {
+			
+			List<PatientVital> vitals = patientVitalRepository.findAllByConsultation(c.get());
+			for(PatientVital v : vitals) {
+				vital = v;
+			}
+			//consultation = c.get();
+		}
+		if(c.isEmpty() && a.isPresent() && nc.isEmpty()) {
+			
+			List<PatientVital> vitals = patientVitalRepository.findAllByAdmission(a.get());
+			for(PatientVital v : vitals) {
+				vital = v;
+			}
+			//admission = a.get();
+		}
+		
+		if(c.isEmpty() && nc.isPresent() && a.isEmpty()) {
+			
+			List<PatientVital> vitals = patientVitalRepository.findAllByNonConsultation(nc.get());
+			for(PatientVital v : vitals) {
+				vital = v;
+			}
+			//nonConsultation = nc.get();
+		}
+		
+		if(c.isEmpty() && a.isEmpty() && nc.isEmpty()) {
+			throw new NotFoundException("No Admission or Consultation or Non Consultation found");
+		}
+		
+		if(vital != null) {
+			if(vital.getStatus().equals("SUBMITTED")) {
+				throw new InvalidOperationException("Could not resubmit vitals. Vitals already submitted");
+			}else if(vital.getStatus().equals("PENDING")) {
+				vital.setStatus("SUBMITTED");
+				vital = patientVitalRepository.save(vital);
+			}else {
+				throw new InvalidOperationException("Operation failed");
+			}
+		}
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/submit_patient_vitals").toUriString());
+		return ResponseEntity.created(uri).body(vital);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	@GetMapping("/patients/load_admission")    // to do later
 	public ResponseEntity<Admission> loadAdmission(
 			@RequestParam(name = "id") Long id,
@@ -936,6 +1131,74 @@ public class PatientResource {
 		}
 			
 	}
+	
+	@GetMapping("/patients/load_patient_vitals_by_consultation_id")
+	public ResponseEntity<PatientVital> loadPatientVitalByConsultationId(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		Optional<Consultation> c = consultationRepository.findById(id);		
+		if(c.isPresent()) {
+			Optional<PatientVital> n = patientVitalRepository.findByConsultation(c.get());
+			if(n.isPresent()) {
+				URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/load_patient_vitals_by_consultation_id").toUriString());
+				return ResponseEntity.created(uri).body(n.get());
+			}else {
+				/**
+				 * Create one, and return it
+				 */
+				PatientVital vital = new PatientVital();
+				vital.setConsultation(c.get());
+				vital.setStatus("EMPTY");
+				
+				vital.setCreatedBy(userService.getUser(request).getId());
+				vital.setCreatedOn(dayService.getDay().getId());
+				vital.setCreatedAt(dayService.getTimeStamp());
+				
+				URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/load_patient_vitals_by_consultation_id").toUriString());
+				return ResponseEntity.created(uri).body(patientVitalRepository.save(vital));
+			}
+		}else {
+			throw new NotFoundException("Consultation not found");
+		}
+			
+	}
+	
+	
+	@GetMapping("/patients/request_patient_vitals_by_consultation_id")
+	public ResponseEntity<GeneralExamination> requestPatientVitalByConsultationId(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		Optional<Consultation> c = consultationRepository.findById(id);	
+		Optional<PatientVital> vital_ = patientVitalRepository.findByConsultation(c.get());
+		if(vital_.isPresent()) {
+			if(!vital_.get().getStatus().equals("SUBMITTED")) {
+				throw new InvalidOperationException("Vitals already requested or not submitted");
+			}
+			
+			GeneralExamination exam = new GeneralExamination();
+			exam.setBodyMassIndex(vital_.get().getBodyMassIndex());
+			exam.setBodyMassIndexComment(vital_.get().getBodyMassIndexComment());
+			exam.setBodySurfaceArea(vital_.get().getBodySurfaceArea());
+			exam.setHeight(vital_.get().getHeight());
+			exam.setPressure(vital_.get().getPressure());
+			exam.setPulseRate(vital_.get().getPulseRate());
+			exam.setRespiratoryRate(vital_.get().getRespiratoryRate());
+			exam.setSaturationOxygen(vital_.get().getSaturationOxygen());
+			exam.setTemperature(vital_.get().getTemperature());
+			exam.setWeight(vital_.get().getWeight());
+			exam.setDescription(vital_.get().getDescription());
+			vital_.get().setStatus("ARCHIVED");
+			patientVitalRepository.save(vital_.get());
+			URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/load_patient_vitals_by_consultation_id").toUriString());
+			return ResponseEntity.created(uri).body(exam);
+		}else {
+			throw new NotFoundException("Vital Signs not found");
+		}
+		
+	}
+	
+	
+	
 	
 	@GetMapping("/patients/load_clinical_note_by_admission_id")
 	public ResponseEntity<ClinicalNote> loadClinicalNoteByAdmissionId(
@@ -3187,8 +3450,10 @@ public class PatientResource {
 	@GetMapping("/patients/get_nurse_outpatient_list") 
 	public ResponseEntity<List<Consultation>> getNurseOutpatientList(
 			HttpServletRequest request){
-		
-		List<Consultation> consultations = consultationRepository.findAllByStatus("IN-PROCESS");
+		List<String> statuses = new ArrayList<>();
+		statuses.add("IN-PROCESS");
+		statuses.add("PENDING");
+		List<Consultation> consultations = consultationRepository.findAllByStatusIn(statuses);
 		
 		//HashSet<Admission> h = new HashSet<Admission>(admissions);
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_nurse_outpatient_list").toUriString());

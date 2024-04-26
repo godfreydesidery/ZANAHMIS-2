@@ -13,8 +13,6 @@ import { SearchFilterPipe } from 'src/app/pipes/search-filter-pipe';
 import { MsgBoxService } from 'src/app/services/msg-box.service';
 import { environment } from 'src/environments/environment';
 
-
-
 const API_URL = environment.apiUrl;
 
 @Component({

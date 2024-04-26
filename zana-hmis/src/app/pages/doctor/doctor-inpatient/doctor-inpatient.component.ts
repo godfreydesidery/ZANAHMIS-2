@@ -324,7 +324,8 @@ export class DoctorInpatientComponent implements OnInit {
         physicalExamination : this.cNPhysicalExamination,
         managementPlan : this.cNManagementPlan,
         admission : { id : this.id},
-        consultation : { id : 0}
+        consultation : { id : 0},
+        nonConsultation : { id : 0}
       },
       generalExamination : {
         id : this.gEId,
@@ -340,7 +341,8 @@ export class DoctorInpatientComponent implements OnInit {
         respiratoryRate : this.gERespiratoryRate,
         description : this.gEDescription,
         admission : { id : this.id},
-        consultation : { id : 0}
+        consultation : { id : 0},
+        nonConsultation : { id : 0}
       }
     } 
    

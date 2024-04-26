@@ -319,6 +319,48 @@ export class DoctorCrackingComponent implements OnInit {
     )
   }
 
+
+
+  async requestPatientVitalsByConsultationId(id : any){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.spinner.show()
+    await this.http.get<IGeneralExamination>(API_URL+'/patients/request_patient_vitals_by_consultation_id?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+
+        this.gEId = data?.id
+        this.gEPressure = data!.pressure
+        this.gETemperature = data!.temperature
+        this.gEPulseRate = data!.pulseRate
+        this.gEWeight = data!.weight
+        this.gEHeight = data!.height
+        this.gEBodyMassIndex = data!.bodyMassIndex
+        this.gEBodyMassIndexComment = data!.bodyMassIndexComment
+        this.gEBodySurfaceArea = data!.bodySurfaceArea
+        this.gESaturationOxygen = data!.saturationOxygen
+        this.gERespiratoryRate = data!.respiratoryRate
+        this.gEDescription = data!.description
+        
+        console.log(data)
+
+        this.saveCG()
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, 'Could not load patient vitals')
+        console.log(error)
+      }
+    )
+  }
+
+
+
+
   async saveCG(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -336,7 +378,8 @@ export class DoctorCrackingComponent implements OnInit {
         physicalExamination : this.cNPhysicalExamination,
         managementPlan : this.cNManagementPlan,
         consultation : { id : this.id},
-        admission : { id : 0}
+        admission : { id : 0},
+        nonConsultation : { id : 0}
       },
       generalExamination : {
         id : this.gEId,
@@ -352,7 +395,8 @@ export class DoctorCrackingComponent implements OnInit {
         respiratoryRate : this.gERespiratoryRate,
         description : this.gEDescription,
         consultation : { id : this.id},
-        admission : { id : 0}
+        admission : { id : 0},
+        nonConsultation : { id : 0}
       }
     } 
    

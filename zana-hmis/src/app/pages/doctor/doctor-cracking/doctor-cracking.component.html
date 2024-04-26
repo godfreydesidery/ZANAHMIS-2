@@ -51,6 +51,12 @@
                             <div class="jumbotron jumbotron-fluid">                               
                                 <div class="container">
                                     <div class="row">
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <button class="btn btn-primary" (click)="requestPatientVitalsByConsultationId(id)">Request from Nurse</button>
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;"></div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEPressure" placeholder="Pressure(mmHg)"></div>
                                         <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gETemperature" placeholder="Temparature(c)"></div>
                                     </div>

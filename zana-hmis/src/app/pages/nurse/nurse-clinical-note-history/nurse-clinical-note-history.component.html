@@ -1,0 +1,64 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient History - Clinical Notes</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-outpatient-chart"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary" routerLink="/nurse-clinical-note-history">Clinical Notes</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-general-examination-history">General Examination</a>
+                    <!--<a class="btn btn-primary btn-outline" routerLink="/working-diagnosis-history">Working Diagnosis</a>-->
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-final-diagnosis-history">Final Diagnosis</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-lab-test-history">Lab Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-radiology-history">Radiology Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-procedure-history">Procedures</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-prescription-history">Medications</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table-bordered table-striped table-small">
+                                <thead>
+                                    <tr style="font-weight: bold;">
+                                        <td>Created At</td>
+                                        <td>Main Complain</td>
+                                        <td>Doctor</td>
+                                        <!--<td>Drugs and Alergic History</td>
+                                        <td>Family and Social History</td>
+                                        <td>Past Medical History</td>
+                                        <td>Present Illness History</td>
+                                        <td>Physical Examination</td>
+                                        <td>Review of Other Systems</td>
+                                        <td>Management Plan</td>-->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let history of clinicalNotes | searchFilter : filterRecords">
+                                        <td>{{history?.created | showTime}}</td>
+                                        <td>{{history?.mainComplain}}</td>
+                                        <td>{{history?.created | showUser}}</td>
+                                        <!--<td>{{history?.drugsAndAllergyHistory}}</td>
+                                        <td>{{history?.familyAndSocialHistory}}</td>
+                                        <td>{{history?.pastMedicalHistory}}</td>
+                                        <td>{{history?.presentIllnessHistory}}</td>
+                                        <td>{{history?.physicalExamination}}</td>
+                                        <td>{{history?.reviewOfOtherSystems}}</td>
+                                        <td>{{history?.managementPlan}}</td>-->
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->

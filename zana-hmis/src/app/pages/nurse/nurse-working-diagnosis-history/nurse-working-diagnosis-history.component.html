@@ -1,0 +1,38 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Patient History - Working Diagnosis</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-outpatient-chart"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-clinical-note-history">Clinical Notes</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-general-examination-history">General Examination</a>
+                    <!--<a class="btn btn-primary" routerLink="/working-diagnosis-history">Working Diagnosis</a>-->
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-final-diagnosis-history">Final Diagnosis</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-lab-test-history">Lab Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-radiology-history">Radiology Tests</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-procedure-history">Procedures</a>
+                    <a class="btn btn-primary btn-outline" routerLink="/nurse-prescription-history">Medications</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row" *ngFor="let history of workingDiagnosises | searchFilter : filterRecords">
+                        <div class="col-sm-12">
+                            <table class="table table-responsive table-striped table-small">
+                                <tbody>
+                                    <tr><td>{{history?.diagnosisType?.name}}</td><td>{{history?.created}}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>     
+</section> <!-- /.content -->
