@@ -3455,17 +3455,24 @@ public class PatientResource {
 		statuses.add("PENDING");
 		List<Consultation> consultations = consultationRepository.findAllByStatusIn(statuses);
 		
+		List<Consultation> consultationsToShow = new ArrayList<>();
+		for(Consultation c : consultations) {
+			if(c.getPatientBill().getStatus().equals("PAID") || c.getPatientBill().getStatus().equals("COVERED") || c.getPatientBill().getStatus().equals("VERIFIED")) {
+				consultationsToShow.add(c);
+			}
+		}
+		
 		//HashSet<Admission> h = new HashSet<Admission>(admissions);
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_nurse_outpatient_list").toUriString());
-		return ResponseEntity.created(uri).body(consultations);
+		return ResponseEntity.created(uri).body(consultationsToShow);
 	}
 	
-	@GetMapping("/patients/get_nurse_outsider_list") 
+	@GetMapping("/patients/get_nurse_outsider_list")
 	public ResponseEntity<List<NonConsultation>> getNurseOutsidertList(
 			HttpServletRequest request){
 		
 		List<NonConsultation> nonConsultations = nonConsultationRepository.findAllByStatus("IN-PROCESS");
-		
+	
 		//HashSet<Admission> h = new HashSet<Admission>(admissions);
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_nurse_outsider_list").toUriString());
 		return ResponseEntity.created(uri).body(nonConsultations);

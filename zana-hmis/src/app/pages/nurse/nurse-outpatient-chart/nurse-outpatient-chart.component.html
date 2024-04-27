@@ -21,7 +21,7 @@
                             <h3 class="text-primary">Designated Clinic: <b>{{consultation?.clinic?.name}}</b>, Name: <b>{{consultation?.patient?.firstName}} {{consultation?.patient?.middleName}} {{consultation?.patient?.lastName}}</b>, File No: <b>{{consultation?.patient?.no}}</b>, <b>Date of Birth: {{consultation.patient.dateOfBirth | date}} Age: {{consultation.patient.dateOfBirth | age}}</b>, {{consultation?.patient?.gender}}, {{consultation.paymentType}} {{consultation?.insurancePlan?.name}}</h3>
                         </div>
                         <div class="col-sm-6">
-                            <label>Patient Vitals - ({{vitalStatus}})</label>
+                            <h4 class="text-primary" >Patient Vitals - ({{vitalStatus}})</h4>
                             <div class="jumbotron jumbotron-fluid">                               
                                 <div class="container">
                                     <div class="row">

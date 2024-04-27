@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-6" *ngIf="procedures.length > 0">
                                 <div class="row">
                                     <div class="col-sm-12" style="text-align: center;">
                                         <h4 class="text-primary"><b>Procedure Details</b></h4>
@@ -87,15 +87,15 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr *ngFor="let procedure of procedures">
-                                                            <td>{{procedure.procedureType?.name}}</td>
-                                                            <td style="text-align: right;"><span *ngIf="procedure.patientBill?.status != 'COVERED'">{{procedure.patientBill?.amount | currency:'':''}}</span><span *ngIf="procedure.patientBill?.status === 'COVERED'">---</span></td>
-                                                            <td>
+                                                            <td *ngIf="procedure.patientBill!.status === 'PAID' || procedure.patientBill!.status === 'COVERED' || procedure.patientBill!.status === 'VERIFIED' ">{{procedure.procedureType?.name}}</td>
+                                                            <td *ngIf="procedure.patientBill!.status === 'PAID' || procedure.patientBill!.status === 'COVERED' || procedure.patientBill!.status === 'VERIFIED' " style="text-align: right;"><span *ngIf="procedure.patientBill?.status != 'COVERED'">{{procedure.patientBill?.amount | currency:'':''}}</span><span *ngIf="procedure.patientBill?.status === 'COVERED'">---</span></td>
+                                                            <td *ngIf="procedure.patientBill!.status === 'PAID' || procedure.patientBill!.status === 'COVERED' || procedure.patientBill!.status === 'VERIFIED' " >
                                                                 <span *ngIf="procedure.patientBill?.status === 'COVERED' && nonConsultation.paymentType ==='INSURANCE'">{{procedure.patientBill?.status}}</span>
                                                                 <span *ngIf="procedure.patientBill?.status != 'COVERED' && nonConsultation.paymentType !='INSURANCE'">{{procedure.patientBill?.status}}</span>
                                                                 <span *ngIf="procedure.patientBill?.status != 'COVERED' && nonConsultation.paymentType ==='INSURANCE'">{{procedure.patientBill?.status}}(NOT COVERED)</span>
                                                             </td>
-                                                            <td>{{procedure.status}}</td>
-                                                            <td>
+                                                            <td *ngIf="procedure.patientBill!.status === 'PAID' || procedure.patientBill!.status === 'COVERED' || procedure.patientBill!.status === 'VERIFIED' " >{{procedure.status}}</td>
+                                                            <td *ngIf="procedure.patientBill!.status === 'PAID' || procedure.patientBill!.status === 'COVERED' || procedure.patientBill!.status === 'VERIFIED' " >
                                                                 <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note === null" data-toggle="modal" data-target="#add-procedure-note-to-procedure-modal"><i class="fa fa-file"></i> Add Note</a>
                                                                 <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note != null" data-toggle="modal" data-target="#view-procedure-note-to-procedure-modal"><i class="fa fa-eye"></i> View</a>
                                                             </td>

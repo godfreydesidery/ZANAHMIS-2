@@ -26,7 +26,7 @@
                             <h3 class="text-primary">Name: <b>{{admission?.patient?.firstName}} {{admission?.patient?.middleName}} {{admission?.patient?.lastName}}</b>, File No: <b>{{admission?.patient?.no}}</b>, <b>Date of Birth: {{admission.patient.dateOfBirth | date}} Age: {{admission.patient.dateOfBirth | age}}</b>, {{admission?.patient?.gender}}, {{admission.paymentType}} {{admission?.insurancePlan?.name}}</h3>
                         </div>
                         <div class="col-sm-6">
-                            <label>Clinical Notes</label>
+                            <h4 class="text-primary">Clinical Notes</h4>
                             <div class="jumbotron jumbotron-fluid">                              
                                 <div class="container">
                                     <div class="row">
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label>General Examination</label>
+                            <h4 class="text-primary">General Examination</h4>
                             <div class="jumbotron jumbotron-fluid">                               
                                 <div class="container">
                                     <div class="row">
@@ -88,7 +88,7 @@
                             </div>
                             
                             <div class="col-sm-6">
-                                <label>Working Diagnosis</label>
+                                <h4 class="text-primary">Working Diagnosis</h4>
                                 <div class="jumbotron jumbotron-fluid">                               
                                     <div class="container">
                                         <div class="table-responsive">
@@ -113,7 +113,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <label>Final Diagnosis</label>
+                                <h4 class="text-primary">Final Diagnosis</h4>
                                 <div class="jumbotron jumbotron-fluid">                               
                                     <div class="container">
                                         <div class="table-responsive">
@@ -146,7 +146,7 @@
                             
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <label>Laboratory</label>
+                                        <h4 class="text-primary">Laboratory</h4>
                                         <button class="btn btn-primary pull-right" (click)="clearLabTest()" data-toggle="modal" data-target="#assign-lab-test-modal" style="margin-right: 2mm;">Assign Lab Test</button>
                                         <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#lab-test-result-modal" style="margin-right: 2mm;"><i class="hvr-buzz-out fa fa-medkit"></i> View Result</button>
                                     </div>
@@ -191,7 +191,7 @@
                             <div class="col-sm-6">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <label>Radiology</label>
+                                        <h4 class="text-primary">Radiology</h4>
                                         <button class="btn btn-primary pull-right" (click)="clearRadiology()" data-toggle="modal" data-target="#assign-radiology-modal" style="margin-right: 2mm;">Assign Radiology</button>
                                         <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#radiology-result-modal" style="margin-right: 2mm;"><i class="hvr-buzz-out fa fa-medkit"></i> View Result</button>
                                     </div>
@@ -236,7 +236,7 @@
                         </div>
                         <br>
                         <div class="col-sm-12">
-                            <label>Medications</label>
+                            <h4 class="text-primary">Medications</h4>
                             <div class="jumbotron jumbotron-fluid"> 
                                 <div class="row">
                                     <div class="col-sm-4"></div>
@@ -338,6 +338,7 @@
                             </div>
                         </div>
                         <div class="col-sm-12">
+                            <h4 class="text-primary">Procedure</h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="jumbotron jumbotron-fluid">
@@ -459,71 +460,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                
                             </div>
                         </div>
-                        <!--<div class="col-sm-12">
-                            <hr>
-                            <button class="btn btn-primary pull-right" (click)="clearProcedure()" data-toggle="modal" data-target="#assign-procedure-modal">Assign Procedure</button>
-                            <br>
-                        </div>
-                        <div class="col-sm-12">
-                            <label>Procedure</label>
-                            <div class="jumbotron jumbotron-fluid">                               
-                                <div>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover  table-striped">
-                                            <thead class="success">
-                                            <tr>
-                                                <th>Procedure</th>
-                                                <th>Diagnosis</th>
-                                                <th>Theatre</th>
-                                                <th>Time</th>
-                                                <th>Date</th>
-                                                <th>Hours</th>
-                                                <th>Minutes</th>
-                                                <th>Price</th>
-                                                <th>Payment Status</th>
-                                                <th>Status</th>
-                                                <th>Procedure Note</th>
-                                                <th>Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let procedure of procedures">
-                                                    <td>{{procedure.procedureType?.name}}</td>
-                                                    <td>{{procedure.diagnosisType?.name}}</td>
-                                                    <td>{{procedure.theatre?.name}}</td>
-                                                    <td>{{procedure.time}}</td>
-                                                    <td>{{procedure.date | date}}</td>
-                                                    <td>{{procedure.hours}}</td>
-                                                    <td>{{procedure.minutes}}</td>
-                                                    <td style="text-align: right;"><span *ngIf="procedure.patientBill?.status != 'COVERED'">{{procedure.patientBill?.amount | currency:'':''}}</span><span *ngIf="procedure.patientBill?.status === 'COVERED'">---</span></td>
-                                                    <td>
-                                                        <span *ngIf="procedure.patientBill?.status === 'COVERED' && admission.paymentType ==='INSURANCE'">{{procedure.patientBill?.status}}</span>
-                                                        <span *ngIf="procedure.patientBill?.status != 'COVERED' && admission.paymentType !='INSURANCE'">{{procedure.patientBill?.status}}</span>
-                                                        <span *ngIf="procedure.patientBill?.status != 'COVERED' && admission.paymentType ==='INSURANCE'">{{procedure.patientBill?.status}}(NOT COVERED)</span>
-                                                    </td>
-                                                    <td>{{procedure.status}}</td>
-                                                    <td>
-                                                        <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note === null" data-toggle="modal" data-target="#add-procedure-note-to-procedure-modal"><i class="fa fa-file"></i></a>
-                                                        <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note != null" data-toggle="modal" data-target="#add-procedure-note-to-procedure-modal"><i class="fa fa-pencil"></i></a>
-                                                    </td>
-                                                    <td>
-                                                        <a (click)="deleteProcedure(procedure.id)"><i class="fa fa-trash"></i></a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>   
-                                    </div>
-                                </div>
-                            </div>
-                        </div>-->
                     </div>
-                    
                 </div> 
-                    
             </div>
         </div>
     </div>
@@ -542,11 +482,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <!--<h4>Select Diagnosis Type</h4>
-                        <select class="form-control" [(ngModel)]="diagnosisTypeName">
-                            <option></option>
-                            <option *ngFor="let name of diagnosisTypeNames">{{name}}</option>
-                        </select>-->
+                       
                         <h4>Search Diagnosis (Enter 2 Characters to Search)</h4>
                         <input type="text" class="form-control" [(ngModel)]="diagnosisTypeCodeAndName" (ngModelChange)="loadDiagnosisTypesLike($event)">
                         <div class="row"  *ngIf="diagnosisTypes.length > 0">
@@ -554,7 +490,6 @@
                                 <select class="form-control" multiple="multiple">
                                     <option *ngFor="let diag of diagnosisTypes" (click)="getDiagnosisType(diag.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{diag.code}} | {{diag.name}}</option>
                                 </select>
-                                <!--<button class="form-control btn btn-primary btn-outline" *ngFor="let diag of diagnosisTypes" (click)="getDiagnosisType(diag.id)" style="text-align: left;">{{diag.name}}</button>-->
                             </div>
                         </div>
                     </div>
