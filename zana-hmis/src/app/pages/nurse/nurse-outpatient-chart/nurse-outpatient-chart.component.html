@@ -21,31 +21,64 @@
                             <h3 class="text-primary">Designated Clinic: <b>{{consultation?.clinic?.name}}</b>, Name: <b>{{consultation?.patient?.firstName}} {{consultation?.patient?.middleName}} {{consultation?.patient?.lastName}}</b>, File No: <b>{{consultation?.patient?.no}}</b>, <b>Date of Birth: {{consultation.patient.dateOfBirth | date}} Age: {{consultation.patient.dateOfBirth | age}}</b>, {{consultation?.patient?.gender}}, {{consultation.paymentType}} {{consultation?.insurancePlan?.name}}</h3>
                         </div>
                         <div class="col-sm-6">
-                            <h4 class="text-primary" >Patient Vitals - ({{vitalStatus}})</h4>
+                            <h4 class="text-primary" ><b>Patient Vitals - ({{vitalStatus}})</b></h4>
                             <div class="jumbotron jumbotron-fluid">                               
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalPressure" placeholder="Pressure(mmHg)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalTemperature" placeholder="Temparature(c)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Pressure(mmHg)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalPressure" placeholder="Pressure(mmHg)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Temperature(Degree celcious)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalTemperature" placeholder="Temparature(c)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalPulseRate" placeholder="Pulse Rate(b/Min)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalWeight" placeholder="Weight(kg)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Pulse Rate(b/Min)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalPulseRate" placeholder="Pulse Rate(b/Min)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Weight(kg)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalWeight" placeholder="Weight(kg)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalHeight" placeholder="Height(cm)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalBodyMassIndex" placeholder="Body Mass Index(kg/m)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Height(cm)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalHeight" placeholder="Height(cm)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Body Mass Index(kg/m)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalBodyMassIndex" placeholder="Body Mass Index(kg/m)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalBodySurfaceArea" placeholder="Body Surface Area(cmkg)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalBodyMassIndexComment" placeholder="Body Mass Index Comment"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Body Surface Area()cmkg</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalBodySurfaceArea" placeholder="Body Surface Area(cmkg)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Body Mass Index Comment</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalBodyMassIndexComment" placeholder="Body Mass Index Comment">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalSaturationOxygen" placeholder="Saturation Oxygen(%)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="vitalRespiratoryRate" placeholder="Respiratory Rate(cycles/Min)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Saturation Oxygen(%)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalSaturationOxygen" placeholder="Saturation Oxygen(%)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Respiratory Rate(cycles/Min)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="vitalRespiratoryRate" placeholder="Respiratory Rate(cycles/Min)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-12" style="margin-bottom: 3mm;"><textarea class="form-control" [(ngModel)]="vitalDescription" placeholder="Description"></textarea></div>
+                                        <div class="col-sm-12" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Description</label>
+                                            <textarea class="form-control" [(ngModel)]="vitalDescription" placeholder="Description"></textarea>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6" style="margin-bottom: 3mm;">

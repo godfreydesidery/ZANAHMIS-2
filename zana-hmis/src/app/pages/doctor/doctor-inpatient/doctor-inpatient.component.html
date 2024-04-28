@@ -26,19 +26,27 @@
                             <h3 class="text-primary">Name: <b>{{admission?.patient?.firstName}} {{admission?.patient?.middleName}} {{admission?.patient?.lastName}}</b>, File No: <b>{{admission?.patient?.no}}</b>, <b>Date of Birth: {{admission.patient.dateOfBirth | date}} Age: {{admission.patient.dateOfBirth | age}}</b>, {{admission?.patient?.gender}}, {{admission.paymentType}} {{admission?.insurancePlan?.name}}</h3>
                         </div>
                         <div class="col-sm-6">
-                            <h4 class="text-primary">Clinical Notes</h4>
+                            <h4 class="text-primary"><b>Clinical Notes</b></h4>
                             <div class="jumbotron jumbotron-fluid">                              
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <!--<textarea class="form-control" [(ngModel)]="cNMainComplain" placeholder="Main Complain/ Others" style="height: 7cm;"></textarea>-->
-                                            <textarea class="form-control" [(ngModel)]="cNMainComplain" placeholder="Main Complain/ Others"></textarea>
+                                            <label class="text-primary">Main Complain</label>
+                                            <textarea class="form-control" [(ngModel)]="cNMainComplain" placeholder="Main Complain"></textarea>
+                                            <label class="text-primary">History of Present illness</label>
                                             <textarea class="form-control" [(ngModel)]="cNPresentIllnessHistory" placeholder="History of Present Illness"></textarea>
+                                            <label class="text-primary">Past Medical History</label>
                                             <textarea class="form-control" [(ngModel)]="cNPastMedicalHistory" placeholder="Past Medical History"></textarea>
+                                            <label class="text-primary">Family and Social History</label>
                                             <textarea class="form-control" [(ngModel)]="cNFamilyAndSocialHistory" placeholder="Family and Social History"></textarea>
+                                            <label class="text-primary">Drugs and Allergy History</label>
                                             <textarea class="form-control" [(ngModel)]="cNDrugsAndAllergyHistory" placeholder="Drugs and Allergy History"></textarea>
+                                            <label class="text-primary">Review of Other Systems</label>
                                             <textarea class="form-control" [(ngModel)]="cNReviewOfOtherSystems" placeholder="Review of Other Systems"></textarea>
+                                            <label class="text-primary">Physical Examination</label>
                                             <textarea class="form-control" [(ngModel)]="cNPhysicalExamination" placeholder="Physical Examination"></textarea>
+                                            <label class="text-primary">Management Plan</label>
                                             <textarea class="form-control" [(ngModel)]="cNManagementPlan" placeholder="Management Plan"></textarea>
                                         </div>
                                     </div>
@@ -46,31 +54,64 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <h4 class="text-primary">General Examination</h4>
+                            <h4 class="text-primary"><b>General Examination</b></h4>
                             <div class="jumbotron jumbotron-fluid">                               
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEPressure" placeholder="Pressure(mmHg)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gETemperature" placeholder="Temparature(c)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Pressure(mmHg)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gEPressure" placeholder="Pressure(mmHg)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Temperature(Degree Celcious)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gETemperature" placeholder="Temperature(c)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEPulseRate" placeholder="Pulse Rate(b/Min)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEWeight" placeholder="Weight(kg)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Pulse Rate(b/Min)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gEPulseRate" placeholder="Pulse Rate(b/Min)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Weight(kg)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gEWeight" placeholder="Weight(kg)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEHeight" placeholder="Height(cm)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEBodyMassIndex" placeholder="Body Mass Index(kg/m)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Height(cm)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gEHeight" placeholder="Height(cm)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Body Mass Index(kg/m)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gEBodyMassIndex" placeholder="Body Mass Index(kg/m)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEBodySurfaceArea" placeholder="Body Surface Area(cmkg)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gEBodyMassIndexComment" placeholder="Body Mass Index Comment"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Body Surface Area(cmkg)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gEBodySurfaceArea" placeholder="Body Surface Area(cmkg)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Body Mass Index Comments</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gEBodyMassIndexComment" placeholder="Body Mass Index Comment">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gESaturationOxygen" placeholder="Saturation Oxygen(%)"></div>
-                                        <div class="col-sm-6" style="margin-bottom: 3mm;"><input type="text" class="form-control" [(ngModel)]="gERespiratoryRate" placeholder="Respiratory Rate(cycles/Min)"></div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Saturation Oxygen(%)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gESaturationOxygen" placeholder="Saturation Oxygen(%)">
+                                        </div>
+                                        <div class="col-sm-6" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Respiratory Rate(cycles/Min)</label>
+                                            <input type="text" class="form-control" [(ngModel)]="gERespiratoryRate" placeholder="Respiratory Rate(cycles/Min)">
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-12" style="margin-bottom: 3mm;"><textarea class="form-control" [(ngModel)]="gEDescription" placeholder="Description"></textarea></div>
+                                        <div class="col-sm-12" style="margin-bottom: 3mm;">
+                                            <label class="text-primary">Description</label>
+                                            <textarea class="form-control" [(ngModel)]="gEDescription" placeholder="Description"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +129,7 @@
                             </div>
                             
                             <div class="col-sm-6">
-                                <h4 class="text-primary">Working Diagnosis</h4>
+                                <h4 class="text-primary"><b>Working Diagnosis</b></h4>
                                 <div class="jumbotron jumbotron-fluid">                               
                                     <div class="container">
                                         <div class="table-responsive">
@@ -113,7 +154,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <h4 class="text-primary">Final Diagnosis</h4>
+                                <h4 class="text-primary"><b>Final Diagnosis</b></h4>
                                 <div class="jumbotron jumbotron-fluid">                               
                                     <div class="container">
                                         <div class="table-responsive">
@@ -146,7 +187,7 @@
                             
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <h4 class="text-primary">Laboratory</h4>
+                                        <h4 class="text-primary"><b>Laboratory</b></h4>
                                         <button class="btn btn-primary pull-right" (click)="clearLabTest()" data-toggle="modal" data-target="#assign-lab-test-modal" style="margin-right: 2mm;">Assign Lab Test</button>
                                         <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#lab-test-result-modal" style="margin-right: 2mm;"><i class="hvr-buzz-out fa fa-medkit"></i> View Result</button>
                                     </div>
@@ -191,7 +232,7 @@
                             <div class="col-sm-6">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <h4 class="text-primary">Radiology</h4>
+                                        <h4 class="text-primary"><b>Radiology</b></h4>
                                         <button class="btn btn-primary pull-right" (click)="clearRadiology()" data-toggle="modal" data-target="#assign-radiology-modal" style="margin-right: 2mm;">Assign Radiology</button>
                                         <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#radiology-result-modal" style="margin-right: 2mm;"><i class="hvr-buzz-out fa fa-medkit"></i> View Result</button>
                                     </div>
@@ -236,7 +277,7 @@
                         </div>
                         <br>
                         <div class="col-sm-12">
-                            <h4 class="text-primary">Medications</h4>
+                            <h4 class="text-primary"><b>Medications</b></h4>
                             <div class="jumbotron jumbotron-fluid"> 
                                 <div class="row">
                                     <div class="col-sm-4"></div>
@@ -338,7 +379,7 @@
                             </div>
                         </div>
                         <div class="col-sm-12">
-                            <h4 class="text-primary">Procedure</h4>
+                            <h4 class="text-primary"><b>Procedure</b></h4>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="jumbotron jumbotron-fluid">
@@ -516,11 +557,6 @@
             <div class="modal-body">
                 <div class="row">
                      <div class="col-sm-12">
-                        <!--<h4>Select Lab Test Type</h4>
-                        <select class="form-control" [(ngModel)]="labTestTypeName">
-                            <option></option>
-                            <option *ngFor="let name of labTestTypeNames">{{name}}</option>
-                        </select>-->
                         <h4>Search Lab Test (Enter 2 Characters to Search)</h4>
                         <input type="text" class="form-control" [(ngModel)]="labTestTypeName" (ngModelChange)="loadLabTestTypesLike($event)">
                         <div class="row"  *ngIf="labTestTypes.length > 0">
@@ -528,19 +564,12 @@
                                 <select class="form-control" multiple="multiple">
                                     <option *ngFor="let lab of labTestTypes" (click)="getLabTestType(lab.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{lab.name}}</option>
                                 </select>
-                            
-                               <!-- <button class="form-control btn btn-primary btn-outline" *ngFor="let lab of labTestTypes" (click)="getLabTestType(lab.id)" style="text-align: left;">{{lab.name}}</button>-->
                             </div>
                         </div>
                      </div>
                  </div>  
                  <div class="row">
                     <div class="col-sm-12">
-                        <!--<h4>Select Diagnosis(Provisional Diagnosis)</h4>
-                        <select class="form-control" [(ngModel)]="diagnosisTypeName">
-                            <option></option>
-                            <option *ngFor="let name of diagnosisTypeNames">{{name}}</option>
-                        </select>-->
                         <h4>Search Diagnosis (Enter 2 Characters to Search)</h4>
                         <input type="text" class="form-control" [(ngModel)]="diagnosisTypeCodeAndName" (ngModelChange)="loadDiagnosisTypesLike($event)">
                         <div class="row"  *ngIf="diagnosisTypes.length > 0">
