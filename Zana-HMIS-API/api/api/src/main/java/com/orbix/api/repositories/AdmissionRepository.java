@@ -3,6 +3,7 @@
  */
 package com.orbix.api.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,5 +71,14 @@ public interface AdmissionRepository extends JpaRepository<Admission, Long> {
 	 * @return
 	 */
 	List<Admission> findAllByPatient(Patient patient);
+
+	List<Admission> findAllByStatusAndCreatedAtBetween(String string, LocalDateTime atStartOfDay,
+			LocalDateTime plusDays);
+
+	List<Admission> findAllByStatusAndDischargedAtBetween(String string, LocalDateTime atStartOfDay,
+			LocalDateTime plusDays);
+
+	List<Admission> findAllByStatusAndAdmittedAtBetween(String string, LocalDateTime atStartOfDay,
+			LocalDateTime plusDays);
 
 }

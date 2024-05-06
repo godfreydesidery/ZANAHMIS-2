@@ -72,7 +72,7 @@ export class ClinicalNoteHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.clinicalNotes = data!
+        this.clinicalNotes = data!.reverse()
         console.log(data)
 
       }

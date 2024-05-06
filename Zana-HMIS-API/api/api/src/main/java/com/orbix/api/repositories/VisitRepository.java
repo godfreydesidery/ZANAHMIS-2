@@ -3,6 +3,7 @@
  */
 package com.orbix.api.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,5 +29,7 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
 	 * @return
 	 */
 	List<Visit> findAllByPatient(Patient patient);
+
+	List<Visit> findAllBySequenceAndCreatedAtBetween(String string, LocalDateTime atStartOfDay, LocalDateTime plusDays);
 
 }

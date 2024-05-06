@@ -66,7 +66,7 @@ export class NurseProcedureHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.procedures = data!
+        this.procedures = data!.reverse()
         console.log(data)
 
       }

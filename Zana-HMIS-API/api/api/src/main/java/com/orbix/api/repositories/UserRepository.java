@@ -45,4 +45,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			String value3);
 
 	Optional<User> findByNickname(String nickname);
+
+	List<User> findAllByActive(boolean b);
 }

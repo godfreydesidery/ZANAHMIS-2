@@ -69,7 +69,7 @@ export class FinalDiagnosisHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.finalDiagnosises = data!
+        this.finalDiagnosises = data!.reverse()
         console.log(data)
 
       }

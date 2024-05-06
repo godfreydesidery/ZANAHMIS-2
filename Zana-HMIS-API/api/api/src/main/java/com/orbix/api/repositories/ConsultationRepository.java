@@ -97,6 +97,9 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 
 	List<Consultation> findAllByPatientBillIn(List<PatientBill> bills);
 
+	List<Consultation> findAllByStatusInAndCreatedAtBetween(List<String> statuses, LocalDateTime atStartOfDay,
+			LocalDateTime plusDays);
+
 	/**
 	 * @param p
 	 * @param string

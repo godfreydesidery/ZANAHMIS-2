@@ -337,6 +337,7 @@
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
+                                    <li><a routerLink="/management">Management</a></li>
                                     <li><a routerLink="/clinician">Doctor</a></li>
                                     <li><a routerLink="/pharmacist">Pharmacist</a></li>
                                     <li><a routerLink="/nurse">Nurse</a></li>
@@ -425,6 +426,15 @@
                             <li><a href="doctor-wise-report.html">Doctor wise Report</a></li>
                             <li><a href="total-report.html">Total Report</a></li>
                             <li><a routerLink="/report-template">Report Template</a></li>-->
+                        </ul>
+                    </li>
+                    <li class="treeview" *ngIf="grant(['MANAGEMENT_GENERAL-ACCESS'])">
+                        <a href="#" (click)="loadManagementModule()">
+                          <i class="fa fa-file-text"></i><span>Management</span>
+                          <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/management-dashboard">Management Dashboard</a></li>
                         </ul>
                     </li>
                 </ul>

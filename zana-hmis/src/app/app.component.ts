@@ -407,6 +407,7 @@ export class AppComponent {
         {path : 'store', loadComponent : () => import('./pages/admin/medical-units/store/store.component').then(m => m.StoreComponent), canActivate: [AuthGuard]},
         {path : 'theatre', loadComponent : () => import('./pages/admin/medical-units/theatre/theatre.component').then(m => m.TheatreComponent), canActivate: [AuthGuard]},
         {path : 'clinician', loadComponent : () => import('./pages/admin/personnel/clinician/clinician.component').then(m => m.ClinicianComponent), canActivate: [AuthGuard]},
+        {path : 'management', loadComponent : () => import('./pages/admin/personnel/management/management.component').then(m => m.ManagementComponent), canActivate: [AuthGuard]},
         {path : 'store-person', loadComponent : () => import('./pages/admin/personnel/store-person/store-person.component').then(m => m.StorePersonComponent), canActivate: [AuthGuard]},
         {path : 'pharmacist', loadComponent : () => import('./pages/admin/personnel/pharmacist/pharmacist.component').then(m => m.PharmacistComponent), canActivate: [AuthGuard]},
         {path : 'cashier', loadComponent : () => import('./pages/admin/personnel/cashier/cashier.component').then(m => m.CashierComponent), canActivate: [AuthGuard]},
@@ -461,6 +462,13 @@ export class AppComponent {
         {path : 'report-template', loadComponent: () => import('./pages/reports/report-template/report-template.component').then(m => m.ReportTemplateComponent), canActivate: [AuthGuard]},
         {path : 'doctors-reports', loadComponent: () => import('./pages/reports/doctors-reports/doctors-reports.component').then(m => m.DoctorsReportsComponent), canActivate: [AuthGuard]},
         {path : 'collections-report', loadComponent: () => import('./pages/reports/collections-report/collections-report.component').then(m => m.CollectionsReportComponent), canActivate: [AuthGuard]},
+      )
+    }
+    loadManagementModule(){
+      this.router.config.push(
+        //{path : 'report-template', loadComponent: () => import('./pages/reports/report-template/report-template.component').then(m => m.ReportTemplateComponent), canActivate: [AuthGuard]},
+        //{path : 'doctors-reports', loadComponent: () => import('./pages/reports/doctors-reports/doctors-reports.component').then(m => m.DoctorsReportsComponent), canActivate: [AuthGuard]},
+        {path : 'management-dashboard', loadComponent: () => import('./pages/management/management-dashboard/management-dashboard.component').then(m => m.ManagementDashboardComponent), canActivate: [AuthGuard]},
       )
     }
 

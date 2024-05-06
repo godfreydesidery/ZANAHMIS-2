@@ -49,6 +49,7 @@ import com.orbix.api.domain.Registration;
 import com.orbix.api.domain.StoreStockCard;
 import com.orbix.api.domain.Supplier;
 import com.orbix.api.domain.User;
+import com.orbix.api.domain.Visit;
 import com.orbix.api.domain.WardBed;
 import com.orbix.api.exceptions.NotFoundException;
 import com.orbix.api.models.AdmissionBedCollectionModel;
@@ -69,6 +70,7 @@ import com.orbix.api.reports.models.LabTestTypeReport;
 import com.orbix.api.reports.models.LpoReport;
 import com.orbix.api.reports.service.LocalPurchaseOrderReportService;
 import com.orbix.api.repositories.AdmissionBedRepository;
+import com.orbix.api.repositories.AdmissionRepository;
 import com.orbix.api.repositories.ClinicianRepository;
 import com.orbix.api.repositories.CollectionRepository;
 import com.orbix.api.repositories.ConsultationRepository;
@@ -87,6 +89,7 @@ import com.orbix.api.repositories.RadiologyRepository;
 import com.orbix.api.repositories.RegistrationRepository;
 import com.orbix.api.repositories.StoreStockCardRepository;
 import com.orbix.api.repositories.UserRepository;
+import com.orbix.api.repositories.VisitRepository;
 import com.orbix.api.repositories.WardBedRepository;
 import com.orbix.api.service.DayService;
 import com.orbix.api.service.UserService;
@@ -121,6 +124,7 @@ public class ReportResource {
 	private final LabTestTypeRepository labTestTypeRepository;
 	
 	private final AdmissionBedRepository admissionBedRepository;
+	private final AdmissionRepository admissionRepository;
 	
 	private final LocalPurchaseOrderRepository localPurchaseOrderRepository;
 	private final GoodsReceivedNoteRepository goodsReceivedNoteRepository;
@@ -132,6 +136,7 @@ public class ReportResource {
 	private final PharmacyStockCardRepository pharmacyStockCardRepository;
 	
 	private final CollectionRepository collectionRepository;
+	private final VisitRepository visitRepository;
 	
 	@PostMapping("/reports/consultation_report")
 	public ResponseEntity<List<Consultation>>getConsultationReport(
@@ -961,6 +966,94 @@ public class ReportResource {
 		
 		return ResponseEntity.ok().body(models);
 	}
+	
+	
+	
+	
+	
+	@PostMapping("/reports/new_patients_count_by_dates")
+	public int getNewPatientsCountByDates(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){		
+		List<Registration> registrations = registrationRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));		
+		int count = 0;		
+		for(Registration registration : registrations) {
+			if(registration.getPatientBill().getStatus().equals("PAID") || registration.getPatientBill().getStatus().equals("VERIFIED") || registration.getPatientBill().getStatus().equals("COVERED")) {
+				count = count + 1;
+			}
+		}		
+		return count;
+	}
+	
+	
+	@PostMapping("/reports/existing_patients_count_by_dates")
+	public int getExistingPatientsCountByDates(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){		
+		List<Visit> visits = visitRepository.findAllBySequenceAndCreatedAtBetween("SUBSEQUENT", args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));		
+		int count = visits.size();		
+		//for(Consultation consultation : consultations) {
+			//if(consultation.getPatientBill().getStatus().equals("PAID") || consultation.getPatientBill().getStatus().equals("VERIFIED") || consultation.getPatientBill().getStatus().equals("COVERED")) {
+				//count = count + 1;
+			//}
+		//}
+		// later count consultation by its satatuses, its simple
+		return count;
+	}
+	
+	
+	@PostMapping("/reports/outpatients_count_by_dates")
+	public int getOutpatientsCountByDates(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){
+		
+		List<String> statuses = new ArrayList<>();
+		statuses.add("PENDING");
+		statuses.add("IN-PROCESS");
+		statuses.add("SIGNED-OUT");
+		
+		List<Consultation> consultations = consultationRepository.findAllByStatusInAndCreatedAtBetween(statuses, args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		
+		return consultations.size();
+	}
+	
+	
+	@PostMapping("/reports/inpatients_count_by_dates")
+	public int getInpatientsCountByDates(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){
+		
+		//get discharged/deceased admissions between from and to
+		
+		List<Admission> dischargedOrDeceasedAdmissions = admissionRepository.findAllByStatusAndDischargedAtBetween("SIGNED-OFF", args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		
+		//get admissions with created date between from and to 
+		
+		List<Admission> existingAdmissions = admissionRepository.findAllByStatusAndAdmittedAtBetween("IN-PROCESS", args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		
+		List<Admission> admissions = new ArrayList<>();
+		admissions.addAll(dischargedOrDeceasedAdmissions);
+		
+		for(Admission existingAdmission : existingAdmissions) {
+			if(!admissions.contains(existingAdmission)) {
+				admissions.add(existingAdmission);
+			}
+		}
+		
+		return admissions.size();
+	}
+	
+	
+	@PostMapping("/reports/active_users")
+	public int getActiveUsers(
+			HttpServletRequest request){
+		List<User> users = userRepository.findAllByActive(true);
+		
+		return users.size();
+	}
+	
+	
+	
 		
 }
 
@@ -1056,4 +1149,10 @@ class PatientBillArgs{
 	LocalDate from;
 	LocalDate to;
 	User user;
+}
+
+@Data
+class DateRangeArgs{
+	LocalDate from;
+	LocalDate to;
 }

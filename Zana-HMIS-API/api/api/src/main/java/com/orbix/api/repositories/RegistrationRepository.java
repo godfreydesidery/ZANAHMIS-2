@@ -3,6 +3,7 @@
  */
 package com.orbix.api.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +25,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 	Registration findByPatient(Patient patient);
 
 	List<Registration> findAllByPatientBillIn(List<PatientBill> bills);
+
+	List<Registration> findAllByCreatedAtBetween(LocalDateTime atStartOfDay, LocalDateTime plusDays);
 
 }

@@ -71,7 +71,7 @@ export class RadiologyHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.radiologies = data!
+        this.radiologies = data!.reverse()
         console.log(data)
 
       }

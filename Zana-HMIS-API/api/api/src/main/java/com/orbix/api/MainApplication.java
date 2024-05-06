@@ -216,6 +216,7 @@ public class MainApplication {
 			roleNames.add("ACCOUNTANT");
 			//roleNames.add("STORE-KEEPER");
 			roleNames.add("STORE-PERSON");
+			roleNames.add("MANAGEMENT");
 			roleNames.add("CLINICIAN");
 			roleNames.add("NURSE");
 			roleNames.add("PHARMACIST");

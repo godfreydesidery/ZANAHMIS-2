@@ -67,7 +67,7 @@ export class WorkingDiagnosisHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.workingDiagnosises = data!
+        this.workingDiagnosises = data!.reverse()
         console.log(data)
 
       }

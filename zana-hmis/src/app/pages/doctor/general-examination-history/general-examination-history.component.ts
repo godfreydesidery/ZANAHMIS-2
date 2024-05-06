@@ -67,7 +67,7 @@ export class GeneralExaminationHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.generalExaminations = data!
+        this.generalExaminations = data!.reverse()
         console.log(data)
 
       }

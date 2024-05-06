@@ -71,7 +71,7 @@ export class LabTestHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.labTests = data!
+        this.labTests = data!.reverse()
         console.log(data)
 
       }

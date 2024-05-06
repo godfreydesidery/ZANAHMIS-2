@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.orbix.api.accessories.Formater;
 import com.orbix.api.domain.Cashier;
 import com.orbix.api.domain.Clinician;
+import com.orbix.api.domain.Management;
 import com.orbix.api.domain.Nurse;
 import com.orbix.api.domain.Pharmacist;
 import com.orbix.api.domain.Privilege;
@@ -39,6 +40,7 @@ import com.orbix.api.exceptions.NotFoundException;
 import com.orbix.api.models.RecordModel;
 import com.orbix.api.repositories.CashierRepository;
 import com.orbix.api.repositories.ClinicianRepository;
+import com.orbix.api.repositories.ManagementRepository;
 import com.orbix.api.repositories.NurseRepository;
 import com.orbix.api.repositories.PharmacistRepository;
 import com.orbix.api.repositories.PrivilegeRepository;
@@ -76,6 +78,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private final NurseRepository nurseRepository;
 	private final CashierRepository cashierRepository;
 	private final StorePersonRepository storePersonRepository;
+	
+	private final ManagementRepository managementRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {		
@@ -155,6 +159,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 					clinician = cl.get();
 					clinician.setActive(true);
 					clinicianRepository.save(clinician);
+				}
+			}
+			
+			if(role.getName().equals("MANAGEMENT")) {
+				Optional<Management> cl = managementRepository.findByUser(user);
+				Management management;
+				if(cl.isEmpty()) {
+					management = new Management();
+					management.setUser(user);
+					management.setCode(user.getCode());
+					management.setFirstName(user.getFirstName());
+					management.setMiddleName(user.getMiddleName());
+					management.setLastName(user.getLastName());
+					management.setNickname(user.getNickname());
+					
+					management.setActive(true);
+					
+					management.setCreatedBy(getUser(request).getId());
+					management.setCreatedOn(dayService.getDay().getId());
+					management.setCreatedAt(dayService.getTimeStamp());
+					
+					managementRepository.save(management);
+				}else {
+					management = cl.get();
+					management.setActive(true);
+					managementRepository.save(management);
 				}
 			}
 			

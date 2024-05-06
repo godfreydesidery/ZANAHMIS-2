@@ -1,0 +1,176 @@
+<section class="content-header">
+    <div class="header-title">
+        <div class="row">
+            <div class="col-sm-4">
+                <h1>Management Dashboard</h1>
+            </div>
+            <div class="col-sm-8">
+                <div class="col-sm-1">
+                    <h4>From</h4>
+                </div>
+                <div class="col-sm-3">
+                    <input type="date" class="form-control" [(ngModel)]="from">
+                </div>
+                <div class="col-sm-1">
+                    <h4>To</h4>
+                </div>
+                <div class="col-sm-3">
+                    <input type="date" class="form-control" [(ngModel)]="to">
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-primary btn-outline" (click)="refresh()">Update</button>
+                </div>
+                <div class="col-sm-1">
+                    <!--<button class="btn btn-primary btn-outline" (click)="clear()">Clear</button>-->
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
+                            <div class="panel panel-bd cardbox">
+                                <div class="panel-body">
+                                    <div class="statistic-box">
+                                        <h2><span class="count-number">{{newPatientsCount}}</span>
+                                        </h2>
+                                    </div>
+                                    <div class="items pull-left">
+                                        <i class="fa fa-users fa-2x"></i>
+                                        <h4>New Patients</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
+                            <div class="panel panel-bd cardbox">
+                                <div class="panel-body">
+                                    <div class="statistic-box">
+                                        <h2><span class="count-number">{{existingPatientsCount}}</span>
+                                        </h2>
+                                    </div>
+                                    <div class="items pull-left">
+                                        <i class="fa fa-users fa-2x"></i>
+                                        <h4>Existing Patients</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
+                            <div class="panel panel-bd cardbox">
+                                <div class="panel-body">
+                                    <div class="statistic-box">
+                                        <h2><span class="count-number">{{outpatientsCount}}</span>
+                                        </h2>
+                                    </div>
+                                    <div class="items pull-left">
+                                        <i class="fa fa-users fa-2x"></i>
+                                        <h4>Outpatients</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
+                            <div class="panel panel-bd cardbox">
+                                <div class="panel-body">
+                                    <div class="statistic-box">
+                                        <h2><span class="count-number">{{inpatientsCount}}</span>
+                                        </h2>
+                                    </div>
+                                    <div class="items pull-left">
+                                        <i class="fa fa-users fa-2x"></i>
+                                        <h4>Inpatients</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
+                            <div class="panel panel-bd cardbox">
+                                <div class="panel-body">
+                                    <div class="statistic-box">
+                                        <h2><span class="count-number">{{activeUsers}}</span>
+                                        </h2>
+                                    </div>
+                                    <div class="items pull-left">
+                                        <i class="fa fa-users fa-2x"></i>
+                                        <h4>Active Users</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    
+                </div>
+
+
+                
+
+                
+
+
+                
+
+
+            </div>
+
+
+
+            <div class="row">
+
+                <!-- Bar Chart -->
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="panel panel-bd lobidisable">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h4>Doctor Performance</h4>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="barChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- datamap -->
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">  
+                    <div class="panel panel-bd lobidrag">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h4>Line chart</h4>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="lineChart" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>     
+</section> <!-- /.content -->

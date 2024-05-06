@@ -49,7 +49,7 @@ public class Registration {
     private Patient patient;
 	
 	@OneToOne(targetEntity = PatientBill.class, fetch = FetchType.EAGER,  optional = false)
-    @JoinColumn(name = "patient_bill_id", nullable = false , updatable = false)
+    @JoinColumn(name = "patient_bill_id", nullable = false , updatable = false) 
     @OnDelete(action = OnDeleteAction.NO_ACTION)	
     private PatientBill patientBill;
 	

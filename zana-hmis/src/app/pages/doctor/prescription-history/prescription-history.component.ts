@@ -67,7 +67,7 @@ export class PrescriptionHistoryComponent {
     .toPromise()
     .then(
       data => {
-        this.prescriptions = data!
+        this.prescriptions = data!.reverse()
         console.log(data)
 
       }
