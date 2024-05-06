@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.orbix.api.domain.Clinician;
 import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.Patient;
 import com.orbix.api.domain.PatientBill;
+import com.orbix.api.reports.models.CollectionReport;
 
 /**
  * @author Godfrey
@@ -108,4 +110,45 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 	//Optional<Consultation> findByPatientAndStatus(Patient p, String string);
 
 	
+	
+	
+	/*@Query(
+			value = "SELECT\r\n" + 
+					"`users`.`id` AS `user_id`,\r\n" +
+					"`collections`.`item_name` AS `itemName`,\r\n" +
+					"`collections`.`payment_channel` AS `paymentChannel`,\r\n" +
+					"SUM(`collections`.`amount`) AS `amount`\r\n" + 
+					"FROM\r\n" + 
+					"`collections`\r\n" + 
+					"JOIN\r\n" + 
+					"`users`\r\n" + 
+					"ON\r\n" + 
+					"`users`.`id`=`collections`.`created_by_user_id`\r\n" + 
+					"WHERE\r\n" +
+					"`collections`.`created_at` BETWEEN :from AND :to\r\n" +
+					"GROUP BY\r\n" + 
+					"`itemName`, `paymentChannel`",
+					nativeQuery = true					
+			)
+	List<CollectionReport> getCollectionReportGeneral(LocalDateTime from, LocalDateTime to);*/
+	
+	//use this query, complete it first
+	/*@Query(
+			value = "SELECT\r\n" +
+					"`clinician`.`nickname` AS `clinicianName`, \r\n" +
+					"COUNT(*) AS `patientCount`, \r\n" +
+					"FROM\r\n" +
+					"`consultations`\r\n" +
+					"JOIN\r\n" + 
+					"`users`\r\n" +
+					"ON\r\n" +
+					"`clinician`.`id`=`consultations`.`clinician_id`\r\n" + 
+					"JOIN\r\n" +
+					"`patient_bills`.`id` = `consultations`.patient_bill_id`\r\n" +
+					"WHERE\r\n" +
+					"`consultations`.`created_at` BETWEEN :from AND :to AND `patient_bills`.`status` IN()\r\n" +
+					"GROUP BY\r\n" + 
+					"`clinicianName`",
+					nativeQuery = true	
+			)*/
 }

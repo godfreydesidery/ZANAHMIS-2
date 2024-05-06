@@ -34,7 +34,8 @@
               "src/assets",
               "src/.htaccess",
               "src/env.js",
-              "src/styles-local.scss"
+              "src/styles-local.scss",
+              "src/assets/js/management-dashboard.js"
             ],
             "styles": [
               "src/styles.scss"
@@ -61,7 +62,8 @@
               "src/assets/plugins/datamaps/d3.min.js",
               "src/assets/plugins/datamaps/topojson.min.js",
               "src/assets/plugins/datamaps/datamaps.all.min.js",
-              "src/assets/dist/js/custom.js"
+              "src/assets/dist/js/custom.js",
+              "src/assets/js/management-dashboard.js"
             ]
           },
           "configurations": {
