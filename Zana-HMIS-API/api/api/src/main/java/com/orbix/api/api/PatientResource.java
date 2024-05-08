@@ -44,6 +44,7 @@ import com.orbix.api.domain.Admission;
 import com.orbix.api.domain.Clinic;
 import com.orbix.api.domain.ClinicalNote;
 import com.orbix.api.domain.Clinician;
+import com.orbix.api.domain.ClinicianPerformance;
 import com.orbix.api.domain.CompanyProfile;
 import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.ConsultationTransfer;
@@ -117,6 +118,7 @@ import com.orbix.api.models.WorkingDiagnosisModel;
 import com.orbix.api.repositories.AdmissionRepository;
 import com.orbix.api.repositories.ClinicRepository;
 import com.orbix.api.repositories.ClinicalNoteRepository;
+import com.orbix.api.repositories.ClinicianPerformanceRepository;
 import com.orbix.api.repositories.ClinicianRepository;
 import com.orbix.api.repositories.CompanyProfileRepository;
 import com.orbix.api.repositories.ConsultationRepository;
@@ -165,6 +167,7 @@ import com.orbix.api.repositories.ReferralPlanRepository;
 import com.orbix.api.repositories.VisitRepository;
 import com.orbix.api.repositories.WardBedRepository;
 import com.orbix.api.repositories.WorkingDiagnosisRepository;
+import com.orbix.api.service.ClinicianPerformanceService;
 import com.orbix.api.service.CompanyProfileService;
 import com.orbix.api.service.DayService;
 import com.orbix.api.service.PatientCreditNoteService;
@@ -244,6 +247,8 @@ public class PatientResource {
 	private final RadiologyAttachmentRepository radiologyAttachmentRepository;
 	
 	private final PatientVitalRepository patientVitalRepository;
+	
+	private final ClinicianPerformanceService clinicianPerformanceService;
 	
 	
 	@GetMapping("/patients")
@@ -806,6 +811,12 @@ public class PatientResource {
 			if(c.get().getPatientBill().getStatus().equals("PAID") || c.get().getPatientBill().getStatus().equals("COVERED")) {
 				c.get().setStatus("IN-PROCESS");
 				consultationRepository.save(c.get());
+				
+				ClinicianPerformance clinicianPerformance = new ClinicianPerformance();
+				clinicianPerformance.setClinician(c.get().getClinician());
+				clinicianPerformance.setConsultation(c.get());
+				
+				clinicianPerformanceService.check(clinicianPerformance, request);
 				return ResponseEntity.ok().body(true);
 			}else {
 				throw new InvalidOperationException("Could not open. Payment not verified.");
@@ -1066,6 +1077,16 @@ public class PatientResource {
 		Optional<Admission> a = admissionRepository.findById(id);
 		if(a.isPresent()) {
 			URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/load_admission").toUriString());
+			
+			ClinicianPerformance clinicianPerformance = new ClinicianPerformance();
+			
+			Optional<Clinician> _clinician = clinicianRepository.findByUser(userService.getUser(request));
+			
+			clinicianPerformance.setClinician(_clinician.get());
+			clinicianPerformance.setAdmission(a.get());
+			
+			clinicianPerformanceService.check(clinicianPerformance, request);
+			
 			return ResponseEntity.created(uri).body(a.get());
 		}else {
 			throw new NotFoundException("Admission not found");
