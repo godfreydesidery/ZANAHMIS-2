@@ -100,6 +100,10 @@ export class DoctorInpatientListComponent {
     }
 
     async postAdmission(id : any){
+
+      if(!window.confirm('Confirm opening this patient. Confirm?')){
+        return
+      }
       
       localStorage.setItem('admission-id', id)
       this.router.navigate(['doctor-inpatient'])    

@@ -34,8 +34,7 @@
               "src/assets",
               "src/.htaccess",
               "src/env.js",
-              "src/styles-local.scss",
-              "src/assets/js/management-dashboard.js"
+              "src/styles-local.scss"
             ],
             "styles": [
               "src/styles.scss"

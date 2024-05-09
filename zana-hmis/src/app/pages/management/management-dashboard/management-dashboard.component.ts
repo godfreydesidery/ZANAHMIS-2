@@ -7,6 +7,7 @@ import * as Chart from 'chart.js';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
+import { IClinicianPerformanceReport } from 'src/app/domain/clinician-performance-report';
 import { ILabTest } from 'src/app/domain/lab-test';
 import { AgePipe } from 'src/app/pipes/age.pipe';
 import { SearchFilterPipe } from 'src/app/pipes/search-filter-pipe';
@@ -44,6 +45,8 @@ export class ManagementDashboardComponent {
   from! : Date
   to! : Date
 
+  clinicianPerformanceReport : IClinicianPerformanceReport[] = []
+
   constructor(
     private auth : AuthService,
     private http : HttpClient,
@@ -64,6 +67,7 @@ export class ManagementDashboardComponent {
     await this.loadInpatientsCountByDate(this.from, this.to)
     await this.loadOutpatientsCountByDate(this.from, this.to)
     await this.loadActiveUsersCount()
+    await this.loadClinicianPerformanceByDate(this.from, this.to)
   }
 
 
@@ -238,6 +242,45 @@ export class ManagementDashboardComponent {
     .then(
       data => {
         this.activeUsers = data!
+        console.log(data)
+        //alert(data)
+      })
+      .catch(
+        error => {
+          console.log(error)
+          //this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+
+
+  async loadClinicianPerformanceByDate(from : Date, to : Date){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    if(from === undefined || to === undefined){
+      from = new Date()
+      to = new Date()
+      //this.msgBox.showErrorMessage3('Could not run. Please select date range')
+      //return
+    }
+    
+
+    
+
+    var args = {
+      from : from,
+      to : to,
+    }
+
+    this.spinner.show()
+    await this.http.post<IClinicianPerformanceReport[]>(API_URL+'/reports/clinician_performance_by_dates', args, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        this.clinicianPerformanceReport = data!
         console.log(data)
         //alert(data)
       })

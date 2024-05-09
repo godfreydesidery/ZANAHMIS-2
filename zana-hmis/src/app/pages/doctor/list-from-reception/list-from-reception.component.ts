@@ -100,6 +100,9 @@ export class ListFromReceptionComponent implements OnInit {
   }
 
   async postConsultation(id : any){
+    if(!window.confirm('Confirm opening this patient. Confirm?')){
+      return
+    }
     /**
      * Set a global value consultation id to be accessed accross components
      */

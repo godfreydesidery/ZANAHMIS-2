@@ -64,6 +64,7 @@ import com.orbix.api.models.RadiologyCollectionModel;
 import com.orbix.api.models.RegistrationCollectionModel;
 import com.orbix.api.models.StoreStockCardModel;
 import com.orbix.api.reports.FastMovingDrugs;
+import com.orbix.api.reports.models.ClinicianPerformanceReport;
 import com.orbix.api.reports.models.CollectionReport;
 import com.orbix.api.reports.models.GrnReport;
 import com.orbix.api.reports.models.LabTestTypeReport;
@@ -71,6 +72,7 @@ import com.orbix.api.reports.models.LpoReport;
 import com.orbix.api.reports.service.LocalPurchaseOrderReportService;
 import com.orbix.api.repositories.AdmissionBedRepository;
 import com.orbix.api.repositories.AdmissionRepository;
+import com.orbix.api.repositories.ClinicianPerformanceRepository;
 import com.orbix.api.repositories.ClinicianRepository;
 import com.orbix.api.repositories.CollectionRepository;
 import com.orbix.api.repositories.ConsultationRepository;
@@ -137,6 +139,8 @@ public class ReportResource {
 	
 	private final CollectionRepository collectionRepository;
 	private final VisitRepository visitRepository;
+	
+	private final ClinicianPerformanceRepository clinicianPerformanceRepository;
 	
 	@PostMapping("/reports/consultation_report")
 	public ResponseEntity<List<Consultation>>getConsultationReport(
@@ -1053,8 +1057,33 @@ public class ReportResource {
 	}
 	
 	
-	
+	@PostMapping("/reports/clinician_performance_by_dates")
+	public List<LClinicianPerformanceReport> getClinicianPerformanceOutpatientsByDates(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){
+		List<ClinicianPerformanceReport> outpatientsPerformances = clinicianPerformanceRepository.getClinicianPerformanceOutpatientReport(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<ClinicianPerformanceReport> inpatientsPerformances = clinicianPerformanceRepository.getClinicianPerformanceInpatientReport(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
 		
+		List<LClinicianPerformanceReport> performances = new ArrayList<LClinicianPerformanceReport>();
+		
+		for(ClinicianPerformanceReport clinicianPerformanceReport : outpatientsPerformances) {
+			LClinicianPerformanceReport performance = new LClinicianPerformanceReport();
+			performance.setName(clinicianPerformanceReport.getName());
+			performance.setTotal(clinicianPerformanceReport.getTotal());
+			performance.setType("OUTPATIENT");
+			performances.add(performance);
+		}
+		
+		for(ClinicianPerformanceReport clinicianPerformanceReport : inpatientsPerformances) {
+			LClinicianPerformanceReport performance = new LClinicianPerformanceReport();
+			performance.setName(clinicianPerformanceReport.getName());
+			performance.setTotal(clinicianPerformanceReport.getTotal());
+			performance.setType("INPATIENT");
+			performances.add(performance);
+		}
+		
+		return performances;
+	}		
 }
 
 @Data
@@ -1155,4 +1184,11 @@ class PatientBillArgs{
 class DateRangeArgs{
 	LocalDate from;
 	LocalDate to;
+}
+
+@Data
+class LClinicianPerformanceReport{
+	String name;
+	int total;
+	String type;
 }

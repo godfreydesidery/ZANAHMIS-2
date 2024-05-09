@@ -37,17 +37,17 @@ public class ClinicianPerformance {
 	
 	private LocalDate checkDate = LocalDate.now();
 	
-	@OneToOne(targetEntity = Clinician.class, fetch = FetchType.EAGER,  optional = false)
+	@ManyToOne(targetEntity = Clinician.class, fetch = FetchType.EAGER,  optional = false)
     @JoinColumn(name = "clinician_id", nullable = false , updatable = false)
     @OnDelete(action = OnDeleteAction.NO_ACTION)	
     private Clinician clinician;
 	
-	@OneToOne(targetEntity = Consultation.class, fetch = FetchType.EAGER,  optional = true)
+	@ManyToOne(targetEntity = Consultation.class, fetch = FetchType.EAGER,  optional = true)
     @JoinColumn(name = "consultation_id", nullable = true , updatable = true)
     @OnDelete(action = OnDeleteAction.NO_ACTION)	
     private Consultation consultation;
 	
-	@OneToOne(targetEntity = NonConsultation.class, fetch = FetchType.EAGER,  optional = true)
+	@ManyToOne(targetEntity = NonConsultation.class, fetch = FetchType.EAGER,  optional = true)
     @JoinColumn(name = "non_consultation_id", nullable = true , updatable = true)
     @OnDelete(action = OnDeleteAction.NO_ACTION)	
     private NonConsultation nonConsultation;
@@ -62,6 +62,5 @@ public class ClinicianPerformance {
 	@Column(name = "created_on_day_id", nullable = false , updatable = false)
     private Long createdOn;
 	private LocalDateTime createdAt = LocalDateTime.now();
-	
-	
+		
 }
