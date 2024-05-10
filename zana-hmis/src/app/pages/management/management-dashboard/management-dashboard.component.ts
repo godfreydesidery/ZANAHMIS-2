@@ -254,6 +254,7 @@ export class ManagementDashboardComponent {
   }
 
 
+  max : number = 0
   async loadClinicianPerformanceByDate(from : Date, to : Date){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -281,7 +282,33 @@ export class ManagementDashboardComponent {
     .then(
       data => {
         this.clinicianPerformanceReport = data!
-        console.log(data)
+
+
+        this.clinicianPerformanceReport.sort((a, b) => a.name.localeCompare(b.name))
+
+        this.max = 0
+
+        this.clinicianPerformanceReport.forEach(element => {
+          if(this.max < element.total){
+            this.max = element.total
+          }
+        })
+
+        this.clinicianPerformanceReport.forEach(element => {
+          element.percentage = (element.total/this.max) * 100
+        })
+
+        var value : string = ''
+        this.clinicianPerformanceReport.forEach(element => {
+          if(value != element.name){
+            value = element.name
+          }else{
+            element.name = ''
+          }
+        })
+
+
+        console.log(this.clinicianPerformanceReport)
         //alert(data)
       })
       .catch(

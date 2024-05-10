@@ -1192,3 +1192,5 @@ class LClinicianPerformanceReport{
 	int total;
 	String type;
 }
+
+

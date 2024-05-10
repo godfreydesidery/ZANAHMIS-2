@@ -131,14 +131,14 @@
                                     <div class="col-sm-4">
                                         <h4>Doctor Performance</h4>
                                     </div>
-                                    <div class="col-sm-8">
+                                    <!--<div class="col-sm-8">
                                         <label>Select Clinic  </label>
                                         <select>
                                             <option></option>
                                             <option>General</option>
                                         </select>
                                         <button>Update</button>
-                                    </div>
+                                    </div>-->
                                 </div>
                                 
                                 
@@ -147,47 +147,28 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table">
+                                    <table class="table" style="border-style: none; border-width: 0px; border: none;">
                                         <thead>
-                                            <tr>
+                                            <tr style="border: none;">
                                                 <td style="width: 20%; text-align: right;"><b>Doctor</b></td>
-                                                <td style="width: 80%;"><b>No of Patients</b></td>
+                                                <td style="width: 80%;"><b>No of Patients</b>.  <span style="background-color: #009688; color: white;" >Outpatients</span> <span style="background-color: #14097e; color: white;" >Inpatients</span> </td>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td style="width: 20%; text-align: right;">Godfrey</td>
+                                            <tr style="border: none;" *ngFor="let report of clinicianPerformanceReport">
+                                                <td style="width: 20%; text-align: right;"><b>{{report.name}}</b></td>
                                                 <td style="width: 80%;">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <div style="height: 80%; width: 50%; border-radius: 5px; background-color: #009688;">.</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 20%; text-align: right;">Godfrey</td>
-                                                <td style="width: 80%;">
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <div style="height: 80%; width: 60%; border-radius: 5px; background-color: #009688;">.</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 20%; text-align: right;">Godfrey</td>
-                                                <td style="width: 80%;">
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <div style="height: 80%; width: 20%; border-radius: 5px; background-color: #009688;">.</div>
+                                                            <div *ngIf="report.type === 'OUTPATIENT'" style="height: 80%; border-radius: 5px; background-color: #009688; text-align: right;" [style.width.%]='report.percentage'>. <span class="badge">{{report.total}}</span></div>
+                                                            <div *ngIf="report.type === 'INPATIENT'" style="height: 80%; border-radius: 5px; background-color: #14097e; text-align: right;" [style.width.%]='report.percentage'>. <span class="badge">{{report.total}}</span></div>
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
                                         </tbody>
                                         <tfoot>
-                                            <tr>
+                                            <tr style="border: none;">
                                                 <td style="width: 20%;"></td>
                                                 <td style="width: 80%;"></td>
                                             </tr>
@@ -205,11 +186,136 @@
                     <div class="panel panel-bd lobidrag">
                         <div class="panel-heading">
                             <div class="panel-title">
-                                <h4>Line chart</h4>
+                                <h4>Monthly Patients Summary</h4>
                             </div>
                         </div>
                         <div class="panel-body">
-                            <canvas id="lineChart" height="150"></canvas>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table class="table" style="overflow-x: scroll;">
+                                        <thead>
+                                            <tr style="text-align: center; font-weight: bold;">
+                                                <td style="background-color: #d3d8d8;">Jan</td>
+                                                <td>Feb</td>
+                                                <td style="background-color: #d3d8d8;">Mar</td>
+                                                <td>Apr</td>
+                                                <td style="background-color: #d3d8d8;">May</td>
+                                                <td>Jun</td>
+                                                <td style="background-color: #d3d8d8;">Jul</td>
+                                                <td>Aug</td>
+                                                <td style="background-color: #d3d8d8;">Sep</td>
+                                                <td>Oct</td>
+                                                <td style="background-color: #d3d8d8;">Nov</td>
+                                                <td>Dec</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #009688;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #212242;"></div>
+                                                        <div class="col-sm-3" style="height: 10cm; background-color: #442626;"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr style="text-align: center; font-weight: bold;">
+                                                <td style="background-color: #d3d8d8;">Jan</td>
+                                                <td>Feb</td>
+                                                <td style="background-color: #d3d8d8;">Mar</td>
+                                                <td>Apr</td>
+                                                <td style="background-color: #d3d8d8;">May</td>
+                                                <td>Jun</td>
+                                                <td style="background-color: #d3d8d8;">Jul</td>
+                                                <td>Aug</td>
+                                                <td style="background-color: #d3d8d8;">Sep</td>
+                                                <td>Oct</td>
+                                                <td style="background-color: #d3d8d8;">Nov</td>
+                                                <td>Dec</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
