@@ -74,7 +74,8 @@
                                         <td>{{b.createdAt | dateTime}}</td>
                                         <td>{{b?.description}}</td>
                                         <td>{{b?.qty}}</td>
-                                        <td style="text-align: right;"><span *ngIf="b?.status === 'COVERED'">Covered</span><span *ngIf="b?.status != 'COVERED'">{{b?.amount | currency:'':''}}</span></td>
+                                        <!--<td style="text-align: right;"><span *ngIf="b?.status === 'COVERED'">Covered</span><span *ngIf="b?.status != 'COVERED'">{{b?.amount | currency:'':''}}</span></td>-->
+                                        <td style="text-align: right;">{{b?.amount | currency:'':''}}</td>
                                         <td><span *ngIf="b?.insurancePlan != null" >{{b?.insurancePlan?.name}}</span><span *ngIf="b?.insurancePlan === null" >Client</span></td>
                                         <td>{{b?.status}}</td>
                                     </tr>

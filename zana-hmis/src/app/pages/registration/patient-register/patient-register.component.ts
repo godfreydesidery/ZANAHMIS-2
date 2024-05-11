@@ -50,6 +50,7 @@ export class PatientRegisterComponent implements OnInit {
   id : any
   no : string
   searchKey : string
+  searchKeyCard : string
   firstName : string
   middleName : string
   lastName : string
@@ -98,6 +99,7 @@ export class PatientRegisterComponent implements OnInit {
   editMembershipNo : string = ''
 
   lockSearchKey : boolean = false
+  lockSearchKey2 : boolean = false
 
   nonConsultationId : number = 0
 
@@ -144,6 +146,7 @@ export class PatientRegisterComponent implements OnInit {
     this.id = null
     this.no = ''
     this.searchKey = ''
+    this.searchKeyCard = ''
     this.firstName = ''
     this.middleName = ''
     this.lastName = ''
@@ -172,6 +175,7 @@ export class PatientRegisterComponent implements OnInit {
     this.id = null
     this.no = ''
     this.searchKey = ''
+    this.searchKeyCard = ''
     this.firstName = ''
     this.middleName = ''
     this.lastName = ''
@@ -193,6 +197,7 @@ export class PatientRegisterComponent implements OnInit {
     this.clinicianName = ''
     this.consultationFee = 0
     this.lockSearchKey = false
+    this.lockSearchKey2 = false
 
     this.nonConsultationId = 0
 
@@ -1510,6 +1515,31 @@ export class PatientRegisterComponent implements OnInit {
       }
     )
   }
+
+  async loadPatientsLikeAndCard(value : string){
+    this.patients = []
+    if(value.length < 3){
+      return
+    }
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    await this.http.get<IPatient[]>(API_URL+'/patients/load_patients_like_and_card?name_like='+value, options)
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.patients = data!
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+
+
   async getPatient(id : any){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -1553,6 +1583,7 @@ export class PatientRegisterComponent implements OnInit {
         this.insurancePlanName = data!['insurancePlan']?.name
 
         this.lockSearchKey = true
+        this.lockSearchKey2 = true
       }
     )
     .catch(
@@ -1572,6 +1603,78 @@ export class PatientRegisterComponent implements OnInit {
     }
     await this.getLastVisitDate()  
   }
+
+
+
+  async getPatientWithCard(id : any){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.patients = []
+    this.spinner.show()
+    await this.http.get<IPatient>(API_URL+'/patients/get?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      (data) => {
+        this.patientId    = data?.id
+        this.patientNo = data!.no
+        this.patientFirstName = data!.firstName
+        this.patientMiddleName = data!.middleName
+        this.patientLastName = data!.lastName
+        this.patientPhoneNo = data!.phoneNo
+        this.membershipNo = data!['membershipNo']
+
+        this.searchKeyCard = this.membershipNo + ' | ' + this.patientFirstName + ' ' +  this.patientMiddleName + ' ' + this.patientLastName + ' | ' + 'File No: '+this.patientNo
+
+        this.id = data!['id']
+        this.no = data!['no']
+        this.firstName = data!['firstName']
+        this.middleName = data!['middleName']
+        this.lastName = data!['lastName']
+        this.gender = data!['gender']
+        this.dateOfBirth =data!['dateOfBirth']
+        this.paymentType = data!['paymentType']
+        this.type = data!['type']
+        this.membershipNo = data!['membershipNo']
+        this.phoneNo = data!['phoneNo']
+        this.address = data!['address']
+        this.email = data!['email']
+        this.nationality = data!['nationality']
+        this.nationalId = data!['nationalId']
+        this.passportNo = data!['passportNo']
+        this.kinFullName = data!['kinFullName']
+        this.kinRelationship = data!['kinRelationship']
+        this.kinPhoneNo = data!['kinPhoneNo']
+
+        this.insurancePlanName = data!['insurancePlan']?.name
+
+        this.lockSearchKey = true
+        this.lockSearchKey2 = true
+      }
+    )
+    .catch(
+      error => {
+        this.clear()
+        this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+    if(this.type === 'OUTPATIENT'){
+      await this.loadActiveConsultation(this.id)
+    }else if(this.type === 'OUTSIDER'){
+      await this.loadNonConsultationId(this.id)
+      await this.loadLabTest(0, this.nonConsultationId, 0)
+      await this.loadRadiologies(0, this.nonConsultationId, 0)
+      await this.loadProcedures(0, this.nonConsultationId, 0)
+    }
+    await this.getLastVisitDate()  
+  }
+
+
+
+
+
 
   nationalities : string[] = [
     "Tanzania",

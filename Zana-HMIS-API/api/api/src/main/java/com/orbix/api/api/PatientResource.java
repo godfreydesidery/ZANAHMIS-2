@@ -312,7 +312,7 @@ public class PatientResource {
 		}
 		
 		if(!(patient.getType() == "OUTPATIENT" || patient.getType() == "INPATIENT" || patient.getType() == "OUTSIDER")) {
-			throw new InvalidOperationException("Payment type can only be changed to OUTPATIENT, INPATIENT or OUTSIDER");
+			//throw new InvalidOperationException("Payment type can only be changed to OUTPATIENT, INPATIENT or OUTSIDER");
 		}
 				
 		List<String> statuses = new ArrayList<>();
@@ -4885,6 +4885,16 @@ public class PatientResource {
 		List<Patient> patients = new ArrayList<Patient>();
 		
 		patients = patientRepository.findAllByNoContainingOrFirstNameContainingOrMiddleNameContainingOrLastNameContainingOrPhoneNoContaining(value, value, value, value, value);
+		return ResponseEntity.ok().body(patients);
+	}
+	
+	@GetMapping("/patients/load_patients_like_and_card")
+	public ResponseEntity<List<Patient>> getPatientNameContainsWithCard(
+			@RequestParam(name = "name_like") String value,
+			HttpServletRequest request){
+		List<Patient> patients = new ArrayList<Patient>();
+		
+		patients = patientRepository.findAllByNoContainingOrFirstNameContainingOrMiddleNameContainingOrLastNameContainingOrPhoneNoContainingOrMembershipNoContaining(value, value, value, value, value, value);
 		return ResponseEntity.ok().body(patients);
 	}
 	
