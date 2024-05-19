@@ -81,4 +81,13 @@ public interface AdmissionRepository extends JpaRepository<Admission, Long> {
 	List<Admission> findAllByStatusAndAdmittedAtBetween(String string, LocalDateTime atStartOfDay,
 			LocalDateTime plusDays);
 
+	List<Admission> findAllByDischargedAtBetween(LocalDateTime atStartOfDay, LocalDateTime plusDays);
+
+	List<Admission> findAllByAdmittedAtBetween(LocalDateTime atStartOfDay, LocalDateTime plusDays);
+
+	List<Admission> findAllByAdmittedAtLessThanAndDischargedAtGreaterThan(LocalDateTime atStartOfDay,
+			LocalDateTime plusDays);
+
+	List<Admission> findAllByAdmittedAtLessThanAndStatus(LocalDateTime atStartOfDay, String string);
+
 }

@@ -3,6 +3,7 @@
  */
 package com.orbix.api.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,5 +59,7 @@ public interface NonConsultationRepository extends JpaRepository<NonConsultation
 	List<NonConsultation> findAllByStatusIn(List<String> conStatuses);
 
 	List<NonConsultation> findAllByPatient(Patient patient);
+
+	List<NonConsultation> findAllByCreatedAt(LocalDateTime atStartOfDay);
 
 }

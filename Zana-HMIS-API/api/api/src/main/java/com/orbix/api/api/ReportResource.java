@@ -6,8 +6,10 @@ package com.orbix.api.api;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -81,6 +83,7 @@ import com.orbix.api.repositories.LabTestRepository;
 import com.orbix.api.repositories.LabTestTypeRepository;
 import com.orbix.api.repositories.LocalPurchaseOrderRepository;
 import com.orbix.api.repositories.MedicineRepository;
+import com.orbix.api.repositories.NonConsultationRepository;
 import com.orbix.api.repositories.PatientBillRepository;
 import com.orbix.api.repositories.PatientInvoiceDetailRepository;
 import com.orbix.api.repositories.PatientRepository;
@@ -115,6 +118,7 @@ public class ReportResource {
 	private final UserRepository userRepository;
 	
 	private final ConsultationRepository consultationRepository;
+	private final NonConsultationRepository nonConsultationRepository;
 	private final RegistrationRepository registrationRepository;
 	private final ProcedureRepository procedureRepository;
 	private final RadiologyRepository radiologyRepository;
@@ -1016,7 +1020,9 @@ public class ReportResource {
 		statuses.add("IN-PROCESS");
 		statuses.add("SIGNED-OUT");
 		
-		List<Consultation> consultations = consultationRepository.findAllByStatusInAndCreatedAtBetween(statuses, args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Consultation> consultations = consultationRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		
+		//List<Consultation> consultations = consultationRepository.findAllByStatusInAndCreatedAtBetween(statuses, args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
 		
 		return consultations.size();
 	}
@@ -1027,26 +1033,37 @@ public class ReportResource {
 			@RequestBody DateRangeArgs args,
 			HttpServletRequest request){
 		
-		//get discharged/deceased admissions between from and to
 		
-		List<Admission> dischargedOrDeceasedAdmissions = admissionRepository.findAllByStatusAndDischargedAtBetween("SIGNED-OFF", args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Admission> admissions = new ArrayList<Admission>();
+		List<Admission> lessThanAdmissions = admissionRepository.findAllByDischargedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Admission> moreThanAdmissions = admissionRepository.findAllByAdmittedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Admission> passedThroughAdmissions = admissionRepository.findAllByAdmittedAtLessThanAndDischargedAtGreaterThan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Admission> throughOutAdmissions = admissionRepository.findAllByAdmittedAtLessThanAndStatus(args.getFrom().atStartOfDay(), "IN-PROCESS");
 		
-		//get admissions with created date between from and to 
+		admissions.addAll(lessThanAdmissions);
+		admissions.addAll(moreThanAdmissions);
+		admissions.addAll(passedThroughAdmissions);
+		admissions.addAll(throughOutAdmissions);
 		
-		List<Admission> existingAdmissions = admissionRepository.findAllByStatusAndAdmittedAtBetween("IN-PROCESS", args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		Set<Admission> sAdms = new HashSet<Admission>(admissions);
 		
-		List<Admission> admissions = new ArrayList<>();
-		admissions.addAll(dischargedOrDeceasedAdmissions);
-		
-		for(Admission existingAdmission : existingAdmissions) {
-			if(!admissions.contains(existingAdmission)) {
-				admissions.add(existingAdmission);
-			}
-		}
-		
-		return admissions.size();
+		return sAdms.size();
 	}
 	
+	@PostMapping("/reports/discharged_patients_count_by_dates")
+	public int getDischargedPatientsCountByDates(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){
+		
+		List<Admission> admissions = new ArrayList<Admission>();
+		List<Admission> dischargedAdmissions = admissionRepository.findAllByDischargedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		
+		admissions.addAll(dischargedAdmissions);
+		
+		Set<Admission> sAdms = new HashSet<Admission>(admissions);
+		
+		return sAdms.size();
+	}
 	
 	@PostMapping("/reports/active_users")
 	public int getActiveUsers(
@@ -1083,7 +1100,40 @@ public class ReportResource {
 		}
 		
 		return performances;
-	}		
+	}
+	@PostMapping("/reports/monthly_summary")
+	public MonthlySummaryReport getMonthlySummaryReport(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){
+		
+		MonthlySummaryReport summary = new MonthlySummaryReport();
+		
+		List<Consultation> consultations = consultationRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		summary.setOutpatientCount(consultations.size());
+		
+		List<Admission> admissions = new ArrayList<Admission>();
+		List<Admission> lessThanAdmissions = admissionRepository.findAllByDischargedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Admission> moreThanAdmissions = admissionRepository.findAllByAdmittedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Admission> passedThroughAdmissions = admissionRepository.findAllByAdmittedAtLessThanAndDischargedAtGreaterThan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		List<Admission> throughOutAdmissions = admissionRepository.findAllByAdmittedAtLessThanAndStatus(args.getFrom().atStartOfDay(), "IN-PROCESS");
+		
+		admissions.addAll(lessThanAdmissions);
+		admissions.addAll(moreThanAdmissions);
+		admissions.addAll(passedThroughAdmissions);
+		admissions.addAll(throughOutAdmissions);
+		
+		Set<Admission> sAdms = new HashSet<Admission>(admissions);
+		
+		summary.setInpatientCount(sAdms.size());
+		
+		List<NonConsultation> nonConsultations = nonConsultationRepository.findAllByCreatedAt(args.getFrom().atStartOfDay());
+		summary.setOutsiderCount(nonConsultations.size());
+		
+		
+		return summary;
+	}
+	
+	
 }
 
 @Data
@@ -1193,4 +1243,10 @@ class LClinicianPerformanceReport{
 	String type;
 }
 
+@Data
+class MonthlySummaryReport{
+	int outpatientCount;
+	int inpatientCount;
+	int outsiderCount;
+}
 

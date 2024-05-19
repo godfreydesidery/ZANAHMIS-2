@@ -734,19 +734,24 @@ export class DoctorCrackingComponent implements OnInit {
       description : this.labTestDescription     
     }
     this.spinner.show()
-    await this.http.post(API_URL+'/patients/save_lab_test?consultation_id='+this.id+'&non_consultation_id='+0+'&admission_id='+0, labTest, options)
+    await this.http.post<ILabTest>(API_URL+'/patients/save_lab_test?consultation_id='+this.id+'&non_consultation_id='+0+'&admission_id='+0, labTest, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
         this.loadLabTest(this.id, 0, 0)
         this.clearLabTest()
-        this.msgBox.showSuccessMessage('Lab Test Saved successifully')
+        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Lab Test Saved successifully')
+        }
+        console.log(data)
       }
     )
     .catch(
       error => {
-        this.loadLabTest(this.id, 0, 0)
+        //this.loadLabTest(this.id, 0, 0)
         this.clearLabTest()
         this.msgBox.showErrorMessage(error, 'Could not save Lab Test')
         console.log(error)
@@ -771,14 +776,22 @@ export class DoctorCrackingComponent implements OnInit {
       description : this.radiologyDescription       
     }
     this.spinner.show()
-    await this.http.post(API_URL+'/patients/save_radiology?consultation_id='+this.id+'&non_consultation_id='+0+'&admission_id='+0, radiology, options)
+    await this.http.post<IRadiology>(API_URL+'/patients/save_radiology?consultation_id='+this.id+'&non_consultation_id='+0+'&admission_id='+0, radiology, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
+        
         this.loadRadiologies(this.id, 0, 0)
         this.clearRadiology()
-        this.msgBox.showSuccessMessage('Radiology Saved successifully')
+
+        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Radiology Saved successifully')
+        }
+
+        
       }
     )
     .catch(
@@ -883,10 +896,14 @@ export class DoctorCrackingComponent implements OnInit {
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
         this.loadProcedures(this.id, 0, 0)
         this.clearProcedure()
-        this.msgBox.showSuccessMessage('Procedure Saved successifully')
+        if(data?.patientBill?.status !='COVERED' && data?.consultation?.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Procedure Saved successifully')
+        }
       }
     )
     .catch(
@@ -965,10 +982,14 @@ export class DoctorCrackingComponent implements OnInit {
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
         this.loadPrescriptions(this.id, 0, 0)
         this.clearPrescription()
-        this.msgBox.showSuccessMessage('Prescription Saved successifully')
+        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service/Medicine not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Prescription Saved successifully')
+        }
       }
     )
     .catch(

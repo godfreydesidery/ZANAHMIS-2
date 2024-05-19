@@ -767,14 +767,18 @@ export class DoctorInpatientComponent implements OnInit {
       description : this.labTestDescription     
     }
     this.spinner.show()
-    await this.http.post(API_URL+'/patients/save_lab_test?consultation_id='+0+'&non_consultation_id='+0+'&admission_id='+this.id, labTest, options)
+    await this.http.post<ILabTest>(API_URL+'/patients/save_lab_test?consultation_id='+0+'&non_consultation_id='+0+'&admission_id='+this.id, labTest, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
         this.loadLabTest(0, 0, this.id)
         this.clearLabTest()
-        this.msgBox.showSuccessMessage('Lab Test Saved successifully')
+        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Lab Test Saved successifully')
+        }
       }
     )
     .catch(
@@ -804,14 +808,18 @@ export class DoctorInpatientComponent implements OnInit {
       description : this.radiologyDescription       
     }
     this.spinner.show()
-    await this.http.post(API_URL+'/patients/save_radiology?consultation_id='+0+'&non_consultation_id='+0+'&admission_id='+this.id, radiology, options)
+    await this.http.post<IRadiology>(API_URL+'/patients/save_radiology?consultation_id='+0+'&non_consultation_id='+0+'&admission_id='+this.id, radiology, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
         this.loadRadiologies(0, 0, this.id)
         this.clearRadiology()
-        this.msgBox.showSuccessMessage('Radiology Saved successifully')
+        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Radiology Saved successifully')
+        }
       }
     )
     .catch(
@@ -916,10 +924,14 @@ export class DoctorInpatientComponent implements OnInit {
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
         this.loadProcedures(0, 0, this.id)
         this.clearProcedure()
-        this.msgBox.showSuccessMessage('Procedure Saved successifully')
+        if(data?.patientBill?.status !='COVERED' && data?.consultation?.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Procedure Saved successifully')
+        }
       }
     )
     .catch(
@@ -998,10 +1010,14 @@ export class DoctorInpatientComponent implements OnInit {
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      () => {
+      (data) => {
         this.loadPrescriptions(0, 0, this.id)
         this.clearPrescription()
-        this.msgBox.showSuccessMessage('Prescription Saved successifully')
+        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+          this.msgBox.showSuccessMessage('Service/Medicine not covered in insurance package!')
+        }else{
+          this.msgBox.showSuccessMessage('Prescription Saved successifully')
+        }
       }
     )
     .catch(

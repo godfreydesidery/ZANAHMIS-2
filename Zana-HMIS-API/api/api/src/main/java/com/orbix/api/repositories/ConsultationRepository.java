@@ -102,6 +102,8 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 	List<Consultation> findAllByStatusInAndCreatedAtBetween(List<String> statuses, LocalDateTime atStartOfDay,
 			LocalDateTime plusDays);
 
+	List<Consultation> findAllByCreatedAt(LocalDateTime atStartOfDay);
+
 	/**
 	 * @param p
 	 * @param string
