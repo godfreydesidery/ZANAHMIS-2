@@ -76,6 +76,7 @@ export class ManagementDashboardComponent {
     await this.loadExistingPatientsCountByDate(this.from, this.to)
     await this.loadInpatientsCountByDate(this.from, this.to)
     await this.loadOutpatientsCountByDate(this.from, this.to)
+    await this.loadDischargedPatientsCountByDate(this.from, this.to)
     await this.loadActiveUsersCount()
     //await this.loadClinicianPerformanceByDate(this.from, this.to)
     //await this.loadMonthlySummaryReportByDate(this.from, this.to)
@@ -284,6 +285,9 @@ export class ManagementDashboardComponent {
       }
     )
   }
+
+
+  
 
 
 

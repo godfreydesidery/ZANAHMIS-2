@@ -469,6 +469,34 @@ export class AppComponent {
         //{path : 'report-template', loadComponent: () => import('./pages/reports/report-template/report-template.component').then(m => m.ReportTemplateComponent), canActivate: [AuthGuard]},
         //{path : 'doctors-reports', loadComponent: () => import('./pages/reports/doctors-reports/doctors-reports.component').then(m => m.DoctorsReportsComponent), canActivate: [AuthGuard]},
         {path : 'management-dashboard', loadComponent: () => import('./pages/management/management-dashboard/management-dashboard.component').then(m => m.ManagementDashboardComponent), canActivate: [AuthGuard]},
+
+        {path : 'consultation-report', loadComponent : () => import('./pages/admin/reports/consultation-report/consultation-report.component').then(m => m.ConsultationReportComponent), canActivate: [AuthGuard]},
+        {path : 'procedure-report', loadComponent : () => import('./pages/admin/reports/procedure-report/procedure-report.component').then(m => m.ProcedureReportComponent), canActivate: [AuthGuard]},
+        {path : 'doctor-to-radiology-report', loadComponent : () => import('./pages/admin/reports/doctor-to-radiology-report/doctor-to-radiology-report.component').then(m => m.DoctorToRadiologyReportComponent), canActivate: [AuthGuard]},
+        {path : 'doctor-to-laboratory-report', loadComponent : () => import('./pages/admin/reports/doctor-to-laboratory-report/doctor-to-laboratory-report.component').then(m => m.DoctorToLaboratoryReportComponent), canActivate: [AuthGuard]},
+
+        {path : 'lab-test-report', loadComponent : () => import('./pages/laboratory/reports/lab-test-report/lab-test-report.component').then(m => m.LabTestReportComponent), canActivate: [AuthGuard]},
+        {path : 'lab-test-statistics-report', loadComponent : () => import('./pages/laboratory/reports/lab-test-statistics-report/lab-test-statistics-report.component').then(m => m.LabTestStatisticsReportComponent), canActivate: [AuthGuard]},
+        {path : 'lab-sample-collection-report', loadComponent : () => import('./pages/laboratory/reports/lab-sample-collection-report/lab-sample-collection-report.component').then(m => m.LabSampleCollectionReportComponent), canActivate: [AuthGuard]},
+        
+        {path : 'pharmacy-medicine-stock-status', loadComponent : () => import('./pages/pharmacy/pharmacy-medicine-stock-status/pharmacy-medicine-stock-status.component').then(m => m.PharmacyMedicineStockStatusComponent), canActivate: [AuthGuard]},
+        {path : 'pharmacy-dispensing-report', loadComponent : () => import('./pages/pharmacy/reports/pharmacy-dispensing-report/pharmacy-dispensing-report.component').then(m => m.PharmacyDispensingReportComponent), canActivate: [AuthGuard]},
+        {path : 'fast-moving-drugs-report', loadComponent : () => import('./pages/pharmacy/reports/fast-moving-drugs/fast-moving-drugs.component').then(m => m.FastMovingDrugsComponent), canActivate: [AuthGuard]},
+        {path : 'slow-moving-drugs-report', loadComponent : () => import('./pages/pharmacy/reports/slow-moving-drugs/slow-moving-drugs.component').then(m => m.SlowMovingDrugsComponent), canActivate: [AuthGuard]},
+        {path : 'pharmacy-stock-card-report', loadComponent : () => import('./pages/pharmacy/reports/pharmacy-stock-card-report/pharmacy-stock-card-report.component').then(m => m.PharmacyStockCardReportComponent), canActivate: [AuthGuard]},
+        
+        {path : 'goods-received-note-report', loadComponent : () => import('./pages/store/reports/goods-received-note-report/goods-received-note-report.component').then(m => m.GoodsReceivedNoteReportComponent), canActivate: [AuthGuard]},
+        {path : 'store-stock-card-report', loadComponent : () => import('./pages/store/reports/store-stock-card-report/store-stock-card-report.component').then(m => m.StoreStockCardReportComponent), canActivate: [AuthGuard]},
+        {path : 'local-purchase-order-report', loadComponent : () => import('./pages/procurement/reports/local-purchase-order-report/local-purchase-order-report.component').then(m => m.LocalPurchaseOrderReportComponent), canActivate: [AuthGuard]},
+      
+        {path : 'local-purchase-order-report', loadComponent : () => import('./pages/procurement/reports/local-purchase-order-report/local-purchase-order-report.component').then(m => m.LocalPurchaseOrderReportComponent), canActivate: [AuthGuard]},
+        {path : 'goods-received-note-report', loadComponent : () => import('./pages/store/reports/goods-received-note-report/goods-received-note-report.component').then(m => m.GoodsReceivedNoteReportComponent), canActivate: [AuthGuard]},
+      
+        {path : 'consultation-report', loadComponent : () => import('./pages/admin/reports/consultation-report/consultation-report.component').then(m => m.ConsultationReportComponent), canActivate: [AuthGuard]},
+        {path : 'procedure-report', loadComponent : () => import('./pages/admin/reports/procedure-report/procedure-report.component').then(m => m.ProcedureReportComponent), canActivate: [AuthGuard]},
+        {path : 'doctor-to-radiology-report', loadComponent : () => import('./pages/admin/reports/doctor-to-radiology-report/doctor-to-radiology-report.component').then(m => m.DoctorToRadiologyReportComponent), canActivate: [AuthGuard]},
+        {path : 'doctor-to-laboratory-report', loadComponent : () => import('./pages/admin/reports/doctor-to-laboratory-report/doctor-to-laboratory-report.component').then(m => m.DoctorToLaboratoryReportComponent), canActivate: [AuthGuard]},
+
       )
     }
 

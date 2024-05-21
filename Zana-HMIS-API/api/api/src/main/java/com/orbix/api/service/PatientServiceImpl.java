@@ -1587,7 +1587,7 @@ public class PatientServiceImpl implements PatientService {
 		visit.setType(p.getType());
 		
 		
-		visit.setSequence("SUBSEQUENT");
+		visit.setSequence("SUBSEQUENT-FOR-ADMISSION");
 		
 		visit.setCreatedBy(userService.getUser(request).getId());
 		visit.setCreatedOn(dayService.getDay().getId());

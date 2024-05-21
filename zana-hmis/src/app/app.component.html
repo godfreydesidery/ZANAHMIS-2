@@ -414,7 +414,7 @@
                         </ul>
                     </li>
                     
-                    <li class="treeview" *ngIf="grant(['REPORT_SERVICE-ACCESS'])">
+                    <!--<li class="treeview" *ngIf="grant(['REPORT_SERVICE-ACCESS'])">
                         <a href="#" (click)="loadReportModule()">
                           <i class="fa fa-file-text"></i><span>Report</span>
                           <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
@@ -422,12 +422,12 @@
                         <ul class="treeview-menu">
                             <li><a routerLink="/doctors-reports">Doctors Report</a></li>
                             <li><a routerLink="/collections-report">Collections Report</a></li>
-                            <!--<li><a href="patient-wise-report.html">Patient wise Report</a></li>
+                            <li><a href="patient-wise-report.html">Patient wise Report</a></li>
                             <li><a href="doctor-wise-report.html">Doctor wise Report</a></li>
                             <li><a href="total-report.html">Total Report</a></li>
-                            <li><a routerLink="/report-template">Report Template</a></li>-->
+                            <li><a routerLink="/report-template">Report Template</a></li>
                         </ul>
-                    </li>
+                    </li>-->
                     <li class="treeview" *ngIf="grant(['MANAGEMENT_GENERAL-ACCESS'])">
                         <a href="#" (click)="loadManagementModule()">
                           <i class="fa fa-file-text"></i><span>Management</span>
@@ -435,6 +435,91 @@
                         </a>
                         <ul class="treeview-menu">
                             <li><a routerLink="/management-dashboard">Management Dashboard</a></li>
+
+
+                            <li class="treeview">
+                                <a href="#" (click)="loadReportModule()">
+                                  <i class="fa fa-file-text"></i><span>General Reports</span>
+                                  <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/doctors-reports">Doctors Report</a></li>
+                                    <li><a routerLink="/collections-report">Collections Report</a></li>
+                                    <!--<li><a href="patient-wise-report.html">Patient wise Report</a></li>
+                                    <li><a href="doctor-wise-report.html">Doctor wise Report</a></li>
+                                    <li><a href="total-report.html">Total Report</a></li>
+                                    <li><a routerLink="/report-template">Report Template</a></li>-->
+                                </ul>
+                            </li>
+
+
+
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Laboratory Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/lab-test-report">Test Report</a></li>
+                                    <li><a routerLink="/lab-test-statistics-report">Test Statistics Report</a></li>
+                                    <li><a routerLink="/lab-sample-collection-report">Sample Collection Report</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Pharmacy Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/pharmacy-dispensing-report">Dispensing Report</a></li>
+                                    <li><a routerLink="/fast-moving-drugs-report">Fast Moving Drugs</a></li>
+                                    <li><a routerLink="/slow-moving-drugs-report">Slow Moving Drugs</a></li>
+                                    <li><a routerLink="/pharmacy-stock-card-report">Stock Card Report</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Store Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/goods-received-note-report">GRN Report</a></li>
+                                    <li><a routerLink="/store-stock-card-report">Stock Card Report</a></li>
+                                    <li><a routerLink="/local-purchase-order-report">LPO Report</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Procurement Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/local-purchase-order-report">LPO Report</a></li>
+                                    <li><a routerLink="/goods-received-note-report">GRN Report</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-file-text"></i><span>Admin Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a routerLink="/consultation-report">Consultation Report</a></li>
+                                    <li><a routerLink="/procedure-report">Procedure Report</a></li>
+                                    <li><a routerLink="/doctor-to-radiology-report">Doctor to Radiology Report</a></li>
+                                    <li><a routerLink="/doctor-to-laboratory-report">Doctor to Laboratory Report</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
