@@ -23,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.orbix.api.filter.CustomAuthenticationFilter;
 import com.orbix.api.filter.CustomAuthorizationFilter;
+import com.orbix.api.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 	
 	private final UserDetailsService userDetailsService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	private final UserRepository userRepository;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {		
@@ -68,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
+		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), userRepository);
 		customAuthenticationFilter.setFilterProcessesUrl("/zana-hmis-api/login");
 		http.cors();
 		http.csrf().disable();
@@ -88,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 		//http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/users/users").hasAnyAuthority("dfgh");
 		
 		http.addFilter(customAuthenticationFilter);
-		http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new CustomAuthorizationFilter(userRepository), UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	public WebMvcConfigurer corsConfigurer() {

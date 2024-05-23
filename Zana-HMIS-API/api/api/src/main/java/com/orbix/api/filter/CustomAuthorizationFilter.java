@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Arrays;
 
 import javax.servlet.FilterChain;
@@ -32,7 +33,16 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orbix.api.domain.Role;
+import com.orbix.api.domain.User;
+import com.orbix.api.exceptions.InvalidOperationException;
+import com.orbix.api.exceptions.NotFoundException;
+import com.orbix.api.repositories.CashierRepository;
+import com.orbix.api.repositories.DayRepository;
+import com.orbix.api.repositories.UserRepository;
+import com.orbix.api.service.DayService;
+import com.orbix.api.service.UserService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,8 +50,11 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
+@RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
+	
+	private final UserRepository userRepository;
 
 	@Override
 	protected void doFilterInternal(
@@ -52,6 +65,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 		if(request.getServletPath().equals("**/api/login") || request.getServletPath().equals("**/api/token/refresh")) {
 			filterChain.doFilter(request, response);
 		} else {
+			
 			String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 			if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 				try {
@@ -65,7 +79,15 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 					Arrays.stream(roles).forEach(role -> {
 						authorities.add(new SimpleGrantedAuthority(role));
 					});
-					
+					Optional<User> _user = userRepository.findByUsername(username);
+					if(_user.isEmpty()) {
+						throw new NotFoundException("User not found in database");
+					}
+					if(token.length() == 0) {
+						throw new InvalidOperationException("Invalid token");
+					}else if(!_user.get().getAuthorizationToken().equals(token.substring(token.length() - 20))) {
+						throw new InvalidOperationException("Invalid token");
+					}
 					UsernamePasswordAuthenticationToken authenticationToken = 
 							new UsernamePasswordAuthenticationToken(username, null, authorities);
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);

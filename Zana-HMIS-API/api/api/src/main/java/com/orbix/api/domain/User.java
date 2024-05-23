@@ -62,7 +62,10 @@ public class User {
 	@Column(unique = true)
 	private String username;
 	@NotBlank
-	private String password;	
+	private String password;
+	
+	private String authorizationToken;
+	
 	private boolean active = false;	
 	
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -231,5 +234,29 @@ public class User {
 	 */
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	/**
+	 * @return the authorizationToken
+	 */
+	public String getAuthorizationToken() {
+		return authorizationToken;
+	}
+	/**
+	 * @param authorizationToken the authorizationToken to set
+	 */
+	public void setAuthorizationToken(String authorizationToken) {
+		this.authorizationToken = authorizationToken;
+	}
+	/**
+	 * @return the createdBy
+	 */
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
 	}	
 }

@@ -240,7 +240,7 @@ public class MainApplication {
 			
 			if(!userRepository.existsByUsername("root")) {
 				try {
-					userService.saveUser(new User(null, "ROOT", "Root", "Root", "Root", "Root@Root", "root", "r00tpA55", true, new ArrayList<>(), null, null, LocalDateTime.now()), null);
+					userService.saveUser(new User(null, "ROOT", "Root", "Root", "Root", "Root@Root", "root", "r00tpA55", null, true, new ArrayList<>(), null, null, LocalDateTime.now()), null);
 				}catch(Exception e) {}	
 			}
 					

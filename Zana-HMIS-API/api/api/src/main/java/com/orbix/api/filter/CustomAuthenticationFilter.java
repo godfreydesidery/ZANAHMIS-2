@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
@@ -34,19 +35,23 @@ import com.orbix.api.service.UserServiceImpl;
 
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author GODFREY
  *
  */
+//@RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
+	private final UserRepository userRepository;
 
 	private final AuthenticationManager authenticationManager;
 	
-	public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+	public CustomAuthenticationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
 		this.authenticationManager = authenticationManager;
+		this.userRepository = userRepository;
 	}
 	
 	@Override
@@ -86,6 +91,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		tokens.put("access_token", access_token);
 		tokens.put("refresh_token", refresh_token);
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		
+		com.orbix.api.domain.User _user = userRepository.findByUsername(request.getParameter("username")).get();
+		_user.setAuthorizationToken(access_token.substring(access_token.length() - 20));
+		userRepository.save(_user);
 		
 		new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 	}
