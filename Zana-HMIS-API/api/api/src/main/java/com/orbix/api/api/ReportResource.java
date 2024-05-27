@@ -1133,6 +1133,39 @@ public class ReportResource {
 		return summary;
 	}
 	
+	@PostMapping("/reports/revenue_report")
+	public List<RevenueReport> getRevenueReport(
+			@RequestBody DateRangeArgs args,
+			HttpServletRequest request){
+		
+		List<RevenueReport> revenueReport = new ArrayList<>();
+		RevenueReport item = new RevenueReport();
+		
+		Revenue revenue = new Revenue();
+		List<Revenue> revenueTemplate = new ArrayList<>();
+		
+		List<String> statuses = new ArrayList<>();
+		statuses.add("PAID");
+		statuses.add("VERIFIED");
+		
+		List<PatientBill> patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		
+		List<Registration> registration = registrationRepository.findAllByPatientBillIn(patientBills);
+		
+		
+		
+		List<Consultation> consultations = consultationRepository.findAllByPatientBillIn(patientBills);
+		List<LabTest> labTests = labTestRepository.findAllByPatientBillIn(patientBills);
+		List<Radiology> radiologies = radiologyRepository.findAllByPatientBillIn(patientBills);
+		List<Procedure> procedures = procedureRepository.findAllByPatientBillIn(patientBills);
+		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientBillIn(patientBills);
+		
+		//to do later
+		
+		return revenueReport;		
+	}
+	
+	
 	
 }
 
@@ -1248,5 +1281,31 @@ class MonthlySummaryReport{
 	int outpatientCount;
 	int inpatientCount;
 	int outsiderCount;
+}
+
+@Data
+class Revenue {
+	InsurancePlan insurancePlan;
+	double registration;
+	double consultation;
+	double radiology;
+	double labTest;
+	double procedure;
+	double medication;
+	double bed;
+	double total;
+}
+
+@Data
+class RevenueReport {
+	InsurancePlan insurancePlan;
+	double registration;
+	double consultation;
+	double radiology;
+	double labTest;
+	double procedure;
+	double medication;
+	double bed;
+	double total;
 }
 
