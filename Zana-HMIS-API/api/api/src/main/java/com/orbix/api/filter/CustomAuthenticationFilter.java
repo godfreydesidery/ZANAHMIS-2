@@ -92,9 +92,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		tokens.put("refresh_token", refresh_token);
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		
-		com.orbix.api.domain.User _user = userRepository.findByUsername(request.getParameter("username")).get();
-		_user.setAuthorizationToken(access_token.substring(access_token.length() - 20));
-		userRepository.save(_user);
+		//com.orbix.api.domain.User _user = userRepository.findByUsername(request.getParameter("username")).get();
+		//_user.setAuthorizationToken(access_token.substring(access_token.length() - 20));
+		//userRepository.save(_user);
+		
+		//can use this segment to register login activity
 		
 		new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 	}

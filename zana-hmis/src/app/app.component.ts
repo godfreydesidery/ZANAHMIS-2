@@ -462,6 +462,8 @@ export class AppComponent {
         {path : 'report-template', loadComponent: () => import('./pages/reports/report-template/report-template.component').then(m => m.ReportTemplateComponent), canActivate: [AuthGuard]},
         {path : 'doctors-reports', loadComponent: () => import('./pages/reports/doctors-reports/doctors-reports.component').then(m => m.DoctorsReportsComponent), canActivate: [AuthGuard]},
         {path : 'collections-report', loadComponent: () => import('./pages/reports/collections-report/collections-report.component').then(m => m.CollectionsReportComponent), canActivate: [AuthGuard]},
+        {path : 'revenue-report', loadComponent: () => import('./pages/reports/revenue-report/revenue-report.component').then(m => m.RevenueReportComponent), canActivate: [AuthGuard]},
+        {path : 'ipd-report', loadComponent: () => import('./pages/reports/ipd-report/ipd-report.component').then(m => m.IpdReportComponent), canActivate: [AuthGuard]},
       )
     }
     loadManagementModule(){

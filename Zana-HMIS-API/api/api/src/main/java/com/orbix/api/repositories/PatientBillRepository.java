@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.orbix.api.domain.InsurancePlan;
 import com.orbix.api.domain.Patient;
 import com.orbix.api.domain.PatientBill;
 
@@ -60,5 +61,8 @@ public interface PatientBillRepository extends JpaRepository<PatientBill, Long> 
 
 	List<PatientBill> findAllByCreatedByAndCreatedAtBetweenAndStatusIn(Long id, LocalDateTime atStartOfDay,
 			LocalDateTime plusDays, List<String> statuses);
+
+	List<PatientBill> findAllByCreatedAtBetweenAndStatusInAndInsurancePlan(LocalDateTime atStartOfDay,
+			LocalDateTime plusDays, List<String> statuses, InsurancePlan insurancePlan);
 
 }

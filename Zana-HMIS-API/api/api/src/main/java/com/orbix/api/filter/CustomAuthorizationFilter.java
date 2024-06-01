@@ -79,7 +79,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 					Arrays.stream(roles).forEach(role -> {
 						authorities.add(new SimpleGrantedAuthority(role));
 					});
-					Optional<User> _user = userRepository.findByUsername(username);
+					/*Optional<User> _user = userRepository.findByUsername(username);
 					if(_user.isEmpty()) {
 						throw new NotFoundException("User not found in database");
 					}
@@ -87,7 +87,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 						throw new InvalidOperationException("Invalid token");
 					}else if(!_user.get().getAuthorizationToken().equals(token.substring(token.length() - 20))) {
 						throw new InvalidOperationException("Invalid token");
-					}
+					}*/
 					UsernamePasswordAuthenticationToken authenticationToken = 
 							new UsernamePasswordAuthenticationToken(username, null, authorities);
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);

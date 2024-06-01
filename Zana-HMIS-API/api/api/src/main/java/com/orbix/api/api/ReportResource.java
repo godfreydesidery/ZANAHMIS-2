@@ -79,6 +79,7 @@ import com.orbix.api.repositories.ClinicianRepository;
 import com.orbix.api.repositories.CollectionRepository;
 import com.orbix.api.repositories.ConsultationRepository;
 import com.orbix.api.repositories.GoodsReceivedNoteRepository;
+import com.orbix.api.repositories.InsurancePlanRepository;
 import com.orbix.api.repositories.LabTestRepository;
 import com.orbix.api.repositories.LabTestTypeRepository;
 import com.orbix.api.repositories.LocalPurchaseOrderRepository;
@@ -145,6 +146,7 @@ public class ReportResource {
 	private final VisitRepository visitRepository;
 	
 	private final ClinicianPerformanceRepository clinicianPerformanceRepository;
+	private final InsurancePlanRepository insurancePlanRepository;
 	
 	@PostMapping("/reports/consultation_report")
 	public ResponseEntity<List<Consultation>>getConsultationReport(
@@ -1135,7 +1137,7 @@ public class ReportResource {
 	
 	@PostMapping("/reports/revenue_report")
 	public List<RevenueReport> getRevenueReport(
-			@RequestBody DateRangeArgs args,
+			@RequestBody RevenueReportArgs args,
 			HttpServletRequest request){
 		
 		List<RevenueReport> revenueReport = new ArrayList<>();
@@ -1145,12 +1147,35 @@ public class ReportResource {
 		List<Revenue> revenueTemplate = new ArrayList<>();
 		
 		List<String> statuses = new ArrayList<>();
-		statuses.add("PAID");
-		statuses.add("VERIFIED");
 		
-		List<PatientBill> patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
 		
-		List<Registration> registration = registrationRepository.findAllByPatientBillIn(patientBills);
+		List<PatientBill> patientBills;
+		
+		
+		
+		
+		if(args.getPaymentMode().equals("--All--")) {
+			statuses.add("PAID");
+			statuses.add("VERIFIED");
+			statuses.add("COVERED");
+			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		}else if(args.getPaymentMode().equals("CASH")) {
+			statuses.add("PAID");
+			statuses.add("VERIFIED");
+			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		}else {
+			Optional<InsurancePlan> insurancePlan_;
+			insurancePlan_ = insurancePlanRepository.findByName(args.getPaymentMode());
+			if(insurancePlan_.isEmpty()) {
+				throw new NotFoundException("Plan not found in atabase");
+			}
+			statuses.add("COVERED");
+			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusInAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses, insurancePlan_.get());
+		}
+		
+		//patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		
+		List<Registration> registrations = registrationRepository.findAllByPatientBillIn(patientBills);
 		
 		
 		
@@ -1159,8 +1184,86 @@ public class ReportResource {
 		List<Radiology> radiologies = radiologyRepository.findAllByPatientBillIn(patientBills);
 		List<Procedure> procedures = procedureRepository.findAllByPatientBillIn(patientBills);
 		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientBillIn(patientBills);
+		List<AdmissionBed> admissionBeds = admissionBedRepository.findAllByPatientBillIn(patientBills);
 		
-		//to do later
+		List<InsurancePlan> insurancePlans = new ArrayList<>();
+		
+		for(Registration r :registrations) {
+			insurancePlans.add(r.getPatientBill().getInsurancePlan());
+		}
+		for(Consultation r :consultations) {
+			insurancePlans.add(r.getPatientBill().getInsurancePlan());
+		}
+		for(LabTest r :labTests) {
+			insurancePlans.add(r.getPatientBill().getInsurancePlan());
+		}
+		for(Radiology r :radiologies) {
+			insurancePlans.add(r.getPatientBill().getInsurancePlan());
+		}
+		for(Procedure r :procedures) {
+			insurancePlans.add(r.getPatientBill().getInsurancePlan());
+		}
+		for(Prescription r :prescriptions) {
+			insurancePlans.add(r.getPatientBill().getInsurancePlan());
+		}
+		for(AdmissionBed r :admissionBeds) {
+			insurancePlans.add(r.getPatientBill().getInsurancePlan());
+		}
+		Set<InsurancePlan> plans = new HashSet<InsurancePlan>(insurancePlans);
+		
+		
+		
+		for(InsurancePlan p : plans) {
+			item = new RevenueReport();
+			item.setInsurancePlan(p);
+			item.setRegistration(0);
+			item.setConsultation(0);
+			item.setLabTest(0);
+			item.setRadiology(0);
+			item.setProcedure(0);
+			item.setPrescription(0);
+			item.setAdmissionBed(0);
+			revenueReport.add(item);
+		}
+		
+		for(RevenueReport r : revenueReport) {
+			for(Registration reg : registrations) {
+				if(reg.getPatientBill().getInsurancePlan() == r.getInsurancePlan()) {
+					r.setRegistration(r.getRegistration() + reg.getPatientBill().getAmount());
+				}
+			}
+			for(Consultation con : consultations) {
+				if(con.getPatientBill().getInsurancePlan() == r.getInsurancePlan()) {
+					r.setConsultation(r.getConsultation() + con.getPatientBill().getAmount());
+				}
+			}
+			for(LabTest lab : labTests) {
+				if(lab.getPatientBill().getInsurancePlan() == r.getInsurancePlan()) {
+					r.setLabTest(r.getLabTest() + lab.getPatientBill().getAmount());
+				}
+			}
+			for(Radiology rad : radiologies) {
+				if(rad.getPatientBill().getInsurancePlan() == r.getInsurancePlan()) {
+					r.setRadiology(r.getRadiology() + rad.getPatientBill().getAmount());
+				}
+			}
+			for(Procedure pro : procedures) {
+				if(pro.getPatientBill().getInsurancePlan() == r.getInsurancePlan()) {
+					r.setProcedure(r.getProcedure() + pro.getPatientBill().getAmount());
+				}
+			}
+			for(Prescription pre : prescriptions) {
+				if(pre.getPatientBill().getInsurancePlan() == r.getInsurancePlan()) {
+					r.setPrescription(r.getPrescription() + pre.getPatientBill().getAmount());
+				}
+			}
+			for(AdmissionBed bed : admissionBeds) {
+				if(bed.getPatientBill().getInsurancePlan() == r.getInsurancePlan()) {
+					r.setAdmissionBed(r.getAdmissionBed() + bed.getPatientBill().getAmount());
+				}
+			}
+		}
+		
 		
 		return revenueReport;		
 	}
@@ -1270,6 +1373,13 @@ class DateRangeArgs{
 }
 
 @Data
+class RevenueReportArgs{
+	LocalDate from;
+	LocalDate to;
+	String paymentMode;
+}
+
+@Data
 class LClinicianPerformanceReport{
 	String name;
 	int total;
@@ -1291,8 +1401,8 @@ class Revenue {
 	double radiology;
 	double labTest;
 	double procedure;
-	double medication;
-	double bed;
+	double prescription;
+	double admissionBed;
 	double total;
 }
 
@@ -1304,8 +1414,8 @@ class RevenueReport {
 	double radiology;
 	double labTest;
 	double procedure;
-	double medication;
-	double bed;
+	double prescription;
+	double admissionBed;
 	double total;
 }
 

@@ -170,10 +170,6 @@ export class CollectionsReportComponent {
     )
   }
 
-
-
-
-
   clear(){
     this.collections = []
     this.userId = null
