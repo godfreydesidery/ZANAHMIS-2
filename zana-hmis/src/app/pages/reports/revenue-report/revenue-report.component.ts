@@ -25,6 +25,7 @@ import { MsgBoxService } from 'src/app/services/msg-box.service';
 import { finalize } from 'rxjs';
 import { ILabTestCollection } from 'src/app/models/labTestCollection';
 import { IRevenue } from 'src/app/domain/revenue';
+import { IInsurancePlan } from 'src/app/domain/insurance-plan';
 var pdfFonts = require('pdfmake/build/vfs_fonts.js'); 
 const fs = require('file-saver');
 
@@ -203,26 +204,52 @@ export class RevenueReportComponent {
     var total : number = 0
     var discount : number = 0
     var tax : number = 0
+
+    var report = [
+      [
+        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Pay Mode', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Reg', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Cons', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Lab', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Radiology', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Procedure', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Medication', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Bed', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'Total', fontSize : 9, fillColor : '#bdc6c7'},
+      ]
+    ]  
     
-    /*this.report.forEach((element) => {
-      total = total + element.amount
-      discount = discount + element.discount
-      tax = tax + element.tax
+    this.revenueReport.forEach((element) => {
+      total = total + element.total
+
       var detail = [
-        {text : formatDate(element.date, 'yyyy-MM-dd', 'en-US'), fontSize : 9, fillColor : '#ffffff'}, 
-        {text : element.amount.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
-        {text : element.discount.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},  
-        {text : element.tax.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.sn.toString(), fontSize : 8, alignment : 'left', fillColor : '#ffffff'},
+        {text : this.getPaymentMode(element.insurancePlan), fontSize : 8, alignment : 'left', fillColor : '#ffffff'},
+        {text : element?.registration.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.consultation.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.labTest.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.radiology.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.procedure.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.prescription.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.admissionBed.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
+        {text : element?.total.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#ffffff'},
       ]
       report.push(detail)
-    })*/
-    /*var detailSummary = [
-      {text : 'Total', fontSize : 9, fillColor : '#CCCCCC'}, 
-      {text : total.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#CCCCCC'},
-      {text : discount.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#CCCCCC'},  
-      {text : tax.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 9, alignment : 'right', fillColor : '#CCCCCC'},        
+    })
+    var detailSummary = [
+      {text : '', fontSize : 8, alignment : 'left', fillColor : '#bdc6c7'},
+      {text : 'Total', fontSize : 8, alignment : 'left', fillColor : '#bdc6c7'},
+      {text : this.registrationTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},
+      {text : this.consultationTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},
+      {text : this.labTestTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},
+      {text : this.radiologyTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},
+      {text : this.procedureTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},
+      {text : this.prescriptionTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},
+      {text : this.admissionBedTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},
+      {text : this.grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2 }), fontSize : 8, alignment : 'right', fillColor : '#bdc6c7'},      
     ]
-    report.push(detailSummary)*/
+    report.push(detailSummary)
     const docDefinition : any = {
       header: '',
       footer: function (currentPage: { toString: () => string; }, pageCount: string) {
@@ -266,17 +293,25 @@ export class RevenueReportComponent {
             },
           },
           '  ',
-          //{
-            //layout : 'noBorders',
-            //table : {
-                //headerRows : 1,
-                //widths : [100, 100, 100, 100, 100],
-                //body : report
-            //}
-        //},                   
+          {
+            layout : 'noBorders',
+            table : {
+                headerRows : 1,
+                widths : [20, 40, 40, 50, 50, 50, 50, 50, 50, 60],
+                body : report
+            }
+        },                   
       ]     
     };
     pdfMake.createPdf(docDefinition).print()
+  }
+
+  getPaymentMode(plan : IInsurancePlan) : string{
+    if(plan != null){
+      return plan.name
+    }else{
+      return 'CASH'
+    }
   }
 
   async exportToSpreadsheet() {

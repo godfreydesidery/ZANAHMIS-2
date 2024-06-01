@@ -1172,12 +1172,8 @@ public class ReportResource {
 			statuses.add("COVERED");
 			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusInAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses, insurancePlan_.get());
 		}
-		
-		//patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
-		
+				
 		List<Registration> registrations = registrationRepository.findAllByPatientBillIn(patientBills);
-		
-		
 		
 		List<Consultation> consultations = consultationRepository.findAllByPatientBillIn(patientBills);
 		List<LabTest> labTests = labTestRepository.findAllByPatientBillIn(patientBills);
