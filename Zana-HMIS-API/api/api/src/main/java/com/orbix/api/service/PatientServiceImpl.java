@@ -554,6 +554,12 @@ public class PatientServiceImpl implements PatientService {
 			throw new InvalidOperationException("Invalid Payment type selected");
 		}
 		
+		
+		List<PatientInvoice> invoices = patientInvoiceRepository.findAllByPatientAndStatus(p, "PENDING");
+		for(PatientInvoice i : invoices) {
+			i.setStatus("APPROVED");
+			patientInvoiceRepository.saveAndFlush(i);
+		}
 		/**
 		 * Now, if the patient is covered
 		 */
@@ -589,6 +595,7 @@ public class PatientServiceImpl implements PatientService {
 				PatientInvoice patientInvoice = new PatientInvoice();
 				patientInvoice.setNo(String.valueOf(Math.random()));
 				patientInvoice.setPatient(p);
+				patientInvoice.setConsultation(consultation);
 				patientInvoice.setInsurancePlan(p.getInsurancePlan());
 				patientInvoice.setStatus("PENDING");
 				
@@ -1644,6 +1651,13 @@ public class PatientServiceImpl implements PatientService {
 		p.setType("INPATIENT");
 		p = patientRepository.save(p);
 		
+		
+		List<PatientInvoice> invoices = patientInvoiceRepository.findAllByPatientAndStatus(p, "PENDING");
+		for(PatientInvoice i : invoices) {
+			i.setStatus("APPROVED");
+			patientInvoiceRepository.saveAndFlush(i);
+		}
+		
 		if(p.getPaymentType().equals("INSURANCE")) {
 						
 			WardTypeInsurancePlan eligiblePlan = null;
@@ -1722,7 +1736,11 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoiceDetailRepository.save(patientInvoiceDetail);
 				}
 				
-				
+				//List<PatientInvoice> invoices = patientInvoiceRepository.findAllByPatientAndStatus(p, "PENDING");
+				//for(PatientInvoice i : invoices) {
+					//i.setStatus("APPROVED");
+					//patientInvoiceRepository.saveAndFlush(i);
+				//}
 				
 				
 				if(eligiblePlan.getInsurancePlan().getId() != p.getInsurancePlan().getId() && (wb.getWard().getWardType().getPrice() - eligiblePlan.getPrice() > 0)) {

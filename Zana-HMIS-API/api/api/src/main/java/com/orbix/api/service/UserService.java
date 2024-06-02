@@ -23,6 +23,7 @@ public interface UserService {
 	void addRoleToUser(String username, String roleName, HttpServletRequest request);
 	User getUser(String username);
 	User getUserById(Long id);
+	String getNicknameByUserId(Long id);
 	boolean deleteUser(User user);
 	List<User>getUsers(); //edit this to limit the number, for perfomance.
 	void addPrivilegeToRole(String roleName, String privilegeName);

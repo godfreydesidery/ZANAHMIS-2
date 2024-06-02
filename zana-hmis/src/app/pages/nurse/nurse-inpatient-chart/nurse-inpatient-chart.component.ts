@@ -160,6 +160,7 @@ export class NurseInpatientChartComponent {
 
   async setGlobalPatientId(){
     localStorage.setItem('patient-id', this.admission.patient.id)
+    localStorage.removeItem('consultation-id')
     localStorage.setItem('admission-id', this.id)
   }
 

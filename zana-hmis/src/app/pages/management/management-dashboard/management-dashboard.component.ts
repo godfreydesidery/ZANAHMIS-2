@@ -75,12 +75,16 @@ export class ManagementDashboardComponent {
     await this.loadNewPatientsCountByDate(this.from, this.to)
     await this.loadExistingPatientsCountByDate(this.from, this.to)
     await this.loadInpatientsCountByDate(this.from, this.to)
-    await this.loadOutpatientsCountByDate(this.from, this.to)
     await this.loadDischargedPatientsCountByDate(this.from, this.to)
+    this.outpatientsCount = this.newPatientsCount + this.existingPatientsCount
+    this.totalPatientsCount = this.outpatientsCount
     await this.loadActiveUsersCount()
+    //await this.loadOutpatientsCountByDate(this.from, this.to)
+    
+    
     //await this.loadClinicianPerformanceByDate(this.from, this.to)
     //await this.loadMonthlySummaryReportByDate(this.from, this.to)
-    this.totalPatientsCount = this.inpatientsCount + this.outpatientsCount
+    
   }
 
   generateYears(){

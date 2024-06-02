@@ -268,10 +268,6 @@ export class RevenueReportComponent {
           {text : title, fontSize : 14, bold : true, alignment : 'center'},
           this.data.getHorizontalLine(),
           '  ',
-          '  ',
-          '  ',
-          {text : title, fontSize : 12, bold : true},
-          '  ',
           {
             layout : 'noBorders',
             table : {

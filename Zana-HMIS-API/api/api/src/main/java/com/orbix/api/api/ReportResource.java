@@ -41,6 +41,7 @@ import com.orbix.api.domain.Medicine;
 import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Patient;
 import com.orbix.api.domain.PatientBill;
+import com.orbix.api.domain.PatientInvoice;
 import com.orbix.api.domain.PatientInvoiceDetail;
 import com.orbix.api.domain.PharmacyStockCard;
 import com.orbix.api.domain.Prescription;
@@ -52,6 +53,7 @@ import com.orbix.api.domain.StoreStockCard;
 import com.orbix.api.domain.Supplier;
 import com.orbix.api.domain.User;
 import com.orbix.api.domain.Visit;
+import com.orbix.api.domain.Ward;
 import com.orbix.api.domain.WardBed;
 import com.orbix.api.exceptions.NotFoundException;
 import com.orbix.api.models.AdmissionBedCollectionModel;
@@ -87,6 +89,7 @@ import com.orbix.api.repositories.MedicineRepository;
 import com.orbix.api.repositories.NonConsultationRepository;
 import com.orbix.api.repositories.PatientBillRepository;
 import com.orbix.api.repositories.PatientInvoiceDetailRepository;
+import com.orbix.api.repositories.PatientInvoiceRepository;
 import com.orbix.api.repositories.PatientRepository;
 import com.orbix.api.repositories.PharmacyStockCardRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
@@ -147,6 +150,7 @@ public class ReportResource {
 	
 	private final ClinicianPerformanceRepository clinicianPerformanceRepository;
 	private final InsurancePlanRepository insurancePlanRepository;
+	private final PatientInvoiceRepository patientInvoiceRepository;
 	
 	@PostMapping("/reports/consultation_report")
 	public ResponseEntity<List<Consultation>>getConsultationReport(
@@ -1266,6 +1270,83 @@ public class ReportResource {
 	
 	
 	
+	@PostMapping("/reports/ipd_report")
+	public List<IPDReport> getIPDReport(
+			@RequestBody RevenueReportArgs args,
+			HttpServletRequest request){
+		
+		List<IPDReport> ipdReport = new ArrayList<>();
+		
+		List<PatientInvoice> invoices;
+		
+		if(args.getPaymentMode().equals("--All--")) {
+			invoices = patientInvoiceRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		}else if(args.getPaymentMode().equals("CASH")) {
+			invoices = patientInvoiceRepository.findAllByCreatedAtBetweenAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), null);
+		}else {
+			Optional<InsurancePlan> insurancePlan_;
+			insurancePlan_ = insurancePlanRepository.findByName(args.getPaymentMode());
+			if(insurancePlan_.isEmpty()) {
+				throw new NotFoundException("Plan not found in atabase");
+			}
+			invoices = patientInvoiceRepository.findAllByCreatedAtBetweenAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), insurancePlan_.get());
+		}
+		
+		List<PatientInvoice> patientInvoices = new ArrayList<>();
+		// search for not null, avoid this to improve performance, in future
+		for(PatientInvoice i : invoices) {
+			if(i.getAdmission() != null) {
+				patientInvoices.add(i);
+			}
+		}
+		
+		for(PatientInvoice inv : patientInvoices) {
+			IPDReport r = new IPDReport();
+			r.setAdmission(inv.getAdmission());
+			r.setAdmittedBy(userService.getNicknameByUserId(inv.getAdmission().getAdmittedBy()));
+			r.setAdmittedAt(inv.getAdmission().getCreatedAt().toString().substring(0,10));
+			if(inv.getAdmission().getDischargedAt() != null) {
+				r.setDischargedAt(inv.getAdmission().getDischargedAt().toString().substring(0,10));
+			}else {
+				r.setDischargedAt("");
+			}
+			r.setWard(inv.getAdmission().getWardBed().getWard());
+			double covered = 0;
+			double invoice = 0;
+			double paid = 0;
+			double balance = 0;
+			if(r.getAdmission().getInsurancePlan() != null) {
+				r.setPaymentType(r.getAdmission().getInsurancePlan().getName());
+			}else {
+				r.setPaymentType("CASH");
+			}
+			for(PatientInvoiceDetail detail : inv.getPatientInvoiceDetails()) {
+				if(inv.getInsurancePlan() == null) {
+					if(detail.getPatientBill().getStatus().equals("VERIFIED")) {
+						balance = balance + detail.getPatientBill().getBalance();
+					}else if(detail.getPatientBill().getStatus().equals("PAID")) {
+						paid = paid + detail.getPatientBill().getPaid();
+					}
+					
+				}else if(inv.getInsurancePlan() != null){
+					if(detail.getPatientBill().getStatus().equals("COVERED")) {
+						covered = covered + detail.getPatientBill().getAmount();
+					}
+				}
+			}
+			invoice = invoice + paid + balance;
+			r.setCovered(covered);
+			r.setInvoice(invoice);
+			r.setPaid(paid);
+			r.setBalance(balance);
+			ipdReport.add(r);
+		}
+		
+		return ipdReport;
+	}
+	
+	
+	
 }
 
 @Data
@@ -1413,5 +1494,19 @@ class RevenueReport {
 	double prescription;
 	double admissionBed;
 	double total;
+}
+
+@Data
+class IPDReport{
+	Admission admission;
+	String admittedBy;
+	String admittedAt;
+	String dischargedAt;
+	Ward ward;
+	String paymentType;
+	double covered;
+	double invoice;
+	double paid;
+	double balance;
 }
 

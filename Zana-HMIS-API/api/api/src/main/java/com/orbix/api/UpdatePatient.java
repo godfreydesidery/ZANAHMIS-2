@@ -305,6 +305,7 @@ public class UpdatePatient implements Runnable{
 						wardBedBill.setPaid(0);
 						wardBedBill.setBalance(wardBed.getWard().getWardType().getPrice());
 						wardBedBill.setQty(1);
+						wardBedBill.setBillItem("Bed");
 						wardBedBill.setDescription("Ward Bed / Room");
 						wardBedBill.setStatus("VERIFIED");
 						/**
@@ -419,6 +420,7 @@ public class UpdatePatient implements Runnable{
 														
 									supplementaryWardBedBill.setAmount(wardBed.getWard().getWardType().getPrice() - eligiblePlan.getPrice());
 									supplementaryWardBedBill.setPaid(0);
+									supplementaryWardBedBill.setBillItem("Bed");
 									supplementaryWardBedBill.setBalance(wardBed.getWard().getWardType().getPrice() - eligiblePlan.getPrice());
 									supplementaryWardBedBill.setStatus("VERIFIED");
 									supplementaryWardBedBill.setDescription("Ward Bed / Room (Topup)");

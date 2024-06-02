@@ -11,7 +11,8 @@
         <div class="col-sm-12">
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading">
-                    <a class="btn btn-primary btn-outline" routerLink="/nurse-outpatient-chart"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" *ngIf="consultationId != null" routerLink="/nurse-outpatient-chart"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
+                    <a class="btn btn-primary btn-outline" *ngIf="admissionId != null" routerLink="/nurse-inpatient-chart"><i class="glyphicon glyphicon-triangle-left"></i> Back</a>
                     <a class="btn btn-primary btn-outline" routerLink="/nurse-clinical-note-history">Clinical Notes</a>
                     <a class="btn btn-primary btn-outline" routerLink="/nurse-general-examination-history">General Examination</a>
                     <!--<a class="btn btn-primary btn-outline" routerLink="/working-diagnosis-history">Working Diagnosis</a>-->
