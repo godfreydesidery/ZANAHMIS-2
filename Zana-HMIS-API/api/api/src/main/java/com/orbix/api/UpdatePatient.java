@@ -369,7 +369,7 @@ public class UpdatePatient implements Runnable{
 									 * If no pending patientInvoice
 									 */
 									PatientInvoice patientInvoice = new PatientInvoice();
-									patientInvoice.setNo("NA");
+									patientInvoice.setNo(Double.toString(Math.random()) + LocalDateTime.now().toString());
 									patientInvoice.setPatient(adm.getPatient());
 									patientInvoice.setAdmission(adm);
 									patientInvoice.setInsurancePlan(adm.getPatient().getInsurancePlan());
@@ -440,7 +440,7 @@ public class UpdatePatient implements Runnable{
 										 * If no pending patientInvoice
 										 */
 										PatientInvoice patientInvoice = new PatientInvoice();
-										patientInvoice.setNo("NAA");
+										patientInvoice.setNo(Double.toString(Math.random()) + LocalDateTime.now().toString());
 										patientInvoice.setPatient(adm.getPatient());
 										patientInvoice.setAdmission(adm);
 										patientInvoice.setInsurancePlan(null);
@@ -494,7 +494,7 @@ public class UpdatePatient implements Runnable{
 								 * If no pending patientInvoice
 								 */
 								PatientInvoice patientInvoice = new PatientInvoice();
-								patientInvoice.setNo("NA");
+								patientInvoice.setNo(Double.toString(Math.random()) + LocalDateTime.now().toString());
 								patientInvoice.setPatient(adm.getPatient());
 								patientInvoice.setAdmission(adm);
 								patientInvoice.setInsurancePlan(null);
