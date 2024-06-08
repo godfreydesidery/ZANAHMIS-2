@@ -39,7 +39,8 @@ import com.orbix.api.domain.WardBed;
  */
 public interface PatientService {
 	Patient doRegister(Patient patient, HttpServletRequest request);
-	Patient doConsultation(Patient p, Clinic c, Clinician cn, HttpServletRequest request);
+	Patient doConsultation(Patient p, Clinic c, Clinician cn, boolean followUp, HttpServletRequest request);
+	Patient switchToNormalConsultation(Consultation con, Patient p, HttpServletRequest request);
 	ConsultationTransfer createConsultationTransfer(ConsultationTransfer transfer, HttpServletRequest request);	
 	Admission doAdmission(Patient p, WardBed wb, HttpServletRequest request);
 	Patient update(Patient patient, HttpServletRequest request);

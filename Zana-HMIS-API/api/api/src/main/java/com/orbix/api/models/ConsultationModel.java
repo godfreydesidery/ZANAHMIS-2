@@ -17,6 +17,7 @@ import lombok.Data;
 public class ConsultationModel {
 	private double id;
 	private String paymentType;
+	private boolean followUp;
 	private Patient patient;
 	private Clinician clinician;
 	private Clinic clinic;

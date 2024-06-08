@@ -94,6 +94,8 @@ export class PatientRegisterComponent implements OnInit {
 
   editType : string = ''
 
+  visitType : string = 'NORMAL VISIT'
+
   editPaymentType : string = ''
   editInsurancePlanName : string = ''
   editMembershipNo : string = ''
@@ -853,8 +855,18 @@ export class PatientRegisterComponent implements OnInit {
       insurancePlanName: this.insurancePlanName,
       insuranceMembershipNo: this.membershipNo
     }
+    var vType : number = 1
+    if(this.visitType === 'FOLLOW UP VISIT'){
+      vType = 1
+    }else if(this.visitType === 'NORMAL VISIT'){
+      vType = 0
+    }else{
+      window.alert("Invalid selection")
+      return
+    }
+
     this.spinner.show()
-    await this.http.post<IPatient>(API_URL+'/patients/do_consultation?patient_id='+this.id+'&clinic_name='+this.clinicName+'&clinician_name='+this.clinicianName, paymentType, options)
+    await this.http.post<IPatient>(API_URL+'/patients/do_consultation?patient_id='+this.id+'&clinic_name='+this.clinicName+'&clinician_name='+this.clinicianName+'&follow_up='+vType, paymentType, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(

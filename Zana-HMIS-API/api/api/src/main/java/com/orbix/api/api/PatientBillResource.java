@@ -122,6 +122,7 @@ public class PatientBillResource {
 		Patient patient = patientRepository.findById(patient_id).get();
 		List<String> statuses = new ArrayList<>();
 		statuses.add("PENDING");
+		statuses.add("IN-PROCESS");
 		Optional<Consultation> c = consultationRepository.findByPatientAndStatusIn(patient, statuses);
 		if(!c.isPresent()) {
 			return null;

@@ -400,7 +400,7 @@ public class PatientServiceImpl implements PatientService {
 	}
 	
 	@Override
-	public Patient doConsultation(Patient p, Clinic c, Clinician cn, HttpServletRequest request) {
+	public Patient doConsultation(Patient p, Clinic c, Clinician cn, boolean followUp, HttpServletRequest request) {
 		
 		if(cn.isActive() == false) {
 			throw new InvalidOperationException("Process failed. Clinician/Doctor not active");
@@ -442,6 +442,9 @@ public class PatientServiceImpl implements PatientService {
 		conBill.setBillItem("Consultation");
 		conBill.setDescription("Consultation");
 		conBill.setStatus("UNPAID");
+		if(followUp == true) {
+			conBill.setStatus("NONE");
+		}
 		/**
 		 * Add forensic data to registration patientBill
 		 */
@@ -463,6 +466,9 @@ public class PatientServiceImpl implements PatientService {
 		consultation.setPatient(p);
 		consultation.setClinic(c);
 		consultation.setClinician(cn);
+		if(followUp == true) {
+			consultation.setFollowUp(true);
+		}
 		consultation.setStatus("PENDING");
 		consultation.setPatientBill(conBill);
 		consultation.setPaymentType(p.getPaymentType());
@@ -575,6 +581,9 @@ public class PatientServiceImpl implements PatientService {
 			conBill.setPaid(consultationPricePlan.get().getConsultationFee());
 			conBill.setBalance(0);
 			conBill.setStatus("COVERED");
+			if(followUp == true) {
+				conBill.setStatus("NONE");
+			}
 			conBill.setPaymentType("INSURANCE");
 			conBill.setInsurancePlan(p.getInsurancePlan());
 			conBill.setMembershipNo(p.getMembershipNo());
@@ -645,6 +654,21 @@ public class PatientServiceImpl implements PatientService {
 		
 		consultation = consultationRepository.save(consultation);
 		return null;
+	}
+	
+	@Override
+	public Patient switchToNormalConsultation(Consultation con, Patient p, HttpServletRequest request) {
+		
+		PatientBill patientBill = con.getPatientBill();		
+		if(patientBill.getInsurancePlan() != null) {
+			patientBill.setStatus("COVERED");
+		}else {
+			patientBill.setStatus("UNPAID");
+		}
+		
+		patientBillRepository.saveAndFlush(patientBill);
+		
+		return p;
 	}
 
 	@Override

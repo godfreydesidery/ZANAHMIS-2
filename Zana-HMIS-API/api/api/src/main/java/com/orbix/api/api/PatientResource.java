@@ -502,8 +502,18 @@ public class PatientResource {
 	@PreAuthorize("hasAnyAuthority('PATIENT-ALL','PATIENT-CREATE','PATIENT-UPDATE')")
 	public ResponseEntity<Patient>consultation(
 
-			@RequestParam Long patient_id, @RequestParam String clinic_name, @RequestParam String clinician_name, 
+			@RequestParam Long patient_id, @RequestParam String clinic_name, @RequestParam String clinician_name, @RequestParam int follow_up,
 			HttpServletRequest request){
+		
+		boolean followUp = false;
+		if(follow_up == 1) {
+			followUp = true;
+		}else if(follow_up == 0) {
+			followUp = false;
+		}else {
+			throw new InvalidEntryException("Invalid argument supplied. Follow up should be equal to 1 or 0");
+		}
+		
 		Optional<Patient> patient_ = patientRepository.findById(patient_id);
 		Optional<Clinic> c = clinicRepository.findByName(clinic_name);
 		Optional<Clinician> cn = clinicianRepository.findByNickname(clinician_name);
@@ -520,8 +530,36 @@ public class PatientResource {
 		}
 		
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/do_consultation").toUriString());
-		return ResponseEntity.created(uri).body(patientService.doConsultation(patient_.get(), c.get(), cn.get(), request));
+		return ResponseEntity.created(uri).body(patientService.doConsultation(patient_.get(), c.get(), cn.get(), followUp, request));
 	}
+	
+	
+	
+	
+	
+	@PostMapping("/patients/switch_to_normal_consultation")
+	@PreAuthorize("hasAnyAuthority('PATIENT-ALL','PATIENT-CREATE','PATIENT-UPDATE')")
+	public ResponseEntity<Patient>switchToNormalConsultation(
+
+			@RequestParam Long consultation_id, 
+			@RequestParam Long patient_id, 
+			HttpServletRequest request){
+		
+		
+		
+		Optional<Patient> patient_ = patientRepository.findById(patient_id);
+		Optional<Consultation> consultation_ = consultationRepository.findById(consultation_id);
+		
+		
+		
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/switch_to_normal_consultation").toUriString());
+		return ResponseEntity.created(uri).body(patientService.switchToNormalConsultation(consultation_.get(), patient_.get(),request));
+	}
+	
+	
+	
+	
 	
 	@PostMapping("/patients/create_consultation_transfer")
 	//@PreAuthorize("hasAnyAuthority('PATIENT-A','PATIENT-C','PATIENT-U')")
@@ -769,7 +807,7 @@ public class PatientResource {
 		
 		List<String> statuses = new ArrayList<>();
 		statuses.add("PENDING");
-		List<Consultation> cons = consultationRepository.findAllByClinicianAndStatusIn(c.get(), statuses);
+		List<Consultation> cons = consultationRepository.findAllByClinicianAndFollowUpAndStatusIn(c.get(), false, statuses);
 		/**
 		 * Should load paid or insurance covered consultations only
 		 */
@@ -781,6 +819,35 @@ public class PatientResource {
 		}		
 		return ResponseEntity.ok().body(consultationsToShow);
 	}
+	
+	
+	
+	@GetMapping("/patients/load_follow_up_list_by_clinician_id")    // to do later
+	public ResponseEntity<List<Consultation>> loadFollowUpListByClinician(
+			@RequestParam(name = "clinician_id") Long clinicianId,
+			HttpServletRequest request){
+		if(clinicianId == null) {
+			throw new NotFoundException("User not present in doctors register");
+		}
+		Optional<Clinician> c = clinicianRepository.findById(clinicianId);
+		
+		List<String> statuses = new ArrayList<>();
+		statuses.add("PENDING");
+		statuses.add("IN-PROCESS");
+		List<Consultation> cons = consultationRepository.findAllByClinicianAndFollowUpAndStatusIn(c.get(), true, statuses);
+		/**
+		 * Should load paid or insurance covered consultations only
+		 */
+		List<Consultation> consultationsToShow = new ArrayList<>();
+		for(Consultation cn : cons) {
+			consultationsToShow.add(cn);
+		}		
+		return ResponseEntity.ok().body(consultationsToShow);
+	}
+	
+	
+	
+	
 	
 	@GetMapping("/patients/load_in_process_consultations_by_clinician_id")    // to do later
 	public ResponseEntity<List<Consultation>> loadInProcessConsultationsByClinician(
@@ -797,7 +864,7 @@ public class PatientResource {
 		List<String> statuses = new ArrayList<>();
 		statuses.add("IN-PROCESS");
 		statuses.add("TRANSFERED");
-		List<Consultation> cons = consultationRepository.findAllByClinicianAndStatusIn(c.get(), statuses);
+		List<Consultation> cons = consultationRepository.findAllByClinicianAndFollowUpAndStatusIn(c.get(), false, statuses);
 		
 		return ResponseEntity.ok().body(cons);
 	}
@@ -825,6 +892,60 @@ public class PatientResource {
 			throw new InvalidOperationException("Could not open. Not a pending consultation.");
 		}				
 	}
+	
+	
+	
+	@GetMapping("/patients/open_follow_up_consultation")    // to do later
+	public ResponseEntity<Boolean> openFollowUpConsultation(
+			@RequestParam(name = "consultation_id") Long consultationId,
+			HttpServletRequest request){
+		Optional<Consultation> c = consultationRepository.findById(consultationId);
+		if(c.get().isFollowUp() == false) {
+			throw new InvalidOperationException("Could not open. This is not a follow up consultation");
+		}
+		if(c.get().getStatus().equals("PENDING")) {
+			if(c.get().getPatientBill().getStatus().equals("PAID") || c.get().getPatientBill().getStatus().equals("COVERED") || c.get().getPatientBill().getStatus().equals("NONE")) {
+				c.get().setStatus("IN-PROCESS");
+				consultationRepository.save(c.get());
+				
+				ClinicianPerformance clinicianPerformance = new ClinicianPerformance();
+				clinicianPerformance.setClinician(c.get().getClinician());
+				clinicianPerformance.setConsultation(c.get());
+				
+				clinicianPerformanceService.check(clinicianPerformance, request);
+				
+			}else {
+				throw new InvalidOperationException("Could not open. Payment not verified.");
+			}
+		}	
+		return ResponseEntity.ok().body(true);
+	}
+	
+	
+	
+	@GetMapping("/patients/switch_to_consultation_by_consultation_id")    // to do later
+	public ResponseEntity<Consultation> switchToConsultationById(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		Optional<Consultation> c = consultationRepository.findById(id);
+		if(c.isPresent()) {
+			PatientBill patientBill = c.get().getPatientBill();
+			if(patientBill.getInsurancePlan() != null) {
+				patientBill.setStatus("COVERED");
+			}else {
+				patientBill.setStatus("UNPAID");
+			}
+			patientBillRepository.saveAndFlush(patientBill);
+			Consultation con = c.get();
+			con.setFollowUp(false);
+			consultationRepository.saveAndFlush(con);
+			URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/switch_to_consultation_by_consultation_id").toUriString());
+			return ResponseEntity.created(uri).body(c.get());
+		}else {
+			throw new NotFoundException("Consultation not found");
+		}
+	}
+	
 	
 	@GetMapping("/patients/load_consultation")    // to do later
 	public ResponseEntity<Consultation> loadConsultation(
@@ -4173,8 +4294,8 @@ public class PatientResource {
 	@GetMapping("/patients/get_pharmacy_outpatient_list") 
 	public ResponseEntity<List<Patient>> getPharmacyOutpatientList(
 			HttpServletRequest request){
-		
-		List<Consultation> cs = consultationRepository.findAllByStatus("IN-PROCESS");
+		//Review this for performance, later
+		List<Consultation> cs = consultationRepository.findAllByStatusOrFollowUp("IN-PROCESS", true);
 		List<Prescription> prescriptions = prescriptionRepository.findAllByConsultationIn(cs);			
 		List<Patient> patients = new ArrayList<>();		
 		for(Prescription t : prescriptions) {

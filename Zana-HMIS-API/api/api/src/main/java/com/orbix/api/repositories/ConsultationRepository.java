@@ -104,6 +104,12 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 
 	List<Consultation> findAllByCreatedAt(LocalDateTime atStartOfDay);
 
+	List<Consultation> findAllByClinicianAndFollowUpAndStatusIn(Clinician clinician, boolean b, List<String> statuses);
+
+	List<Consultation> findAllByStatusOrFollowUp(String string, boolean b);
+
+	Optional<Consultation> findByPatientAndStatusOrFollowUp(Patient patient, String string, boolean b);
+
 	/**
 	 * @param p
 	 * @param string

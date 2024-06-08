@@ -62,10 +62,12 @@ export class RadiologyPaymentComponent implements OnInit {
   insurancePlan : string = ''
 
   registrationBill! : IBill
+  consultationBill! : IBill
   
   radiologyBills : IBill[] = []
 
   registrationAmount : number = 0
+  consultationAmount : number = 0
 
 
   total : number = 0
@@ -239,6 +241,33 @@ export class RadiologyPaymentComponent implements OnInit {
       error => {
         console.log(error)
         this.msgBox.showErrorMessage(error, 'Could not load registration bill')
+      }
+    )
+  }
+
+  async loadConsultationBills(){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    this.spinner.show()
+    await this.http.get<IBill>(API_URL+'/bills/get_consultation_bill?patient_id='+this.id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.consultationBill = data! 
+        if(this.consultationBill != null) {
+          this.consultationAmount = this.consultationBill.amount
+        }
+        this.total = this.total + this.consultationAmount  
+      }
+    )
+    .catch(
+      error => {
+        console.log(error)
+        this.msgBox.showErrorMessage(error, 'Could not load consultation bill')
       }
     )
   }
@@ -427,6 +456,7 @@ export class RadiologyPaymentComponent implements OnInit {
 
         this.total = 0
         this.loadRegistrationBill()
+        this.loadConsultationBills()
         this.loadRadiologyBills()
       }
     )

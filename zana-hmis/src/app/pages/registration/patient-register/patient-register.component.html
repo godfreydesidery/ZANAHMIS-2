@@ -249,14 +249,22 @@
                                                             <div class="col-sm-12 form-group" *ngIf="clinicName != ''">
                                                                 <span class="form-control" style="text-align: center;">Consultation Fee <b *ngIf="paymentType === 'INSURANCE'"></b>  <b *ngIf="paymentType != 'INSURANCE'">{{consultationFee | currency:'':''}}</b></span>
                                                             </div>
+                                                            
                                                             <div class="col-sm-12 form-group">
                                                                 <h4 class="text-primary">Select Doctor</h4>
                                                                 <select class="form-control" [(ngModel)]="clinicianName">
                                                                     <option></option>
                                                                     <option *ngFor="let name of clinicianNames">{{name}}</option>
                                                                 </select>
+                                                            </div>
+                                                            <div class="col-sm-12 form-group" *ngIf="clinicName != '' && clinicianName != ''">
+                                                                <h4 class="text-primary">Select Visit Type</h4>
+                                                                <select class="form-control" [(ngModel)]="visitType">
+                                                                    <option>NORMAL VISIT</option>
+                                                                    <option>FOLLOW UP VISIT</option>
+                                                                </select>
                                                                 <br>
-                                                                <button class="btn btn-primary pull-right" *ngIf="clinicName != '' && clinicianName != ''" (click)="doConsultation()">Send</button>
+                                                                <button class="btn btn-primary pull-right" *ngIf="clinicName != '' && clinicianName != '' && visitType != ''" (click)="doConsultation()">Send</button>
                                                             </div>
                                                         </div>
                                                     </div>

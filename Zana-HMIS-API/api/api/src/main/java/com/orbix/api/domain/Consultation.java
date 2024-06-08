@@ -54,6 +54,7 @@ public class Consultation {
 	private String membershipNo;
 	@NotBlank
 	private String status;
+	private boolean followUp = false;
 	
 	/**
 	 * A patient can have one or more consultations

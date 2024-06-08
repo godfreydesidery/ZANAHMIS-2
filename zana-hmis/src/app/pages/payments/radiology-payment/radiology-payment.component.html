@@ -88,6 +88,13 @@
                                                 <td style="text-align: right;">{{registrationBill.amount | currency:'':''}}</td>
                                             </tr>
 
+                                            <tr *ngIf="consultationBill != null">
+                                                <td>{{consultationBill.id}}</td>
+                                                <td>{{consultationBill.description}}</td>
+                                                <td>{{consultationBill.qty}}</td>
+                                                <td style="text-align: right;">{{consultationBill.amount | currency:'':''}}</td>
+                                            </tr>
+
                                             <tr *ngFor="let radiologyBill of radiologyBills">
                                                 <td>{{radiologyBill.id}}</td>
                                                 <td>{{radiologyBill.description}}</td>
