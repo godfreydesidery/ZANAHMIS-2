@@ -306,6 +306,8 @@ export class LabTestPaymentComponent implements OnInit {
     )
   }
 
+  billsToPrint : IBill[] = []
+
   async confirmBillsPayment(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -319,11 +321,19 @@ export class LabTestPaymentComponent implements OnInit {
       bills.push(this.registrationBill)
     }
     /**
+     * Add consultation bills
+     */
+    if(this.consultationBill){
+      bills.push(this.consultationBill)
+    }
+    /**
      * Add lab test bills
      */
     this.labTestBills.forEach(element => {
       bills.push(element)
     })
+
+    this.billsToPrint = bills
     
     console.log(bills)
 
@@ -339,6 +349,7 @@ export class LabTestPaymentComponent implements OnInit {
         this.clear()
         this.searchKey = temp
         //this.searchBySearchKey(this.searchKey)
+        this.printReceipt()
         
       }
     )
@@ -354,7 +365,7 @@ export class LabTestPaymentComponent implements OnInit {
     var items : ReceiptItem[] = []
     var item : ReceiptItem
 
-    this.labTestBills.forEach(element => {
+    this.billsToPrint.forEach(element => {
       item = new ReceiptItem()
       item.code = element.id
       item.name = element.description

@@ -15,9 +15,9 @@
                         <a class="btn btn-primary" routerLink="/list-from-reception" style="margin: 1px;"> <i class="fa fa-list"></i>List From Reception</a>  
                         <a class="btn btn-primary" routerLink="/my-consultation" style="margin: 1px;"> <i class="fa fa-list"></i>My Consultations</a>  
                         <a class="btn btn-primary" routerLink="/patient-history-menu" (click)="setGlobalPatientId()" style="margin: 1px;"> <i class="fa fa-history"></i>Patient History</a> 
-                        <a class="btn btn-primary" (click)="clearTransferClinic()" data-toggle="modal" data-target="#transfer-modal" style="margin: 1px;"> <i class="fa fa-hotel"></i> Transfer to other Clinic</a>
+                        <!--<a class="btn btn-primary" (click)="clearTransferClinic()" data-toggle="modal" data-target="#transfer-modal" style="margin: 1px;"> <i class="fa fa-hotel"></i> Transfer to other Clinic</a>
                         <a class="btn btn-primary" routerLink="/deceased-note" (click)="setGlobalPatientId()" style="margin: 1px;"> <i class="fa fa-sign-out"></i>Deceased Note</a>
-                        <a class="btn btn-primary" routerLink="/referral-plan" (click)="setGlobalPatientId()" style="margin: 1px;"> <i class="fa fa-sign-out"></i>Referral Plan</a>
+                        <a class="btn btn-primary" routerLink="/referral-plan" (click)="setGlobalPatientId()" style="margin: 1px;"> <i class="fa fa-sign-out"></i>Referral Plan</a>-->
                     </div>
                 </div>
                 <div class="panel-body">
@@ -185,10 +185,7 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-12" style="text-align: center;">
-                            <button class="btn btn-primary" (click)="switchToConsultation(id)">Switch to Consultation</button>
-                            <hr>
-                        </div>
+                        
 
                         <br>
                         <div class="col-sm-12">
@@ -302,6 +299,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-sm-12" style="text-align: center;">
+                            <br>
+                            <button class="btn btn-danger" (click)="switchToConsultation(id)">Switch to Consultation</button>
                         </div>
                     </div>
                 </div> 

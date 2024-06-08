@@ -94,7 +94,7 @@ export class PatientRegisterComponent implements OnInit {
 
   editType : string = ''
 
-  visitType : string = 'NORMAL VISIT'
+  visitType : string = 'Normal Visit'
 
   editPaymentType : string = ''
   editInsurancePlanName : string = ''
@@ -856,9 +856,9 @@ export class PatientRegisterComponent implements OnInit {
       insuranceMembershipNo: this.membershipNo
     }
     var vType : number = 1
-    if(this.visitType === 'FOLLOW UP VISIT'){
+    if(this.visitType === 'Follow up Visit'){
       vType = 1
-    }else if(this.visitType === 'NORMAL VISIT'){
+    }else if(this.visitType === 'Normal Visit'){
       vType = 0
     }else{
       window.alert("Invalid selection")

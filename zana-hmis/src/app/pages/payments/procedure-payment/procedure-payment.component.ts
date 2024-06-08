@@ -303,6 +303,7 @@ export class ProcedurePaymentComponent implements OnInit {
     )
   }
 
+  billsToPrint : IBill[] = []
   async confirmBillsPayment(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -315,7 +316,12 @@ export class ProcedurePaymentComponent implements OnInit {
     if(this.registrationBill){
       bills.push(this.registrationBill)
     }
-    
+    /**
+     * Add consultation bills
+     */
+    if(this.consultationBill){
+      bills.push(this.consultationBill)
+    }
     /**
      * Add procedure bills
      */
@@ -323,6 +329,7 @@ export class ProcedurePaymentComponent implements OnInit {
       bills.push(element)
     })
    
+    this.billsToPrint = bills
     console.log(bills)
 
     this.spinner.show()
@@ -337,6 +344,8 @@ export class ProcedurePaymentComponent implements OnInit {
         this.clear()
         this.searchKey = temp
         this.searchBySearchKey(this.searchKey)
+
+        this.printReceipt()
         
       }
     )
@@ -352,7 +361,7 @@ export class ProcedurePaymentComponent implements OnInit {
     var items : ReceiptItem[] = []
     var item : ReceiptItem
 
-    this.procedureBills.forEach(element => {
+    this.billsToPrint.forEach(element => {
       item = new ReceiptItem()
       item.code = element.id
       item.name = element.description

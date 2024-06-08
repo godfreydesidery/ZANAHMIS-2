@@ -19,6 +19,8 @@ export interface IConsultation {
     clinic          : IClinic
     visit           : IVisit
     insurancePlan   : IInsurancePlan
+
+    followUp        : boolean
     
     created : string
 

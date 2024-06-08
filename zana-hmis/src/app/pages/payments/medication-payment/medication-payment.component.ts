@@ -237,6 +237,8 @@ export class MedicationPaymentComponent implements OnInit {
         this.registrationBill = data! 
         if(this.registrationBill != null) {
           this.registrationAmount = this.registrationBill.amount
+        }else{
+          this.registrationAmount = 0
         }
         this.total = this.total + this.registrationAmount       
       }
@@ -264,6 +266,8 @@ export class MedicationPaymentComponent implements OnInit {
         this.consultationBill = data! 
         if(this.consultationBill != null) {
           this.consultationAmount = this.consultationBill.amount
+        }else{
+          this.consultationAmount = 0
         }
         this.total = this.total + this.consultationAmount  
       }
@@ -308,6 +312,7 @@ export class MedicationPaymentComponent implements OnInit {
 
   
 
+  billsToPrint : IBill[] = []
   async confirmBillsPayment(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -321,6 +326,12 @@ export class MedicationPaymentComponent implements OnInit {
       bills.push(this.registrationBill)
     }
     /**
+     * Add consultation bills
+     */
+    if(this.consultationBill){
+      bills.push(this.consultationBill)
+    }
+    /**
      * Add medicine bills
      */
      this.prescriptionBills.forEach(element => {
@@ -328,6 +339,7 @@ export class MedicationPaymentComponent implements OnInit {
     })
     
 
+    this.billsToPrint = bills
     console.log(bills)
 
     this.spinner.show()
@@ -342,6 +354,8 @@ export class MedicationPaymentComponent implements OnInit {
         this.clear()
         this.searchKey = temp
         this.searchBySearchKey1(this.searchKey)
+
+        this.printReceipt()
         
       }
     )
@@ -357,7 +371,7 @@ export class MedicationPaymentComponent implements OnInit {
     var items : ReceiptItem[] = []
     var item : ReceiptItem
 
-    this.prescriptionBills.forEach(element => {
+    this.billsToPrint.forEach(element => {
       item = new ReceiptItem()
       item.code = element.id
       item.name = element.description

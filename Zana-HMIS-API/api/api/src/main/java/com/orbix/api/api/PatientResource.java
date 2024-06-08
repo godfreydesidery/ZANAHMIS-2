@@ -3599,7 +3599,7 @@ public class PatientResource {
 		
 		List<Consultation> consultationsToShow = new ArrayList<>();
 		for(Consultation c : consultations) {
-			if(c.getPatientBill().getStatus().equals("PAID") || c.getPatientBill().getStatus().equals("COVERED") || c.getPatientBill().getStatus().equals("VERIFIED")) {
+			if(c.getPatientBill().getStatus().equals("PAID") || c.getPatientBill().getStatus().equals("COVERED") || c.getPatientBill().getStatus().equals("VERIFIED") || c.getPatientBill().getStatus().equals("NONE")) {
 				consultationsToShow.add(c);
 			}
 		}

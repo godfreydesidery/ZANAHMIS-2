@@ -147,8 +147,8 @@ public class PatientBillResource {
 		
 		List<String> statuses = new ArrayList<>();
 		statuses.add("PENDING");
+		statuses.add("IN-PROCESS");
 		List<Consultation> cs = consultationRepository.findAllByPatientAndStatusIn(patient, statuses);
-		
 		
 		PatientPayment payment = new PatientPayment();
 		payment.setAmount(totalAmount);

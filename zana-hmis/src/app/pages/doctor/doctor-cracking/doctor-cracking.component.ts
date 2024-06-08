@@ -203,6 +203,13 @@ export class DoctorCrackingComponent implements OnInit {
 
   async refresh(){
     await this.loadConsultation(this.id)
+
+    if(this.consultation.followUp === true){
+      localStorage.setItem('patient-id', this.consultation.patient.id)
+      localStorage.setItem('consultation-id', this.id)
+      this.router.navigate(['doctor-follow-up'])
+    }
+
     await this.loadClinicalNoteByConsultationId(this.id)
     await this.loadGeneralExaminationByConsultationId(this.id)  
     await this.loadTheatreNames()

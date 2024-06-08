@@ -260,8 +260,8 @@
                                                             <div class="col-sm-12 form-group" *ngIf="clinicName != '' && clinicianName != ''">
                                                                 <h4 class="text-primary">Select Visit Type</h4>
                                                                 <select class="form-control" [(ngModel)]="visitType">
-                                                                    <option>NORMAL VISIT</option>
-                                                                    <option>FOLLOW UP VISIT</option>
+                                                                    <option>Normal Visit</option>
+                                                                    <option>Follow up Visit</option>
                                                                 </select>
                                                                 <br>
                                                                 <button class="btn btn-primary pull-right" *ngIf="clinicName != '' && clinicianName != '' && visitType != ''" (click)="doConsultation()">Send</button>

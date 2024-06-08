@@ -205,12 +205,12 @@ export class DoctorFollowUpComponent {
     await this.loadConsultation(this.id)
     await this.loadClinicalNoteByConsultationId(this.id)
     await this.loadGeneralExaminationByConsultationId(this.id)  
-    await this.loadTheatreNames()
+    //await this.loadTheatreNames()
     await this.loadWorkingDiagnosis(this.id)
     await this.loadFinalDiagnosis(this.id)
-    await this.loadLabTest(this.id, 0, 0)
-    await this.loadRadiologies(this.id, 0, 0)
-    await this.loadProcedures(this.id, 0, 0)
+    //await this.loadLabTest(this.id, 0, 0)
+    //await this.loadRadiologies(this.id, 0, 0)
+    //await this.loadProcedures(this.id, 0, 0)
     await this.loadPrescriptions(this.id, 0, 0)  
   }
 
@@ -1828,9 +1828,10 @@ export class DoctorFollowUpComponent {
 
 
   async switchToConsultation(id : any){
-    if(!window.confirm("Are you sure you want to switch to consultation?")){
+    if(!(await this.msgBox.showConfirmMessageDialog('Are you sure you want to switch to consultation?', 'Consultation will switch to normal. Consultation payment will have to be verified or paid.', 'question', 'Yes, Switch', 'No, Do not switch'))){
       return
     }
+
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }

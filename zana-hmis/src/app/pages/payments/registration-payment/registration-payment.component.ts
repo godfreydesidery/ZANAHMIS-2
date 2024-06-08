@@ -279,11 +279,11 @@ export class RegistrationPaymentComponent implements OnInit {
     )
   }
 
+  billsToPrint : IBill[] = []
   async confirmRegistrationAndConsultationPayment(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
-
 
     this.spinner.show()
     await this.http.post<IBill>(API_URL+'/bills/confirm_registration_and_consultation_payment?patient_id='+this.id+'&total_amount='+this.total, null, options)
@@ -301,7 +301,9 @@ export class RegistrationPaymentComponent implements OnInit {
         //if(this.consultationBill != null) {
           //this.consultationAmount = this.consultationBill.amount
         //}
-        //this.total = this.total + this.consultationAmount  
+        //this.total = this.total + this.consultationAmount 
+        
+        this.printReceipt()
       }
     )
     .catch(
