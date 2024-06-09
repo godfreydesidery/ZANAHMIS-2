@@ -71,33 +71,34 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class UpdatePatient implements Runnable{
 
+	/**
+	 * These beans should appear in this order
+	 * Please do not change order as parameter list order will change.
+	 * To add a bean, add bean at the end of this list
+	 * then add respective parameters to the calling class
+	 */
 	private final ConsultationRepository consultationRepository;
 	private final NonConsultationRepository nonConsultationRepository;
 	private final AdmissionRepository admissionRepository;
-	private final PatientBillRepository patientBillRepository;
-	
+	private final PatientBillRepository patientBillRepository;	
 	private final LabTestRepository labTestRepository;
 	private final RadiologyRepository radiologyRepository;
 	private final ProcedureRepository procedureRepository;
-	private final PrescriptionRepository prescriptionRepository;
-	
-	private final ConsultationTransferRepository consultationTransferRepository;
-	
-	private final AdmissionBedRepository admissionBedRepository;
-	
-	private final DayService dayService;
-	
+	private final PrescriptionRepository prescriptionRepository;	
+	private final ConsultationTransferRepository consultationTransferRepository;	
+	private final AdmissionBedRepository admissionBedRepository;	
+	private final DayService dayService;	
 	private final WardTypeInsurancePlanRepository wardTypeInsurancePlanRepository;
 	private final PatientInvoiceRepository patientInvoiceRepository;
-	private final PatientInvoiceDetailRepository patientInvoiceDetailRepository;
-	
+	private final PatientInvoiceDetailRepository patientInvoiceDetailRepository;	
 	private final DischargePlanRepository dischargePlanRepository;
 	private final DeceasedNoteRepository deceasedNoteRepository;
-	private final ReferralPlanRepository referralPlanRepository;
-	
+	private final ReferralPlanRepository referralPlanRepository;	
 	private final PatientRepository patientRepository;
 	
-	
+	/**
+	 * To add bean, add above this comment
+	 */
 	
 	@Override
 	public void run() {
