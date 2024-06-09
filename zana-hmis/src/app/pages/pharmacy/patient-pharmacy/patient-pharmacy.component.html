@@ -65,15 +65,12 @@
                                         </td>
                                         <td>
                                             <div class="row" *ngIf="prescription.status === 'PENDING' || prescription.status === 'NOT-GIVEN'">
-                                                <div class="col-sm-4">
-                                                    <button class="btn btn-warning" (click)="clearIssued(prescription.id)">Set 0</button>
+                                                <div class="col-sm-12">
+                                                    <button class="btn btn-warning form-control" (click)="clearIssued(prescription.id)">Set 0</button>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-12">
                                                     <input type="text" class="form-control" *ngIf="prescription.checked === true" [(ngModel)]="prescription.issued">
                                                     <input type="text" class="form-control" *ngIf="prescription.checked === false" [(ngModel)]="prescription.issued" readonly>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <!--<input type="checkbox">-->
                                                 </div>
                                             </div>
                                         </td>

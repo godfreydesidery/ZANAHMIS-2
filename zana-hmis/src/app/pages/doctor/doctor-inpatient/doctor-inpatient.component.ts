@@ -815,7 +815,7 @@ export class DoctorInpatientComponent implements OnInit {
       (data) => {
         this.loadRadiologies(0, 0, this.id)
         this.clearRadiology()
-        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+        if(data?.patientBill.status !='COVERED' && data?.admission.paymentType === 'INSURANCE'){
           this.msgBox.showSuccessMessage('Service not covered in insurance package!')
         }else{
           this.msgBox.showSuccessMessage('Radiology Saved successifully')

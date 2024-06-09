@@ -1287,7 +1287,7 @@ public class ReportResource {
 			Optional<InsurancePlan> insurancePlan_;
 			insurancePlan_ = insurancePlanRepository.findByName(args.getPaymentMode());
 			if(insurancePlan_.isEmpty()) {
-				throw new NotFoundException("Plan not found in atabase");
+				throw new NotFoundException("Plan not found in database");
 			}
 			invoices = patientInvoiceRepository.findAllByCreatedAtBetweenAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), insurancePlan_.get());
 		}

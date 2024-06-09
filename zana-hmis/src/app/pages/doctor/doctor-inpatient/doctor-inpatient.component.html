@@ -264,7 +264,6 @@
                                                             <a (click)="showRadiologyReport(radiology.id, radiology.radiologyType.name, radiology.report)" *ngIf="(radiology.patientBill?.status === 'COVERED' || radiology.patientBill?.status === 'PAID' || radiology.patientBill?.status === 'VERIFIED') && (radiology.report != '' && radiology.report != null)" data-toggle="modal" data-target="#add-report-to-radiology-modal"><i class="fa fa-pencil"></i></a>
                                                         </td>
                                                         <td>
-                                                             
                                                             <a (click)="deleteRadiology(radiology?.id)"><i class="fa fa-trash text-danger"></i></a>
                                                         </td>
                                                     </tr>
