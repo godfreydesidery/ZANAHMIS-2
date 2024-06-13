@@ -9,6 +9,7 @@ export interface IRegistration {
 
     patient : IPatient
     bill    : IPatientBill
+    patientBill : IPatientBill
     
     createdBy       : IUser
     createdOn       : IDay

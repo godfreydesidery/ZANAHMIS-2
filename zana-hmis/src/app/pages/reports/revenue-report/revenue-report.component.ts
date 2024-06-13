@@ -26,6 +26,7 @@ import { finalize } from 'rxjs';
 import { ILabTestCollection } from 'src/app/models/labTestCollection';
 import { IRevenue } from 'src/app/domain/revenue';
 import { IInsurancePlan } from 'src/app/domain/insurance-plan';
+import { IRevenueBreakDownReport } from 'src/app/domain/revenue_break_down_report';
 var pdfFonts = require('pdfmake/build/vfs_fonts.js'); 
 const fs = require('file-saver');
 
@@ -78,6 +79,10 @@ export class RevenueReportComponent {
   paymentMode : string = '--All--'
 
 
+  showBreakdown : boolean = false
+
+
+  revenueBreakDownReport! : IRevenueBreakDownReport
 
 
   constructor(
@@ -125,6 +130,7 @@ export class RevenueReportComponent {
 
 
   async loadRevenueReport(from : Date, to : Date){   
+    this.showBreakdown = false
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
@@ -194,6 +200,99 @@ export class RevenueReportComponent {
       }
     )
   }
+
+ 
+
+
+
+  async loadRevenueReportBreakDown(from : Date, to : Date){   
+    this.showBreakdown = false
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    if(from > to){
+      this.msgBox.showErrorMessage3('Could not run. Start date must be earlier or equal to end date')
+      return
+    }
+
+    if(from === undefined || to === undefined){
+      from = new Date()
+      to = new Date()
+    }
+
+    var args = {
+      from : from,
+      to   : to,
+      paymentMode : this.paymentMode
+    }
+
+    this.spinner.show()
+    await this.http.post<IRevenueBreakDownReport>(API_URL+'/reports/revenue_break_down_report_by_payment_mode', args, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        this.showBreakdown = true
+
+        this.revenueBreakDownReport = data!
+
+        var id = 0
+        this.revenueBreakDownReport.registrations.forEach(element => {
+          id = id + 1
+          element.id = id
+        })
+
+        var id = 0
+        this.revenueBreakDownReport.consultations.forEach(element => {
+          id = id + 1
+          element.id = id
+        })
+
+        var id = 0
+        this.revenueBreakDownReport.labTests.forEach(element => {
+          id = id + 1
+          element.id = id
+        })
+
+        var id = 0
+        this.revenueBreakDownReport.radiologies.forEach(element => {
+          id = id + 1
+          element.id = id
+        })
+
+        var id = 0
+        this.revenueBreakDownReport.procedures.forEach(element => {
+          id = id + 1
+          element.id = id
+        })
+
+        var id = 0
+        this.revenueBreakDownReport.prescriptions.forEach(element => {
+          id = id + 1
+          element.id = id
+        })
+
+        var id = 0
+        this.revenueBreakDownReport.admissionBeds.forEach(element => {
+          id = id + 1
+          element.id = id
+        })
+
+        
+        console.log(data)
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+  }
+
+
+
 
   exportToPdf = async () => {
     this.documentHeader = await this.data.getDocumentHeader()

@@ -1270,6 +1270,81 @@ public class ReportResource {
 	
 	
 	
+	
+	
+	
+	
+	
+	@PostMapping("/reports/revenue_break_down_report_by_payment_mode")
+	public RevenueReportBreakDown getRevenueBreakDownReportByPaymentMode(
+			@RequestBody RevenueReportArgs args,
+			HttpServletRequest request){
+		
+		//List<RevenueReportBreakDown> revenueReportBreakDown = new ArrayList<>();
+		RevenueReportBreakDown revenueReportBreakDown = new RevenueReportBreakDown();
+		
+		Revenue revenue = new Revenue();
+		List<Revenue> revenueTemplate = new ArrayList<>();
+		
+		List<String> statuses = new ArrayList<>();
+		
+		List<PatientBill> patientBills;
+		
+		if(args.getPaymentMode().equals("--All--")) {
+			statuses.add("PAID");
+			statuses.add("VERIFIED");
+			statuses.add("COVERED");
+			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		}else if(args.getPaymentMode().equals("CASH")) {
+			statuses.add("PAID");
+			statuses.add("VERIFIED");
+			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusIn(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses);
+		}else {
+			Optional<InsurancePlan> insurancePlan_;
+			insurancePlan_ = insurancePlanRepository.findByName(args.getPaymentMode());
+			if(insurancePlan_.isEmpty()) {
+				throw new NotFoundException("Plan not found in atabase");
+			}
+			statuses.add("COVERED");
+			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusInAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses, insurancePlan_.get());
+		}
+				
+		List<Registration> registrations = registrationRepository.findAllByPatientBillIn(patientBills);
+		
+		List<Consultation> consultations = consultationRepository.findAllByPatientBillIn(patientBills);
+		List<LabTest> labTests = labTestRepository.findAllByPatientBillIn(patientBills);
+		List<Radiology> radiologies = radiologyRepository.findAllByPatientBillIn(patientBills);
+		List<Procedure> procedures = procedureRepository.findAllByPatientBillIn(patientBills);
+		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientBillIn(patientBills);
+		List<AdmissionBed> admissionBeds = admissionBedRepository.findAllByPatientBillIn(patientBills);
+		
+		
+		revenueReportBreakDown.setRegistrations(registrations);
+		revenueReportBreakDown.setConsultations(consultations);
+		revenueReportBreakDown.setLabTests(labTests);
+		revenueReportBreakDown.setRadiologies(radiologies);
+		revenueReportBreakDown.setProcedures(procedures);
+		revenueReportBreakDown.setPrescriptions(prescriptions);
+		revenueReportBreakDown.setAdmissionBeds(admissionBeds);
+		
+		
+		return revenueReportBreakDown;		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@PostMapping("/reports/ipd_report")
 	public List<IPDReport> getIPDReport(
 			@RequestBody RevenueReportArgs args,
@@ -1494,6 +1569,17 @@ class RevenueReport {
 	double prescription;
 	double admissionBed;
 	double total;
+}
+
+@Data
+class RevenueReportBreakDown {
+	List<Registration> registrations;
+	List<Consultation> consultations;
+	List<Radiology> radiologies;
+	List<LabTest> labTests;
+	List<Procedure> procedures;
+	List<Prescription> prescriptions;
+	List<AdmissionBed> admissionBeds;
 }
 
 @Data
