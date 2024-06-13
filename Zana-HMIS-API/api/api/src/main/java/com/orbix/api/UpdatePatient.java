@@ -360,6 +360,7 @@ public class UpdatePatient implements Runnable{
 								wardBedBill.setPaid(eligiblePlan.getPrice());
 								wardBedBill.setBalance(0);
 								wardBedBill.setPaymentType("INSURANCE");
+								wardBedBill.setInsurancePlan(adm.getInsurancePlan());
 								wardBedBill.setMembershipNo(adm.getPatient().getMembershipNo());
 								wardBedBill.setStatus("COVERED");				
 								wardBedBill = patientBillRepository.save(wardBedBill);
