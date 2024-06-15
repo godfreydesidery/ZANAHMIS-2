@@ -19,4 +19,6 @@ export interface IAdmissionBed {
     opened : string
 
     closed : string
+
+    admitted : string
 }

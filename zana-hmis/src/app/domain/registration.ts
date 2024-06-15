@@ -14,4 +14,6 @@ export interface IRegistration {
     createdBy       : IUser
     createdOn       : IDay
     createdAt       : Date
+
+    created : String
 }

@@ -203,6 +203,14 @@ export class RevenueReportComponent {
 
  
 
+  regTotal : number = 0
+  conTotal : number = 0
+  labTotal : number = 0
+  radTotal : number = 0
+  proTotal : number = 0
+  preTotal : number = 0
+  adBTotal : number = 0
+
 
 
   async loadRevenueReportBreakDown(from : Date, to : Date){   
@@ -238,45 +246,66 @@ export class RevenueReportComponent {
         this.revenueBreakDownReport = data!
 
         var id = 0
+        this.regTotal = 0
         this.revenueBreakDownReport.registrations.forEach(element => {
           id = id + 1
           element.id = id
+          
+          this.regTotal = this.regTotal + element.patientBill.amount
         })
 
         var id = 0
+        this.conTotal = 0
         this.revenueBreakDownReport.consultations.forEach(element => {
           id = id + 1
           element.id = id
+
+          this.conTotal = this.conTotal + element.patientBill.amount
         })
 
         var id = 0
+        this.labTotal = 0
         this.revenueBreakDownReport.labTests.forEach(element => {
           id = id + 1
           element.id = id
+
+          this.labTotal = this.labTotal + element.patientBill.amount
         })
 
         var id = 0
+        this.radTotal = 0
         this.revenueBreakDownReport.radiologies.forEach(element => {
           id = id + 1
           element.id = id
+
+          this.radTotal = this.radTotal + element.patientBill.amount
         })
 
         var id = 0
+        this.proTotal = 0
         this.revenueBreakDownReport.procedures.forEach(element => {
           id = id + 1
           element.id = id
+
+          this.proTotal = this.proTotal + element.patientBill!.amount
         })
 
         var id = 0
+        this.preTotal = 0
         this.revenueBreakDownReport.prescriptions.forEach(element => {
           id = id + 1
           element.id = id
+
+          this.preTotal = this.preTotal + element.patientBill.amount
         })
 
         var id = 0
+        this.adBTotal = 0
         this.revenueBreakDownReport.admissionBeds.forEach(element => {
           id = id + 1
           element.id = id
+
+          this.adBTotal = this.adBTotal + element.patientBill.amount
         })
 
         

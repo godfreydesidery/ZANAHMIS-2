@@ -57,15 +57,20 @@ import com.orbix.api.domain.Ward;
 import com.orbix.api.domain.WardBed;
 import com.orbix.api.exceptions.NotFoundException;
 import com.orbix.api.models.AdmissionBedCollectionModel;
+import com.orbix.api.models.AdmissionBedModel;
 import com.orbix.api.models.ConsultationCollectionModel;
+import com.orbix.api.models.ConsultationModel;
 import com.orbix.api.models.LabTestCollectionModel;
 import com.orbix.api.models.LabTestModel;
 import com.orbix.api.models.PharmacyStockCardModel;
 import com.orbix.api.models.PrescriptionCollectionModel;
 import com.orbix.api.models.PrescriptionModel;
 import com.orbix.api.models.ProcedureCollectionModel;
+import com.orbix.api.models.ProcedureModel;
 import com.orbix.api.models.RadiologyCollectionModel;
+import com.orbix.api.models.RadiologyModel;
 import com.orbix.api.models.RegistrationCollectionModel;
+import com.orbix.api.models.RegistrationModel;
 import com.orbix.api.models.StoreStockCardModel;
 import com.orbix.api.reports.FastMovingDrugs;
 import com.orbix.api.reports.models.ClinicianPerformanceReport;
@@ -1309,8 +1314,7 @@ public class ReportResource {
 			patientBills = patientBillRepository.findAllByCreatedAtBetweenAndStatusInAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), statuses, insurancePlan_.get());
 		}
 				
-		List<Registration> registrations = registrationRepository.findAllByPatientBillIn(patientBills);
-		
+		List<Registration> registrations = registrationRepository.findAllByPatientBillIn(patientBills);		
 		List<Consultation> consultations = consultationRepository.findAllByPatientBillIn(patientBills);
 		List<LabTest> labTests = labTestRepository.findAllByPatientBillIn(patientBills);
 		List<Radiology> radiologies = radiologyRepository.findAllByPatientBillIn(patientBills);
@@ -1319,13 +1323,109 @@ public class ReportResource {
 		List<AdmissionBed> admissionBeds = admissionBedRepository.findAllByPatientBillIn(patientBills);
 		
 		
-		revenueReportBreakDown.setRegistrations(registrations);
-		revenueReportBreakDown.setConsultations(consultations);
-		revenueReportBreakDown.setLabTests(labTests);
-		revenueReportBreakDown.setRadiologies(radiologies);
-		revenueReportBreakDown.setProcedures(procedures);
-		revenueReportBreakDown.setPrescriptions(prescriptions);
-		revenueReportBreakDown.setAdmissionBeds(admissionBeds);
+		List<RegistrationModel> registrationModels = new ArrayList<>();
+		List<ConsultationModel> consultationModels = new ArrayList<>();
+		List<LabTestModel> labTestModels = new ArrayList<>();
+		List<RadiologyModel> radiologyModels = new ArrayList<>();
+		List<ProcedureModel> procedureModels = new ArrayList<>();
+		List<PrescriptionModel> prescriptionModels = new ArrayList<>();
+		List<AdmissionBedModel> admissionBedModels = new ArrayList<>();
+		
+		for(Registration r : registrations) {
+			RegistrationModel registrationModel = new RegistrationModel();
+			registrationModel.setId(r.getId());
+			registrationModel.setPatient(r.getPatient());
+			registrationModel.setPatientBill(r.getPatientBill());
+			registrationModel.setStatus(r.getStatus());
+			Optional<User> user_ = userRepository.findById(r.getCreatedBy());
+			registrationModel.setCreated(user_.get().getNickname());
+			registrationModels.add(registrationModel);
+		}
+		
+		for(Consultation r : consultations) {
+			ConsultationModel consultationModel = new ConsultationModel();
+			consultationModel.setId(r.getId());
+			consultationModel.setPatient(r.getPatient());
+			consultationModel.setPatientBill(r.getPatientBill());
+			consultationModel.setClinician(r.getClinician());
+			consultationModel.setClinic(r.getClinic());
+			//consultationModel.setStatus(r.getStatus());
+			//Optional<User> user_ = userRepository.findById(r.getCreatedBy());
+			//registrationModel.setCreated(user_.get().getNickname());
+			consultationModels.add(consultationModel);
+		}
+		
+		for(LabTest r : labTests) {
+			LabTestModel labTestModel = new LabTestModel();
+			labTestModel.setId(r.getId());
+			labTestModel.setPatient(r.getPatient());
+			labTestModel.setLabTestType(r.getLabTestType());
+			labTestModel.setPatientBill(r.getPatientBill());
+			labTestModel.setStatus(r.getStatus());
+			Optional<User> user_ = userRepository.findById(r.getCreatedBy());
+			labTestModel.setCreated(user_.get().getNickname());
+			labTestModels.add(labTestModel);
+		}
+		
+		for(Radiology r : radiologies) {
+			RadiologyModel radiologyModel = new RadiologyModel();
+			radiologyModel.setId(r.getId());
+			radiologyModel.setPatient(r.getPatient());
+			radiologyModel.setRadiologyType(r.getRadiologyType());
+			radiologyModel.setPatientBill(r.getPatientBill());
+			radiologyModel.setStatus(r.getStatus());
+			Optional<User> user_ = userRepository.findById(r.getCreatedBy());
+			radiologyModel.setCreated(user_.get().getNickname());
+			radiologyModels.add(radiologyModel);
+		}
+		
+		
+		for(Procedure r : procedures) {
+			ProcedureModel procedureModel = new ProcedureModel();
+			procedureModel.setId(r.getId());
+			procedureModel.setPatient(r.getPatient());
+			procedureModel.setProcedureType(r.getProcedureType());
+			procedureModel.setPatientBill(r.getPatientBill());
+			procedureModel.setStatus(r.getStatus());
+			Optional<User> user_ = userRepository.findById(r.getCreatedBy());
+			procedureModel.setCreated(user_.get().getNickname());
+			procedureModels.add(procedureModel);
+		}
+		
+		
+		for(Prescription r : prescriptions) {
+			PrescriptionModel prescriptionModel = new PrescriptionModel();
+			prescriptionModel.setId(r.getId());
+			prescriptionModel.setPatient(r.getPatient());
+			prescriptionModel.setMedicine(r.getMedicine());
+			prescriptionModel.setPatientBill(r.getPatientBill());
+			prescriptionModel.setStatus(r.getStatus());
+			Optional<User> user_ = userRepository.findById(r.getCreatedBy());
+			prescriptionModel.setCreated(user_.get().getNickname());
+			prescriptionModels.add(prescriptionModel);
+		}
+		
+		
+		for(AdmissionBed r : admissionBeds) {
+			AdmissionBedModel admissionBedModel = new AdmissionBedModel();
+			admissionBedModel.setId(r.getId());
+			admissionBedModel.setPatient(r.getPatient());
+			admissionBedModel.setWardBed(r.getWardBed());
+			admissionBedModel.setPatientBill(r.getPatientBill());
+			admissionBedModel.setStatus(r.getStatus());
+			Optional<User> user_ = userRepository.findById(r.getAdmission().getAdmittedBy());
+			admissionBedModel.setAdmitted(user_.get().getNickname());
+			admissionBedModels.add(admissionBedModel);
+		}
+		
+		
+		revenueReportBreakDown.setRegistrations(registrationModels);
+		revenueReportBreakDown.setConsultations(consultationModels);
+		revenueReportBreakDown.setLabTests(labTestModels);
+		revenueReportBreakDown.setRadiologies(radiologyModels);
+		revenueReportBreakDown.setProcedures(procedureModels);
+		revenueReportBreakDown.setPrescriptions(prescriptionModels);
+		revenueReportBreakDown.setAdmissionBeds(admissionBedModels);
 		
 		
 		return revenueReportBreakDown;		
@@ -1573,13 +1673,13 @@ class RevenueReport {
 
 @Data
 class RevenueReportBreakDown {
-	List<Registration> registrations;
-	List<Consultation> consultations;
-	List<Radiology> radiologies;
-	List<LabTest> labTests;
-	List<Procedure> procedures;
-	List<Prescription> prescriptions;
-	List<AdmissionBed> admissionBeds;
+	List<RegistrationModel> registrations;
+	List<ConsultationModel> consultations;
+	List<RadiologyModel> radiologies;
+	List<LabTestModel> labTests;
+	List<ProcedureModel> procedures;
+	List<PrescriptionModel> prescriptions;
+	List<AdmissionBedModel> admissionBeds;
 }
 
 @Data

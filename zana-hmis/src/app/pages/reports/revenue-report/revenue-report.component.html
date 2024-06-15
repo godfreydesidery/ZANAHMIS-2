@@ -74,7 +74,7 @@
                                         <td style="text-align: right;">{{r.prescription | currency:'':''}}</td>
                                         <td style="text-align: right;">{{r.admissionBed | currency:'':''}}</td>
                                         <td style="text-align: right;">{{r.total | currency:'':''}}</td>
-                                        <td *ngIf = 'revenueReport.length === 1'><button (click)="loadRevenueReportBreakDown(from, to)">View</button></td>
+                                        <td *ngIf = 'revenueReport.length === 1'><button class="btn btn-danger btn-outline" (click)="loadRevenueReportBreakDown(from, to)"><i class="fa fa-eye"></i> View</button></td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
@@ -142,13 +142,13 @@
                                                             <td></td>
                                                             <td></td>
                                                             <td>Total</td>
-                                                            <td style="text-align: right;"></td>
+                                                            <td style="text-align: right;">{{regTotal | currency:'':''}}</td>
                                                             <td style="text-align: right;"></td>
                                                             <td></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                                <button class="btn btn-success">Print</button>
+                                                <!--<button class="btn btn-success">Print</button>-->
                                                 
                                             </div>
                                         </div>
@@ -161,6 +161,8 @@
                                                             <td>ID</td>
                                                             <td>P Name</td>
                                                             <td>F No</td>
+                                                            <td>Clinic</td>
+                                                            <td>Doctor</td>
                                                             <td>Amount</td>
                                                             <td>Billed To</td>
                                                             <td>Date/Time</td>
@@ -171,6 +173,8 @@
                                                             <td>{{r.id}}</td>
                                                             <td>{{r.patient.firstName}} {{r.patient.middleName}} {{r.patient.lastName}}</td>
                                                             <td>{{r.patient.no}}</td>
+                                                            <td>{{r.clinic.name}}</td>
+                                                            <td>{{r.clinician.nickname}}</td>
                                                             <td style="text-align: right;">{{r.patientBill.amount | currency:'':''}}</td>
                                                             <td><span *ngIf="r.patientBill.insurancePlan === null">CASH</span><span *ngIf="r.patientBill.insurancePlan != null">{{r!.patientBill!.insurancePlan!.name}}</span></td>
                                                             <td>{{r.patientBill.createdAt | dateTime}}</td>
@@ -180,14 +184,16 @@
                                                         <tr>
                                                             <td></td>
                                                             <td></td>
+                                                            <td></td>
+                                                            <td></td>
                                                             <td>Total</td>
-                                                            <td style="text-align: right;"></td>
+                                                            <td style="text-align: right;">{{conTotal | currency:'':''}}</td>
                                                             <td style="text-align: right;"></td>
                                                             <td></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                                <button class="btn btn-success">Print</button>
+                                                <!--<button class="btn btn-success">Print</button>-->
                                                 
                                             </div>
                                         </div>
@@ -200,6 +206,8 @@
                                                             <td>ID</td>
                                                             <td>P Name</td>
                                                             <td>F No</td>
+                                                            <td>Ordered By</td>
+                                                            <td>Test</td>
                                                             <td>Amount</td>
                                                             <td>Billed To</td>
                                                             <td>Date/Time</td>
@@ -210,6 +218,8 @@
                                                             <td>{{r.id}}</td>
                                                             <td>{{r.patient.firstName}} {{r.patient.middleName}} {{r.patient.lastName}}</td>
                                                             <td>{{r.patient.no}}</td>
+                                                            <td>{{r.created}}</td>
+                                                            <td>{{r.labTestType.name}}</td>
                                                             <td style="text-align: right;">{{r.patientBill.amount | currency:'':''}}</td>
                                                             <td><span *ngIf="r.patientBill.insurancePlan === null">CASH</span><span *ngIf="r.patientBill.insurancePlan != null">{{r!.patientBill!.insurancePlan!.name}}</span></td>
                                                             <td>{{r.patientBill.createdAt | dateTime}}</td>
@@ -219,14 +229,16 @@
                                                         <tr>
                                                             <td></td>
                                                             <td></td>
+                                                            <td></td>
+                                                            <td></td>
                                                             <td>Total</td>
-                                                            <td style="text-align: right;"></td>
+                                                            <td style="text-align: right;">{{labTotal | currency:'':''}}</td>
                                                             <td style="text-align: right;"></td>
                                                             <td></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                                <button class="btn btn-success">Print</button>
+                                                <!--<button class="btn btn-success">Print</button>-->
                                                 
                                             </div>
                                         </div>
@@ -239,6 +251,8 @@
                                                             <td>ID</td>
                                                             <td>P Name</td>
                                                             <td>F No</td>
+                                                            <td>Ordered By</td>
+                                                            <td>Radiology</td>
                                                             <td>Amount</td>
                                                             <td>Billed To</td>
                                                             <td>Date/Time</td>
@@ -249,6 +263,8 @@
                                                             <td>{{r.id}}</td>
                                                             <td>{{r.patient.firstName}} {{r.patient.middleName}} {{r.patient.lastName}}</td>
                                                             <td>{{r.patient.no}}</td>
+                                                            <td>{{r.created}}</td>
+                                                            <td>{{r.radiologyType.name}}</td>
                                                             <td style="text-align: right;">{{r.patientBill.amount | currency:'':''}}</td>
                                                             <td><span *ngIf="r.patientBill.insurancePlan === null">CASH</span><span *ngIf="r.patientBill.insurancePlan != null">{{r!.patientBill!.insurancePlan!.name}}</span></td>
                                                             <td>{{r.patientBill.createdAt | dateTime}}</td>
@@ -258,14 +274,16 @@
                                                         <tr>
                                                             <td></td>
                                                             <td></td>
+                                                            <td></td>
+                                                            <td></td>
                                                             <td>Total</td>
-                                                            <td style="text-align: right;"></td>
+                                                            <td style="text-align: right;">{{radTotal | currency:'':''}}</td>
                                                             <td style="text-align: right;"></td>
                                                             <td></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                                <button class="btn btn-success">Print</button>
+                                                <!--<button class="btn btn-success">Print</button>-->
                                                 
                                             </div>
                                         </div>
@@ -278,6 +296,8 @@
                                                             <td>ID</td>
                                                             <td>P Name</td>
                                                             <td>F No</td>
+                                                            <td>Ordered By</td>
+                                                            <td>Procedure</td>
                                                             <td>Amount</td>
                                                             <td>Billed To</td>
                                                             <td>Date/Time</td>
@@ -288,6 +308,8 @@
                                                             <td>{{r.id}}</td>
                                                             <td>{{r.patient.firstName}} {{r.patient.middleName}} {{r.patient.lastName}}</td>
                                                             <td>{{r.patient.no}}</td>
+                                                            <td>{{r.created}}</td>
+                                                            <td>{{r.procedureType.name}}</td>
                                                             <td style="text-align: right;">{{r.patientBill!.amount | currency:'':''}}</td>
                                                             <td><span *ngIf="r.patientBill!.insurancePlan === null">CASH</span><span *ngIf="r.patientBill!.insurancePlan != null">{{r!.patientBill!.insurancePlan!.name}}</span></td>
                                                             <td>{{r.patientBill!.createdAt | dateTime}}</td>
@@ -297,14 +319,16 @@
                                                         <tr>
                                                             <td></td>
                                                             <td></td>
+                                                            <td></td>
+                                                            <td></td>
                                                             <td>Total</td>
-                                                            <td style="text-align: right;"></td>
+                                                            <td style="text-align: right;">{{proTotal | currency:'':''}}</td>
                                                             <td style="text-align: right;"></td>
                                                             <td></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                                <button class="btn btn-success">Print</button>
+                                                <!--<button class="btn btn-success">Print</button>-->
                                                 
                                             </div>
                                         </div>
@@ -317,6 +341,7 @@
                                                             <td>ID</td>
                                                             <td>P Name</td>
                                                             <td>F No</td>
+                                                            <td>Medicine</td>
                                                             <td>Amount</td>
                                                             <td>Billed To</td>
                                                             <td>Date/Time</td>
@@ -327,6 +352,7 @@
                                                             <td>{{r.id}}</td>
                                                             <td>{{r.patient.firstName}} {{r.patient.middleName}} {{r.patient.lastName}}</td>
                                                             <td>{{r.patient.no}}</td>
+                                                            <td>{{r.medicine.name}}</td>
                                                             <td style="text-align: right;">{{r.patientBill.amount | currency:'':''}}</td>
                                                             <td><span *ngIf="r.patientBill.insurancePlan === null">CASH</span><span *ngIf="r.patientBill.insurancePlan != null">{{r!.patientBill!.insurancePlan!.name}}</span></td>
                                                             <td>{{r.patientBill.createdAt | dateTime}}</td>
@@ -336,14 +362,15 @@
                                                         <tr>
                                                             <td></td>
                                                             <td></td>
+                                                            <td></td>
                                                             <td>Total</td>
-                                                            <td style="text-align: right;"></td>
+                                                            <td style="text-align: right;">{{preTotal | currency:'':''}}</td>
                                                             <td style="text-align: right;"></td>
                                                             <td></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                                <button class="btn btn-success">Print</button>
+                                                <!--<button class="btn btn-success">Print</button>-->
                                                 
                                             </div>
                                         </div>
@@ -356,6 +383,7 @@
                                                             <td>ID</td>
                                                             <td>P Name</td>
                                                             <td>F No</td>
+                                                            <td>Admitted By</td>
                                                             <td>Amount</td>
                                                             <td>Billed To</td>
                                                             <td>Date/Time</td>
@@ -366,6 +394,7 @@
                                                             <td>{{r.id}}</td>
                                                             <td>{{r.patient.firstName}} {{r.patient.middleName}} {{r.patient.lastName}}</td>
                                                             <td>{{r.patient.no}}</td>
+                                                            <td>{{r.admitted}}</td>
                                                             <td style="text-align: right;">{{r.patientBill.amount | currency:'':''}}</td>
                                                             <td><span *ngIf="r.patientBill.insurancePlan === null">CASH</span><span *ngIf="r.patientBill.insurancePlan != null">{{r!.patientBill!.insurancePlan!.name}}</span></td>
                                                             <td>{{r.patientBill.createdAt | dateTime}}</td>
@@ -375,14 +404,15 @@
                                                         <tr>
                                                             <td></td>
                                                             <td></td>
+                                                            <td></td>
                                                             <td>Total</td>
-                                                            <td style="text-align: right;"></td>
+                                                            <td style="text-align: right;">{{adBTotal | currency:'':''}}</td>
                                                             <td style="text-align: right;"></td>
                                                             <td></td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-                                                <button class="btn btn-success">Print</button>
+                                                <!--<button class="btn btn-success">Print</button>-->
                                                 
                                             </div>
                                         </div>
