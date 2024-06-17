@@ -474,6 +474,12 @@ export class AppComponent {
         //{path : 'doctors-reports', loadComponent: () => import('./pages/reports/doctors-reports/doctors-reports.component').then(m => m.DoctorsReportsComponent), canActivate: [AuthGuard]},
         {path : 'management-dashboard', loadComponent: () => import('./pages/management/management-dashboard/management-dashboard.component').then(m => m.ManagementDashboardComponent), canActivate: [AuthGuard]},
 
+        {path : 'patient-direct-pending-invoices', loadComponent : () => import('./pages/payments/patient-direct-invoices/patient-direct-invoices.component').then(m => m.PatientDirectInvoicesComponent), canActivate: [AuthGuard]},
+        {path : 'patient-insurance-pending-invoices', loadComponent : () => import('./pages/payments/patient-insurance-invoices/patient-insurance-invoices.component').then(m => m.PatientInsuranceInvoicesComponent), canActivate: [AuthGuard]},
+        {path : 'patient-invoice', loadComponent : () => import('./pages/payments/patient-invoice/patient-invoice.component').then(m => m.PatientInvoiceComponent), canActivate: [AuthGuard]},
+
+        {path : 'patient-report', loadComponent : () => import('./pages/reports/patient-report/patient-report.component').then(m => m.PatientReportComponent), canActivate: [AuthGuard]},
+
         {path : 'consultation-report', loadComponent : () => import('./pages/admin/reports/consultation-report/consultation-report.component').then(m => m.ConsultationReportComponent), canActivate: [AuthGuard]},
         {path : 'procedure-report', loadComponent : () => import('./pages/admin/reports/procedure-report/procedure-report.component').then(m => m.ProcedureReportComponent), canActivate: [AuthGuard]},
         {path : 'doctor-to-radiology-report', loadComponent : () => import('./pages/admin/reports/doctor-to-radiology-report/doctor-to-radiology-report.component').then(m => m.DoctorToRadiologyReportComponent), canActivate: [AuthGuard]},

@@ -59,7 +59,7 @@
                                         <td>Medication</td>
                                         <td>Bed</td>
                                         <td>Total</td>
-                                        <td *ngIf = 'revenueReport.length === 1'>View Detaild</td>
+                                        <td *ngIf = 'revenueReport.length === 1'>View</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,13 +74,13 @@
                                         <td style="text-align: right;">{{r.prescription | currency:'':''}}</td>
                                         <td style="text-align: right;">{{r.admissionBed | currency:'':''}}</td>
                                         <td style="text-align: right;">{{r.total | currency:'':''}}</td>
-                                        <td *ngIf = 'revenueReport.length === 1'><button class="btn btn-danger btn-outline" (click)="loadRevenueReportBreakDown(from, to)"><i class="fa fa-eye"></i> View</button></td>
+                                        <td *ngIf = 'revenueReport.length === 1'><button class="btn btn-success" (click)="loadRevenueReportBreakDown(from, to)"><i class="fa fa-eye"></i> View More</button></td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td></td>
-                                        <td></td>
+                                        <td><b>Total</b></td>
                                         <td style="text-align: right;"><b>{{registrationTotal | currency:'':''}}</b></td>
                                         <td style="text-align: right;"><b>{{consultationTotal | currency:'':''}}</b></td>
                                         <td style="text-align: right;"><b>{{labTestTotal | currency:'':''}}</b></td>
