@@ -187,4 +187,6 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
 
 	List<Prescription> findAllByPatientBillIn(List<PatientBill> bills);
 
+	List<Prescription> findAllByPatientAndMedicineAndStatus(Patient patient, Medicine medicine, String string);
+
 }

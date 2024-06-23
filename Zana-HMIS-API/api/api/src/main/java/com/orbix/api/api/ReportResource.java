@@ -1455,16 +1455,19 @@ public class ReportResource {
 		List<PatientInvoice> invoices;
 		
 		if(args.getPaymentMode().equals("--All--")) {
-			invoices = patientInvoiceRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+			//invoices = patientInvoiceRepository.findAllByCreatedAtBetween(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+			invoices = patientInvoiceRepository.findAllByStatus("PENDING");
 		}else if(args.getPaymentMode().equals("CASH")) {
-			invoices = patientInvoiceRepository.findAllByCreatedAtBetweenAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), null);
+			//invoices = patientInvoiceRepository.findAllByCreatedAtBetweenAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), null);
+			invoices = patientInvoiceRepository.findAllByStatusAndInsurancePlan("PENDING", null);
 		}else {
 			Optional<InsurancePlan> insurancePlan_;
 			insurancePlan_ = insurancePlanRepository.findByName(args.getPaymentMode());
 			if(insurancePlan_.isEmpty()) {
 				throw new NotFoundException("Plan not found in database");
 			}
-			invoices = patientInvoiceRepository.findAllByCreatedAtBetweenAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), insurancePlan_.get());
+			//invoices = patientInvoiceRepository.findAllByCreatedAtBetweenAndInsurancePlan(args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1), insurancePlan_.get());
+			invoices = patientInvoiceRepository.findAllByStatusAndInsurancePlan("PENDING", insurancePlan_.get());
 		}
 		
 		List<PatientInvoice> patientInvoices = new ArrayList<>();

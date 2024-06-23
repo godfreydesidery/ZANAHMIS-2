@@ -20,6 +20,7 @@ import { INonConsultation } from 'src/app/domain/non-consultation';
 import { IAdmission } from 'src/app/domain/admission';
 import { IDiagnosisType } from 'src/app/domain/diagnosis-type';
 import { IFinalDiagnosis } from 'src/app/domain/final-diagnosis';
+import { ISingleObject } from 'src/app/domain/single-object';
 
 const API_URL = environment.apiUrl;
 
@@ -186,6 +187,34 @@ export class PatientPharmacyComponent {
     )
     
   }
+
+  drugSummary : string = ''
+
+  async loadLastSameMedicinePrescriptionDate(id : string){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.drugSummary = ''
+    this.spinner.show()
+    await this.http.get<ISingleObject>(API_URL+'/patients/get_same_medicine_alert_one_month_by_prescription_id?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        //alert(data)
+        console.log(data)
+        this.drugSummary = data!.value
+      }
+    )
+    .catch(
+      (error) => {
+        console.log(error)
+        //this.msgBox.showErrorMessage(error, '')
+      }
+    )
+    
+  }
+
 
   async acceptPrescription(prescription : IPrescription){
     let options = {

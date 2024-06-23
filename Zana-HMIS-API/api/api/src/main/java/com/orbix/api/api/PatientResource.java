@@ -4406,6 +4406,7 @@ public class PatientResource {
 				m.setPatient(pres.getPatient());
 				m.setConsultation(pres.getConsultation());
 				m.setNonConsultation(pres.getNonConsultation());
+				m.setAdmission(pres.getAdmission());
 				m.setPatientBill(pres.getPatientBill());
 				m.setStatus(pres.getStatus());
 				
@@ -4459,6 +4460,49 @@ public class PatientResource {
 		}
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_prescriptions_by_patient_id").toUriString());
 		return ResponseEntity.created(uri).body(prescriptionsToReturn);
+	}
+	
+	@GetMapping("/patients/get_same_medicine_alert_one_month_by_prescription_id") 
+	public ResponseEntity<SingleObject> getLastGivenSameMedicinePrescription(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		
+		LocalDateTime lastDateTime = null;
+		Medicine medicine;
+		SingleObject obj = new SingleObject();
+		obj.setValue("");
+		
+		Optional<Prescription> prescription_ = prescriptionRepository.findById(id);
+		if(prescription_.isPresent()) {
+			medicine = prescription_.get().getMedicine();
+		}else {
+			throw new NotFoundException("Prescription not found");
+		}
+		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientAndMedicineAndStatus(prescription_.get().getPatient(), medicine, "GIVEN");
+		
+		for(Prescription p : prescriptions) {
+			lastDateTime = p.getApprovedAt();
+		}
+		
+		if(lastDateTime != null) {
+			
+			long days = ChronoUnit.DAYS.between(LocalDateTime.now(), lastDateTime);
+			long hrs = ChronoUnit.HOURS.between(LocalDateTime.now(), lastDateTime);
+			if(days > 0) {
+				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(days) + " days ago.");
+				if(days <= 30) {
+					obj.setValue(obj.getValue() + " Has Drugs this month.");
+				}
+			}else {
+				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(hrs) + " hours ago.");
+				obj.setValue(obj.getValue() + " Has Drugs this month.");
+			}
+			
+		}
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_same_medicine_last_prescription_date_time_by_id").toUriString());
+		
+		return ResponseEntity.created(uri).body(obj);
 	}
 	
 	@GetMapping("/patients/get_procedures_by_patient_id") 
@@ -6109,5 +6153,10 @@ class LRadiology {
 class LProcedure {
 	private Long id;
 	private String note;
+}
+
+@Data
+class SingleObject {
+	String value;
 }
 

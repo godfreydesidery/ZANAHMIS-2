@@ -94,4 +94,8 @@ public interface PatientInvoiceRepository extends JpaRepository<PatientInvoice, 
 	List<PatientInvoice> findAllByCreatedAtBetweenAndInsurancePlan(LocalDateTime atStartOfDay, LocalDateTime plusDays,
 			Object object);
 
+	List<PatientInvoice> findAllByStatus(String string);
+
+	List<PatientInvoice> findAllByStatusAndInsurancePlan(String string, Object object);
+
 }
