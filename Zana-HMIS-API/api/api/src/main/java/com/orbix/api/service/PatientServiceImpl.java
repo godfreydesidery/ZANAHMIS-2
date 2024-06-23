@@ -835,9 +835,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(patient.getInsurancePlan());
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -896,9 +904,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(null);
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -1059,9 +1075,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(patient.getInsurancePlan());
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -1120,9 +1144,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(null);
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -1294,9 +1326,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(patient.getInsurancePlan());
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -1355,9 +1395,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(null);
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -1497,9 +1545,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(patient.getInsurancePlan());
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -1558,9 +1614,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(null);
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -2026,9 +2090,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(patient.getInsurancePlan());
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -2087,9 +2159,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(null);
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -2239,9 +2319,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(patient.getInsurancePlan());
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -2300,9 +2388,17 @@ public class PatientServiceImpl implements PatientService {
 					patientInvoice.setNo(String.valueOf(Math.random()));
 					patientInvoice.setPatient(patient);
 					patientInvoice.setInsurancePlan(null);
-					patientInvoice.setAdmission(a.get());
-					patientInvoice.setConsultation(c.get());
-					patientInvoice.setNonConsultation(nc.get());
+					
+					if(a.isPresent()) {
+						patientInvoice.setAdmission(a.get());
+					}					
+					if(c.isPresent()) {
+						patientInvoice.setConsultation(c.get());
+					}					
+					if(nc.isPresent()) {
+						patientInvoice.setNonConsultation(nc.get());
+					}
+					
 					patientInvoice.setStatus("PENDING");
 					
 					patientInvoice.setCreatedBy(userService.getUser(request).getId());
@@ -2893,8 +2989,5 @@ public class PatientServiceImpl implements PatientService {
 	      log.error(e.getMessage());
 	      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
-	  }
-	
-	
-		
+	  }	
 }

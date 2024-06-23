@@ -145,6 +145,7 @@ export class DoctorCrackingComponent implements OnInit {
   prescriptionDays        : string = ''
   prescriptionPrice       : number = 0
   prescriptionQty         : number = 0
+  prescriptionInstructions : string = ''
 
   procedureId : any = null
   procedureNote : string = ''
@@ -484,6 +485,23 @@ export class DoctorCrackingComponent implements OnInit {
     this.loadWorkingDiagnosis(this.id)
   }
 
+
+
+  async moveToFinalDiagnosis(id : any, code : string, name : string, description : string){
+
+    if(!(await this.msgBox.showConfirmMessageDialog('Are you sure you want to move working diagnosis to final diagnosis?', 'Final diagnosis will be created!', 'question', 'Yes, Send move', 'No, Do not move'))){
+      return
+    }
+
+    this.diagnosisTypeId = id
+    this.diagnosisTypeCode = code
+    this.diagnosisTypeName = name
+    this.diagnosisDescription = description
+    this.saveFinalDiagnosis()
+  }
+
+
+
   async saveFinalDiagnosis(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -669,6 +687,7 @@ export class DoctorCrackingComponent implements OnInit {
     this.prescriptionDays         = ''
     this.prescriptionPrice        = 0
     this.prescriptionQty          = 0
+    this.prescriptionInstructions = ''
 
   }
 
@@ -974,7 +993,8 @@ export class DoctorCrackingComponent implements OnInit {
       route     : this.prescriptionRoute,
       days      : this.prescriptionDays,
       price     : this.prescriptionPrice,
-      qty       : this.prescriptionQty
+      qty       : this.prescriptionQty,
+      instructions : this.prescriptionInstructions
     }
     if( prescription.medicine.name === '' || 
         prescription.dosage === '' || 

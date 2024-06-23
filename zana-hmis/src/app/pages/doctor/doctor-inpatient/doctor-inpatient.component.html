@@ -145,7 +145,7 @@
                                                     <tr *ngFor="let workingDiagnosis of workingDiagnosises">
                                                         <td>{{workingDiagnosis.diagnosisType?.code}}</td>
                                                         <td>{{workingDiagnosis.diagnosisType?.name}}</td>
-                                                        <td><a (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i></a></td>
+                                                        <td> <button class="btn btn-primary" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'>Move to Final</button> | <a (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i></a></td>
                                                     </tr>
                                                 </tbody>
                                             </table>    
@@ -308,6 +308,7 @@
                                                 <th>Amount</th>
                                                 <th>Payment Status</th>
                                                 <th>Status</th>
+                                                <th>Instructions</th>
                                                 <th>Action</th>
                                             </tr>
                                             </thead>
@@ -325,6 +326,7 @@
                                                         <span>{{prescription.patientBill?.status}}</span>
                                                     </td>
                                                     <td>{{prescription.status}}</td>
+                                                    <td>{{prescription.instructions}}</td>
                                                     <td><a (click)="deletePrescription(prescription.id)"><i class="fa fa-trash text-danger"></i></a></td>
                                                 </tr>
                                                 <tr *ngIf="medicineName != ''">
@@ -366,6 +368,9 @@
                                                     <td><span class="form-control">{{prescriptionPrice * prescriptionQty | currency:'':''}}</span></td>
                                                     <td></td>
                                                     <td></td>
+                                                    <td>
+                                                        <textarea class="form-control" [(ngModel)]="prescriptionInstructions"></textarea>
+                                                    </td>
                                                     <td>
                                                         <a (click)="savePrescription()"><i class="glyphicon glyphicon-plus-sign"></i>Add</a>
                                                         <a  class="text-danger" (click)="clearPrescription()"><i class="glyphicon glyphicon-remove-sign"></i></a>

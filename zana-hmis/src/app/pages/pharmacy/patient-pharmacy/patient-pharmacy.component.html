@@ -24,6 +24,12 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
+                            <h4 class="text-primary">
+                                Diagnosis: <span *ngFor="let d of finalDiagnosises">[{{d.diagnosisType.code}} | {{d.diagnosisType.name}}]</span> 
+                            </h4>
+                            <hr>
+                        </div>
+                        <div class="col-sm-12">
                             <table class="table table-responsive table striped table-bordered">
                                 <thead>
                                     <tr style="font-weight: bold;">

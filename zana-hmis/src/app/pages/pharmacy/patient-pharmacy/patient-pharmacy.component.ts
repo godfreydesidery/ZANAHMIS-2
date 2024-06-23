@@ -15,6 +15,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgePipe } from 'src/app/pipes/age.pipe';
 import { SearchFilterPipe } from 'src/app/pipes/search-filter-pipe';
+import { IConsultation } from 'src/app/domain/consultation';
+import { INonConsultation } from 'src/app/domain/non-consultation';
+import { IAdmission } from 'src/app/domain/admission';
+import { IDiagnosisType } from 'src/app/domain/diagnosis-type';
+import { IFinalDiagnosis } from 'src/app/domain/final-diagnosis';
 
 const API_URL = environment.apiUrl;
 
@@ -46,6 +51,12 @@ export class PatientPharmacyComponent {
 
 
   filterRecords : string = ''
+
+  consultation! : IConsultation
+  admission! : IAdmission
+  nonConsultation! : INonConsultation
+
+  finalDiagnosises : IFinalDiagnosis[] = []
 
   constructor(private auth : AuthService,
     private http :HttpClient,
@@ -96,7 +107,27 @@ export class PatientPharmacyComponent {
       data => {
         console.log(data)
         this.prescriptions = data!
+        var stop = 0
         this.prescriptions.forEach(element => {
+          if(element.consultation != null && stop === 0){
+            this.consultation = element.consultation
+          }
+
+          if(element.nonConsultation != null && stop === 0){
+            this.nonConsultation = element.nonConsultation
+          }
+
+          if(element.admission != null && stop === 0){
+            this.admission = element.admission
+          }
+          if(stop === 0){
+            if(this.consultation != null){
+              this.loadConsultationFinalDiagnosis(this.consultation.id)
+            }else if(this.admission != null){
+              this.loadAdmissionFinalDiagnosis(this.admission.id)
+            }
+          }
+          stop = 1
           element.checked = false
         })
         console.log(this.prescriptions)
@@ -108,6 +139,52 @@ export class PatientPharmacyComponent {
         this.msgBox.showErrorMessage(error, '')
       }
     )
+  }
+
+  async loadConsultationFinalDiagnosis(id : string){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.finalDiagnosises = []
+    this.spinner.show()
+    await this.http.get<IFinalDiagnosis[]>(API_URL+'/patients/load_consultation_final_diagnosis?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.finalDiagnosises = data!
+      }
+    )
+    .catch(
+      (error) => {
+        this.msgBox.showErrorMessage(error, 'Could not load final diagnosises')
+      }
+    )
+    
+  }
+
+  async loadAdmissionFinalDiagnosis(id : string){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.finalDiagnosises = []
+    this.spinner.show()
+    await this.http.get<IFinalDiagnosis[]>(API_URL+'/patients/load_admission_final_diagnosis?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.finalDiagnosises = data!
+      }
+    )
+    .catch(
+      (error) => {
+        this.msgBox.showErrorMessage(error, 'Could not load final diagnosises')
+      }
+    )
+    
   }
 
   async acceptPrescription(prescription : IPrescription){

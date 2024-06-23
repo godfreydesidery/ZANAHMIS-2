@@ -44,6 +44,7 @@ public class PrescriptionModel {
 	private double stock = 0;
 	private String status = "";
 	private String reference;
+	private String instructions;
 	private Consultation consultation = null;
 	private NonConsultation nonConsultation = null;
 	private Admission admission = null;

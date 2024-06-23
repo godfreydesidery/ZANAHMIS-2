@@ -138,6 +138,7 @@ export class DoctorInpatientComponent implements OnInit {
   prescriptionDays        : string = ''
   prescriptionPrice       : number = 0
   prescriptionQty         : number = 0
+  prescriptionInstructions : string = ''
 
   procedureId : any = null
   procedureNote : string = ''
@@ -510,6 +511,26 @@ export class DoctorInpatientComponent implements OnInit {
     this.loadWorkingDiagnosis(this.id)
   }
 
+
+
+
+
+  async moveToFinalDiagnosis(id : any, code : string, name : string, description : string){
+
+    if(!(await this.msgBox.showConfirmMessageDialog('Are you sure you want to move working diagnosis to final diagnosis?', 'Final diagnosis will be created!', 'question', 'Yes, Send move', 'No, Do not move'))){
+      return
+    }
+
+    this.diagnosisTypeId = id
+    this.diagnosisTypeCode = code
+    this.diagnosisTypeName = name
+    this.diagnosisDescription = description
+    this.saveFinalDiagnosis()
+  }
+
+
+
+
   async saveFinalDiagnosis(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -695,6 +716,7 @@ export class DoctorInpatientComponent implements OnInit {
     this.prescriptionDays         = ''
     this.prescriptionPrice        = 0
     this.prescriptionQty          = 0
+    this.prescriptionInstructions = ''
 
   }
 
@@ -995,7 +1017,8 @@ export class DoctorInpatientComponent implements OnInit {
       route     : this.prescriptionRoute,
       days      : this.prescriptionDays,
       price     : this.prescriptionPrice,
-      qty       : this.prescriptionQty
+      qty       : this.prescriptionQty,
+      instructions : this.prescriptionInstructions
     }
     if( prescription.medicine.name === '' || 
         prescription.dosage === '' || 
@@ -1013,7 +1036,7 @@ export class DoctorInpatientComponent implements OnInit {
       (data) => {
         this.loadPrescriptions(0, 0, this.id)
         this.clearPrescription()
-        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+        if(data?.patientBill.status !='COVERED' && data?.consultation?.paymentType === 'INSURANCE'){
           this.msgBox.showSuccessMessage('Service/Medicine not covered in insurance package!')
         }else{
           this.msgBox.showSuccessMessage('Prescription Saved successifully')

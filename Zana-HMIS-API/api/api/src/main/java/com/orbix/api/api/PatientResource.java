@@ -1845,6 +1845,35 @@ public class PatientResource {
 		return ResponseEntity.created(uri).body(models);	
 	}
 	
+	@GetMapping("/patients/load_consultation_final_diagnosis") 
+	public ResponseEntity<List<FinalDiagnosisModel>> loadFinalConsultationDiagnosises(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		Optional<Consultation> c = consultationRepository.findById(id);
+		if(!c.isPresent()) {
+			throw new NotFoundException("Consultation not found");
+		}		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/save_final_diagnosis").toUriString());
+		
+		List<FinalDiagnosis> finalDiagnosises = finalDiagnosisRepository.findAllByConsultation(c.get());
+		
+		List<FinalDiagnosisModel> models = new ArrayList<>();
+		for(FinalDiagnosis l : finalDiagnosises) {
+			FinalDiagnosisModel model= new FinalDiagnosisModel();
+			model.setId(l.getId());
+			model.setDescription(l.getDescription());
+			model.setDiagnosisType(l.getDiagnosisType());
+			
+			if(l.getCreatedAt() != null) {
+				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
+			}else {
+				model.setCreated("");
+			}			
+			models.add(model);
+		}
+		return ResponseEntity.created(uri).body(models);	
+	}
+	
 	@GetMapping("/patients/load_admission_final_diagnosis") 
 	public ResponseEntity<List<FinalDiagnosisModel>> loadAdmissionFinalDiagnosises(
 			@RequestParam(name = "id") Long id,
@@ -2059,7 +2088,7 @@ public class PatientResource {
 			HttpServletRequest request){
 		Optional<Consultation> consultation_ = consultationRepository.findById(consultation_id);
 		Optional<NonConsultation> nonConsultation_ = nonConsultationRepository.findById(non_consultation_id);
-		Optional<Admission> adm = admissionRepository.findById(admission_id);
+		Optional<Admission> adm_ = admissionRepository.findById(admission_id);
 		
 		Optional<Medicine> lt = medicineRepository.findById(prescription.getMedicine().getId());
 		if(consultation_.isPresent()) {
@@ -2089,7 +2118,7 @@ public class PatientResource {
 		}
 		
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/save_prescription").toUriString());
-		return ResponseEntity.created(uri).body(patientService.savePrescription(prescription, consultation_, nonConsultation_, adm, request));
+		return ResponseEntity.created(uri).body(patientService.savePrescription(prescription, consultation_, nonConsultation_, adm_, request));
 	}
 	
 	@PostMapping("/patients/save_patient_dressing_chart")
@@ -2498,6 +2527,8 @@ public class PatientResource {
 			model.setBalance(l.getBalance());
 			model.setPatientBill(l.getPatientBill());
 			model.setStatus(l.getStatus());
+			
+			model.setInstructions(l.getInstructions());
 
 			if(l.getCreatedAt() != null) {
 				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());

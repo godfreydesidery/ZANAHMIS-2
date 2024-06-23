@@ -23,6 +23,7 @@ export interface IPrescription {
     stock       : number
     checked     : boolean
     status      : string
+    instructions : string
 
     membershipNo : string
     paymentType : string

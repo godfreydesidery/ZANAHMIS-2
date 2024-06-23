@@ -49,6 +49,7 @@ public class Prescription {
 	private double balance;
 	private String status;
 	private String reference;
+	private String instructions;
 	
 	private String paymentType;//CASH,DEBIT CARD, CREDIT CARD, MOBILE, INSURANCE
 	private String membershipNo;
