@@ -4462,7 +4462,7 @@ public class PatientResource {
 		return ResponseEntity.created(uri).body(prescriptionsToReturn);
 	}
 	
-	@GetMapping("/patients/get_same_medicine_alert_one_month_by_prescription_id") 
+	@GetMapping("/patients/get_same_medicine_alert_one_month_by_prescription_id")
 	public ResponseEntity<SingleObject> getLastGivenSameMedicinePrescription(
 			@RequestParam(name = "id") Long id,
 			HttpServletRequest request){
@@ -4504,6 +4504,61 @@ public class PatientResource {
 		
 		return ResponseEntity.created(uri).body(obj);
 	}
+	
+	
+	
+	
+	
+	
+	@GetMapping("/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id")
+	public ResponseEntity<SingleObject> getSameMedicineAlert(
+			@RequestParam(name = "patient_id") Long patientId,
+			@RequestParam(name = "medicine_id") Long medicineId,
+			HttpServletRequest request){
+		
+		SingleObject obj = new SingleObject();
+		obj.setValue("");
+		
+		Optional<Patient> patient_ = patientRepository.findById(patientId);
+		if(patient_.isEmpty()) {
+			throw new NotFoundException("Patient not found");
+		}
+		
+		Optional<Medicine> medicine_ = medicineRepository.findById(medicineId);
+		if(medicine_.isEmpty()) {
+			throw new NotFoundException("Medicine not found");
+		}
+		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientAndMedicineAndStatus(patient_.get(), medicine_.get(),"GIVEN");
+		for(Prescription p : prescriptions) {
+			long days = 0;
+			try {
+				Integer.valueOf(p.getDays());
+			}catch(Exception e) {}
+			
+			long num = ChronoUnit.DAYS.between(LocalDateTime.now(), p.getApprovedAt());
+			
+			if(num < days) {
+				obj.setValue("The patient has not completed the last prescription. There are " + (days - num) + " days left to finish this medicine. Was prescribed on " + p.getApprovedAt().toString() + " for " + p.getDays() + " days");
+			}else {
+				obj.setValue("testing");
+			}			
+		}
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id").toUriString());
+		
+		return ResponseEntity.created(uri).body(obj);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@GetMapping("/patients/get_procedures_by_patient_id") 
 	public ResponseEntity<List<ProcedureModel>> getProcedureByPatientId(

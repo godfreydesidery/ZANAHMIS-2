@@ -25,6 +25,7 @@ import { IProcedure } from 'src/app/domain/procedure';
 import { IProcedureType } from 'src/app/domain/procedure-type';
 import { IRadiology } from 'src/app/domain/radiology';
 import { IRadiologyType } from 'src/app/domain/radiology-type';
+import { ISingleObject } from 'src/app/domain/single-object';
 import { IWard } from 'src/app/domain/ward';
 import { IWardBed } from 'src/app/domain/ward-bed';
 import { IWardCategory } from 'src/app/domain/ward-category';
@@ -975,6 +976,28 @@ export class DoctorCrackingComponent implements OnInit {
   }
 
 
+
+  async savePresc(){
+
+
+    this.getUnfinishedMedicineAlertByPatientIdAndMedicineId(this.medicineId, this.consultation.patient.id)
+
+    if(this.message === ''){
+      //continue
+      
+    }else{
+      if(!(await this.msgBox.showConfirmMessageDialog(this.message, 'Would you like to continue?', 'question', 'Yes, Add it all', 'No, Do not add'))){
+        return
+      }
+
+
+    }
+
+
+    this.savePrescription()
+
+
+  }
   
 
 
@@ -1004,6 +1027,8 @@ export class DoctorCrackingComponent implements OnInit {
       this.msgBox.showErrorMessage3('Can not save, please fill in all the required fields')
       return
     }
+
+    
     this.spinner.show()
     await this.http.post<IPrescription>(API_URL+'/patients/save_prescription?consultation_id='+this.id+'&non_consultation_id='+0+'&admission_id='+0, prescription, options)
     .pipe(finalize(() => this.spinner.hide()))
@@ -1721,6 +1746,42 @@ export class DoctorCrackingComponent implements OnInit {
     )
 
   }
+
+
+
+
+  message : string = ''
+
+  async getUnfinishedMedicineAlertByPatientIdAndMedicineId(patientId : string, medicineId : string){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    this.message = ''
+
+    this.spinner.show()
+    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+patientId+'&medicine_id='+medicineId, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        this.message =  data!.value
+       
+      }
+    )
+    .catch(
+      error => {
+        console.log(error)
+        
+        //this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+
+
+
+
+
 
   clearTransferClinic(){
     this.transferClinicId = null
