@@ -286,8 +286,8 @@
                                                             <option>Per Vaginal</option>
                                                         </select>
                                                     </td>
-                                                    <td><input type="text" class="form-control" [(ngModel)]="prescriptionDays"></td>
-                                                    <td><input type="number" class="form-control" [(ngModel)]="prescriptionQty"></td>
+                                                    <td><input type="number" class="form-control" min="0" [(ngModel)]="prescriptionDays"></td>
+                                                    <td><input type="number" class="form-control" min="0" [(ngModel)]="prescriptionQty"></td>
                                                     <td><span class="form-control">{{prescriptionPrice * prescriptionQty | currency:'':''}}</span></td>
                                                     <td></td>
                                                     <td></td>
@@ -295,7 +295,7 @@
                                                         <textarea class="form-control" [(ngModel)]="prescriptionInstructions"></textarea>
                                                     </td>
                                                     <td>
-                                                        <a (click)="savePrescription()"><i class="glyphicon glyphicon-plus-sign"></i>Add</a>
+                                                        <a (click)="savePrescription(consultation.id, medicineId)"><i class="glyphicon glyphicon-plus-sign"></i>Add</a>
                                                         <a  class="text-danger" (click)="clearPrescription()"><i class="glyphicon glyphicon-remove-sign"></i></a>
                                                     </td>
                                                 </tr>

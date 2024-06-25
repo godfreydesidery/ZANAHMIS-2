@@ -4486,8 +4486,8 @@ public class PatientResource {
 		
 		if(lastDateTime != null) {
 			
-			long days = ChronoUnit.DAYS.between(LocalDateTime.now(), lastDateTime);
-			long hrs = ChronoUnit.HOURS.between(LocalDateTime.now(), lastDateTime);
+			long days = ChronoUnit.DAYS.between(lastDateTime, LocalDateTime.now());
+			long hrs = ChronoUnit.HOURS.between(lastDateTime, LocalDateTime.now());
 			if(days > 0) {
 				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(days) + " days ago.");
 				if(days <= 30) {
@@ -4540,7 +4540,7 @@ public class PatientResource {
 			if(num < days) {
 				obj.setValue("The patient has not completed the last prescription. There are " + (days - num) + " days left to finish this medicine. Was prescribed on " + p.getApprovedAt().toString() + " for " + p.getDays() + " days");
 			}else {
-				obj.setValue("testing");
+				obj.setValue("");
 			}			
 		}
 		

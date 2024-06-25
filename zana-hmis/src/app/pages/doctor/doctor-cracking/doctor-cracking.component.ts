@@ -977,81 +977,130 @@ export class DoctorCrackingComponent implements OnInit {
 
 
 
-  async savePresc(){
-
-
-    this.getUnfinishedMedicineAlertByPatientIdAndMedicineId(this.medicineId, this.consultation.patient.id)
-
-    if(this.message === ''){
-      //continue
-      
-    }else{
-      if(!(await this.msgBox.showConfirmMessageDialog(this.message, 'Would you like to continue?', 'question', 'Yes, Add it all', 'No, Do not add'))){
-        return
-      }
-
-
-    }
-
-
-    this.savePrescription()
-
-
-  }
   
 
+  message : string = ''
 
-  async savePrescription(){
+  async getUnfinishedMedicineAlertByPatientIdAndMedicineId(patientId : string, medicineId : string){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
-    var prescription = {
-      medicine : {
-        id : this.medicineId,
-        code : this.medicineCode,
-        name : this.medicineName
-      },
-      dosage    : this.prescriptionDosage,
-      frequency : this.prescriptionFrequency,
-      route     : this.prescriptionRoute,
-      days      : this.prescriptionDays,
-      price     : this.prescriptionPrice,
-      qty       : this.prescriptionQty,
-      instructions : this.prescriptionInstructions
-    }
-    if( prescription.medicine.name === '' || 
-        prescription.dosage === '' || 
-        prescription.frequency === '' || 
-        prescription.route === '' || 
-        prescription.days === ''){
-      this.msgBox.showErrorMessage3('Can not save, please fill in all the required fields')
-      return
-    }
 
-    
+    this.message = ''
+
     this.spinner.show()
-    await this.http.post<IPrescription>(API_URL+'/patients/save_prescription?consultation_id='+this.id+'&non_consultation_id='+0+'&admission_id='+0, prescription, options)
+    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+patientId+'&medicine_id='+medicineId, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
-      (data) => {
-        this.loadPrescriptions(this.id, 0, 0)
-        this.clearPrescription()
-        if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
-          this.msgBox.showSuccessMessage('Service/Medicine not covered in insurance package!')
-        }else{
-          this.msgBox.showSuccessMessage('Prescription Saved successifully')
-        }
+      data => {
+        this.message =  data!.value
+       
       }
     )
     .catch(
       error => {
-        this.loadPrescriptions(this.id, 0, 0)
-        this.clearPrescription()
-        this.msgBox.showErrorMessage(error, '')
         console.log(error)
+        
+        //this.msgBox.showErrorMessage(error, '')
       }
     )
+  }
+  
+
+
+  async savePrescription(patientId : string, medicineId : string){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+
+
+
+
+    this.spinner.show()
+    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+patientId+'&medicine_id='+medicineId, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      async data => {
+        
+        if(data!.value === '' ){
+          //continue
+          
+        }else{
+          if(!(await this.msgBox.showConfirmMessageDialog(data!.value, 'Would you like to continue?', 'question', 'Yes, Add it all', 'No, Do not add'))){
+            return
+          }
+        }
+
+        var prescription = {
+          medicine : {
+            id : this.medicineId,
+            code : this.medicineCode,
+            name : this.medicineName
+          },
+          dosage    : this.prescriptionDosage,
+          frequency : this.prescriptionFrequency,
+          route     : this.prescriptionRoute,
+          days      : this.prescriptionDays,
+          price     : this.prescriptionPrice,
+          qty       : this.prescriptionQty,
+          instructions : this.prescriptionInstructions
+        }
+        if( prescription.medicine.name === '' || 
+            prescription.dosage === '' || 
+            prescription.frequency === '' || 
+            prescription.route === '' || 
+            prescription.days === ''){
+          this.msgBox.showErrorMessage3('Can not save, please fill in all the required fields')
+          return
+        }
+    
+        
+        this.spinner.show()
+        await this.http.post<IPrescription>(API_URL+'/patients/save_prescription?consultation_id='+this.id+'&non_consultation_id='+0+'&admission_id='+0, prescription, options)
+        .pipe(finalize(() => this.spinner.hide()))
+        .toPromise()
+        .then(
+          (data) => {
+            this.loadPrescriptions(this.id, 0, 0)
+            this.clearPrescription()
+            if(data?.patientBill.status !='COVERED' && data?.consultation.paymentType === 'INSURANCE'){
+              this.msgBox.showSuccessMessage('Service/Medicine not covered in insurance package!')
+            }else{
+              this.msgBox.showSuccessMessage('Prescription Saved successifully')
+            }
+          }
+        )
+        .catch(
+          error => {
+            this.loadPrescriptions(this.id, 0, 0)
+            this.clearPrescription()
+            this.msgBox.showErrorMessage(error, '')
+            console.log(error)
+          }
+        )
+
+
+
+       
+      }
+    )
+    .catch(
+      error => {
+        console.log(error)
+        
+        //this.msgBox.showErrorMessage(error, '')
+      }
+    )
+
+
+
+
+    
+
+    
     
   }
 
@@ -1750,33 +1799,7 @@ export class DoctorCrackingComponent implements OnInit {
 
 
 
-  message : string = ''
-
-  async getUnfinishedMedicineAlertByPatientIdAndMedicineId(patientId : string, medicineId : string){
-    let options = {
-      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
-    }
-
-    this.message = ''
-
-    this.spinner.show()
-    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+patientId+'&medicine_id='+medicineId, options)
-    .pipe(finalize(() => this.spinner.hide()))
-    .toPromise()
-    .then(
-      data => {
-        this.message =  data!.value
-       
-      }
-    )
-    .catch(
-      error => {
-        console.log(error)
-        
-        //this.msgBox.showErrorMessage(error, '')
-      }
-    )
-  }
+  
 
 
 
