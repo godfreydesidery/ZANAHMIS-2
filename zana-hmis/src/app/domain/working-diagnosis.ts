@@ -9,6 +9,8 @@ export interface IWorkingDiagnosis {
 
     consultation    : IConsultation
     diagnosisType   : IDiagnosisType
+
+    doctor : string
     
     created       : string
 }

@@ -10,5 +10,7 @@ export interface IFinalDiagnosis {
     consultation    : IConsultation
     diagnosisType   : IDiagnosisType
 
+    doctor : string
+
     created         : string
 }

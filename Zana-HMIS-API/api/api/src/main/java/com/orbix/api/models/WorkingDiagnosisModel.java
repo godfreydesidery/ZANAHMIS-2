@@ -36,6 +36,10 @@ public class WorkingDiagnosisModel {
     private Consultation consultation = null;		
     private Patient patient= null;
     
+    private User user = null;
+    
+    private String doctor = "";
+    
     private String created = "";
 	
 }

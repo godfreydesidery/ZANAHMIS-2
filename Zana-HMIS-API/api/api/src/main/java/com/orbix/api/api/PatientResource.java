@@ -1718,6 +1718,7 @@ public class PatientResource {
 			model.setId(l.getId());
 			model.setDescription(l.getDescription());
 			model.setDiagnosisType(l.getDiagnosisType());
+			model.setDoctor(userService.getUserById(l.getCreatedBy()).getNickname());
 			
 			if(l.getCreatedAt() != null) {
 				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
@@ -1746,6 +1747,7 @@ public class PatientResource {
 			model.setId(l.getId());
 			model.setDescription(l.getDescription());
 			model.setDiagnosisType(l.getDiagnosisType());
+			model.setDoctor(userService.getUserById(l.getCreatedBy()).getNickname());
 			
 			if(l.getCreatedAt() != null) {
 				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
@@ -1834,6 +1836,7 @@ public class PatientResource {
 			model.setId(l.getId());
 			model.setDescription(l.getDescription());
 			model.setDiagnosisType(l.getDiagnosisType());
+			model.setDoctor(userService.getUserById(l.getCreatedBy()).getNickname());
 			
 			if(l.getCreatedAt() != null) {
 				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
@@ -1891,6 +1894,7 @@ public class PatientResource {
 			model.setId(l.getId());
 			model.setDescription(l.getDescription());
 			model.setDiagnosisType(l.getDiagnosisType());
+			model.setDoctor(userService.getUserById(l.getCreatedBy()).getNickname());
 			
 			if(l.getCreatedAt() != null) {
 				model.setCreated(l.getCreatedAt().toString()+" | "+userService.getUserById(l.getCreatedBy()).getNickname());
@@ -4409,6 +4413,7 @@ public class PatientResource {
 				m.setAdmission(pres.getAdmission());
 				m.setPatientBill(pres.getPatientBill());
 				m.setStatus(pres.getStatus());
+				m.setInstructions(pres.getInstructions());
 				
 				Optional<PharmacyMedicine> pm = pharmacyMedicineRepository.findByPharmacyAndMedicine(phar.get(), pres.getMedicine());
 				PharmacyMedicine pharmacyMedicine = new PharmacyMedicine();
@@ -4491,11 +4496,11 @@ public class PatientResource {
 			if(days > 0) {
 				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(days) + " days ago.");
 				if(days <= 30) {
-					obj.setValue(obj.getValue() + " Has Drugs this month.");
+					obj.setValue(obj.getValue() + " Has Drugs this month. " + lastDateTime.toString());
 				}
 			}else {
 				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(hrs) + " hours ago.");
-				obj.setValue(obj.getValue() + " Has Drugs this month.");
+				obj.setValue(obj.getValue() + " Has Drugs this month. " + lastDateTime.toString());
 			}
 			
 		}

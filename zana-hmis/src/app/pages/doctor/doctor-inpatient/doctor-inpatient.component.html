@@ -138,6 +138,7 @@
                                                 <tr>
                                                     <th>Code</th>
                                                     <th>Diagnosis</th>
+                                                    <th>Doctor</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -145,7 +146,8 @@
                                                     <tr *ngFor="let workingDiagnosis of workingDiagnosises">
                                                         <td>{{workingDiagnosis.diagnosisType?.code}}</td>
                                                         <td>{{workingDiagnosis.diagnosisType?.name}}</td>
-                                                        <td> <button class="btn btn-primary" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'>Move to Final</button> | <a (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i></a></td>
+                                                        <td>{{workingDiagnosis?.doctor}}</td>
+                                                        <td> <button class="btn btn-primary btn-outline" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'><i class="fa fa-sign-out"></i> Move to Final</button> | <a (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i></a></td>
                                                     </tr>
                                                 </tbody>
                                             </table>    
@@ -163,6 +165,7 @@
                                                 <tr>
                                                     <th>Code</th>
                                                     <th>Diagnosis</th>
+                                                    <th>Doctor</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -170,6 +173,7 @@
                                                     <tr *ngFor="let finalDiagnosis of finalDiagnosises">
                                                         <td>{{finalDiagnosis.diagnosisType?.code}}</td>
                                                         <td>{{finalDiagnosis.diagnosisType?.name}}</td>
+                                                        <td>{{finalDiagnosis?.doctor}}</td>
                                                         <td><a (click)="deleteFinalDiagnosis(finalDiagnosis.id)"><i class="fa fa-trash text-danger"></i></a></td>
                                                     </tr>
                                                 </tbody>
