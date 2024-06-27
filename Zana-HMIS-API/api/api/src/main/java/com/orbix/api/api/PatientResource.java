@@ -4494,13 +4494,13 @@ public class PatientResource {
 			long days = ChronoUnit.DAYS.between(lastDateTime, LocalDateTime.now());
 			long hrs = ChronoUnit.HOURS.between(lastDateTime, LocalDateTime.now());
 			if(days > 0) {
-				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(days) + " days ago.");
+				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(days) + " day(s) ago. ("+ lastDateTime.toString()+") ");
 				if(days <= 30) {
-					obj.setValue(obj.getValue() + " Has Drugs this month. " + lastDateTime.toString());
+					obj.setValue(obj.getValue() + " Has Drugs this month. ");
 				}
 			}else {
-				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(hrs) + " hours ago.");
-				obj.setValue(obj.getValue() + " Has Drugs this month. " + lastDateTime.toString());
+				obj.setValue(prescription_.get().getMedicine().getName() + " | Dosage : Last given " + String.valueOf(hrs) + " hour(s) ago. ("+ lastDateTime.toString()+") ");
+				obj.setValue(obj.getValue() + " Has Drugs this month. ");
 			}
 			
 		}
@@ -4534,16 +4534,19 @@ public class PatientResource {
 			throw new NotFoundException("Medicine not found");
 		}
 		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientAndMedicineAndStatus(patient_.get(), medicine_.get(),"GIVEN");
+		
 		for(Prescription p : prescriptions) {
-			long days = 0;
+			int days = 0;
 			try {
-				Integer.valueOf(p.getDays());
-			}catch(Exception e) {}
+				days = Integer.valueOf(p.getDays());
+			}catch(Exception e) {
+				
+			}
 			
-			long num = ChronoUnit.DAYS.between(LocalDateTime.now(), p.getApprovedAt());
+			double num = ChronoUnit.DAYS.between( LocalDateTime.now(), p.getApprovedAt());
 			
 			if(num < days) {
-				obj.setValue("The patient has not completed the last prescription. There are " + (days - num) + " days left to finish this medicine. Was prescribed on " + p.getApprovedAt().toString() + " for " + p.getDays() + " days");
+				obj.setValue("The patient has not completed the last prescription. There are " + Double.toString((days - num))  + " days left to finish this medicine. Was prescribed on " + p.getApprovedAt().toString() + " for " + p.getDays() + " days");
 			}else {
 				obj.setValue("");
 			}			

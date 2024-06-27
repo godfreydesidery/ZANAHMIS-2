@@ -994,7 +994,7 @@ export class DoctorFollowUpComponent {
 
 
     this.spinner.show()
-    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+patientId+'&medicine_id='+medicineId, options)
+    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+this.consultation.patient.id+'&medicine_id='+medicineId, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(

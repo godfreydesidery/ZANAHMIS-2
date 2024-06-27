@@ -147,7 +147,7 @@
                                                         <td>{{workingDiagnosis.diagnosisType?.code}}</td>
                                                         <td>{{workingDiagnosis.diagnosisType?.name}}</td>
                                                         <td>{{workingDiagnosis?.doctor}}</td>
-                                                        <td> <button class="btn btn-primary btn-outline" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'><i class="fa fa-sign-out"></i> Move to Final</button> | <a (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i></a></td>
+                                                        <td> <button class="btn btn-primary btn-outline" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'><i class="fa fa-sign-out"></i> Move to Final</button> <button class="btn btn-danger btn-outline" (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
                                                     </tr>
                                                 </tbody>
                                             </table>    
@@ -174,7 +174,7 @@
                                                         <td>{{finalDiagnosis.diagnosisType?.code}}</td>
                                                         <td>{{finalDiagnosis.diagnosisType?.name}}</td>
                                                         <td>{{finalDiagnosis?.doctor}}</td>
-                                                        <td><a (click)="deleteFinalDiagnosis(finalDiagnosis.id)"><i class="fa fa-trash text-danger"></i></a></td>
+                                                        <td><button class="btn btn-danger btn-outline" (click)="deleteFinalDiagnosis(finalDiagnosis.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
                                                     </tr>
                                                 </tbody>
                                             </table>    
@@ -183,9 +183,7 @@
                                 </div>
                             </div>
                         </div>
-
                         <br>
-
                         <div class="row" style="margin-left: 1mm; margin-right: 1mm;">
                             <div class="col-sm-6">
                             
