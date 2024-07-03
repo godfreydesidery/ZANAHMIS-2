@@ -4535,22 +4535,28 @@ public class PatientResource {
 		}
 		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientAndMedicineAndStatus(patient_.get(), medicine_.get(),"GIVEN");
 		
+		int days = 0;
+		double num = 0;
+		Prescription checkPrescription = null;
 		for(Prescription p : prescriptions) {
-			int days = 0;
+			
 			try {
 				days = Integer.valueOf(p.getDays());
 			}catch(Exception e) {
 				
 			}
 			
-			double num = ChronoUnit.DAYS.between( LocalDateTime.now(), p.getApprovedAt());
+			num = ChronoUnit.DAYS.between( p.getApprovedAt(), LocalDateTime.now());
 			
-			if(num < days) {
-				obj.setValue("The patient has not completed the last prescription. There are " + Double.toString((days - num))  + " days left to finish this medicine. Was prescribed on " + p.getApprovedAt().toString() + " for " + p.getDays() + " days");
-			}else {
-				obj.setValue("");
-			}			
+			checkPrescription = p;
+					
 		}
+		
+		if(num < days && checkPrescription != null) {
+				obj.setValue("The patient has not completed the last prescription. There are " + Double.toString((days - num))  + " days left to finish this medicine. Was prescribed on " + checkPrescription.getApprovedAt().toString() + " for " + checkPrescription.getDays() + " days");
+		}else {
+			obj.setValue("");
+		}	
 		
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id").toUriString());
 		
