@@ -429,6 +429,22 @@
                             <li><a routerLink="/report-template">Report Template</a></li>
                         </ul>
                     </li>-->
+
+
+                    <li class="treeview" *ngIf="grant(['MANAGEMENT_GENERAL-ACCESS'])">
+                        <a href="#" (click)="loadHRModule()">
+                          <i class="fa fa-file-text"></i><span>Human Resource</span>
+                          <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a routerLink="/employee-register">Employee Register</a></li>
+
+                        </ul>
+                    </li>
+
+
+
+
                     <li class="treeview" *ngIf="grant(['MANAGEMENT_GENERAL-ACCESS'])">
                         <a href="#" (click)="loadManagementModule()">
                           <i class="fa fa-file-text"></i><span>Management</span>
@@ -457,6 +473,16 @@
                                     <li><a routerLink="/report-template">Report Template</a></li>-->
                                 </ul>
                             </li>
+
+
+
+
+                            
+
+
+
+
+
 
 
 

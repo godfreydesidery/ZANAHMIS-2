@@ -110,6 +110,7 @@ D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\reposit
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service\ProcedureTypePlanServiceImpl.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\reports\service\InventoryReportService.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service\LocalPurchaseOrderService.java
+D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\Employee.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\reports\models\LabTestCollectionReport.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\LabTestType.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\PrescriptionBatch.java
@@ -153,6 +154,7 @@ D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\reposit
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\models\PatientNursingProgressNoteModel.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\filter\CustomAuthenticationFilter.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\repositories\ConsultationInsurancePlanRepository.java
+D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service\EmployeeService.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\LabTestTypeRange.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\RegistrationInsurancePlan.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\WorkingDiagnosis.java
@@ -233,6 +235,7 @@ D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\reposit
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\repositories\StoreToPharmacyBatchRepository.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\api\LabTestTypePlanResource.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\PharmacyToStoreRO.java
+D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service\EmployeeServiceImpl.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\api\ItemResource.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\PharmacyToStoreRODetail.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\PatientCreditNote.java
@@ -392,6 +395,7 @@ D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\models\
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\repositories\StoreItemBatchRepository.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service\ProcedureTypeService.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service\ItemServiceImpl.java
+D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\api\EmployeeResource.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\PatientPayment.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service\InsurancePlanServiceImpl.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\repositories\StoreToPharmacyRNRepository.java
@@ -451,6 +455,7 @@ D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\service
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\reports\models\SalesSummaryReport.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\GoodsReceivedNoteDetailBatch.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\repositories\PatientNursingChartRepository.java
+D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\repositories\EmployeeRepository.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\models\PharmacyToPharmacyRNDetailModel.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\DiagnosisType.java
 D:\My Works\ZANAHMIS-2\Zana-HMIS-API\api\api\src\main\java\com\orbix\api\domain\Radiology.java

@@ -4524,39 +4524,45 @@ public class PatientResource {
 		SingleObject obj = new SingleObject();
 		obj.setValue("");
 		
-		Optional<Patient> patient_ = patientRepository.findById(patientId);
-		if(patient_.isEmpty()) {
-			throw new NotFoundException("Patient not found");
-		}
-		
-		Optional<Medicine> medicine_ = medicineRepository.findById(medicineId);
-		if(medicine_.isEmpty()) {
-			throw new NotFoundException("Medicine not found");
-		}
-		List<Prescription> prescriptions = prescriptionRepository.findAllByPatientAndMedicineAndStatus(patient_.get(), medicine_.get(),"GIVEN");
-		
-		int days = 0;
-		double num = 0;
-		Prescription checkPrescription = null;
-		for(Prescription p : prescriptions) {
+		try {
 			
-			try {
-				days = Integer.valueOf(p.getDays());
-			}catch(Exception e) {
-				
+			Optional<Patient> patient_ = patientRepository.findById(patientId);
+			if(patient_.isEmpty()) {
+				throw new NotFoundException("Patient not found");
 			}
 			
-			num = ChronoUnit.DAYS.between( p.getApprovedAt(), LocalDateTime.now());
+			Optional<Medicine> medicine_ = medicineRepository.findById(medicineId);
+			if(medicine_.isEmpty()) {
+				throw new NotFoundException("Medicine not found");
+			}
+			List<Prescription> prescriptions = prescriptionRepository.findAllByPatientAndMedicineAndStatus(patient_.get(), medicine_.get(),"GIVEN");
 			
-			checkPrescription = p;
+			int days = 0;
+			double num = 0;
+			Prescription checkPrescription = null;
+			for(Prescription p : prescriptions) {
+				
+				try {
+					days = Integer.valueOf(p.getDays());
+				}catch(Exception e) {
 					
-		}
-		
-		if(num < days && checkPrescription != null) {
-				obj.setValue("The patient has not completed the last prescription. There are " + Double.toString((days - num))  + " days left to finish this medicine. Was prescribed on " + checkPrescription.getApprovedAt().toString() + " for " + checkPrescription.getDays() + " days");
-		}else {
+				}
+				
+				num = ChronoUnit.DAYS.between( p.getApprovedAt(), LocalDateTime.now());
+				
+				checkPrescription = p;
+						
+			}
+			
+			if(num < days && checkPrescription != null) {
+					obj.setValue("The patient has not completed the last prescription. There are " + Double.toString((days - num))  + " days left to finish this medicine. Was prescribed on " + checkPrescription.getApprovedAt().toString() + " for " + checkPrescription.getDays() + " days");
+			}else {
+				obj.setValue("");
+			}
+			
+		}catch(Exception ex) {
 			obj.setValue("");
-		}	
+		}
 		
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id").toUriString());
 		

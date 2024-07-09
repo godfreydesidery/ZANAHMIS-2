@@ -148,6 +148,7 @@ import { StoreStockCardReportComponent } from './pages/store/reports/store-stock
 import { CashierComponent } from './pages/admin/personnel/cashier/cashier.component';
 import { ManagementDashboardComponent } from './pages/management/management-dashboard/management-dashboard.component';
 import { ManagementComponent } from './pages/admin/personnel/management/management.component';
+import { EmployeeRegisterComponent } from './pages/human-resource/employee-register/employee-register.component';
 
 @NgModule({
   declarations: [

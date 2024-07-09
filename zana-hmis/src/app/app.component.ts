@@ -468,6 +468,13 @@ export class AppComponent {
         {path : 'ipd-report', loadComponent: () => import('./pages/reports/ipd-report/ipd-report.component').then(m => m.IpdReportComponent), canActivate: [AuthGuard]},
       )
     }
+
+    loadHRModule(){
+      this.router.config.push(
+        {path : 'employee-register', loadComponent: () => import('./pages/human-resource/employee-register/employee-register.component').then(m => m.EmployeeRegisterComponent), canActivate: [AuthGuard]},
+      )
+    }
+
     loadManagementModule(){
       this.router.config.push(
         //{path : 'report-template', loadComponent: () => import('./pages/reports/report-template/report-template.component').then(m => m.ReportTemplateComponent), canActivate: [AuthGuard]},
