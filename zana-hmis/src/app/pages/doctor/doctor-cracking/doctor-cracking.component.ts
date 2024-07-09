@@ -1009,17 +1009,13 @@ export class DoctorCrackingComponent implements OnInit {
   
 
 
-  async savePrescription(patientId : string, medicineId : string){
+  async savePrescription(medicineId : string){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
 
-
-
-
-
     this.spinner.show()
-    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+patientId+'&medicine_id='+medicineId, options)
+    await this.http.get<ISingleObject>(API_URL+'/patients/get_unfinished_medicine_alert_by_patient_id_and_medicine_id?patient_id='+this.consultation.patient.id+'&medicine_id='+medicineId, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
