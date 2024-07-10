@@ -144,16 +144,16 @@
                                                 <tr>
                                                     <th>Code</th>
                                                     <th>Diagnosis</th>
-                                                    <th>Doctor</th>
+                                                    <!--<th>Doctor</th>-->
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr *ngFor="let workingDiagnosis of workingDiagnosises">
-                                                        <td>{{workingDiagnosis.diagnosisType?.code}}</td>
+                                                        <td><button class="btn btn-success" style="min-width: 2cm;">{{workingDiagnosis.diagnosisType?.code}}</button></td>
                                                         <td>{{workingDiagnosis.diagnosisType?.name}}</td>
-                                                        <td>{{workingDiagnosis?.doctor}}</td>
-                                                        <td> <button class="btn btn-primary btn-outline" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'><i class="fa fa-sign-out"></i> Move to Final</button> <button class="btn btn-danger btn-outline" (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
+                                                        <!--<td>{{workingDiagnosis?.doctor}}</td>-->
+                                                        <td> <button class="btn btn-primary btn-outline" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'><i class="fa fa-sign-out"></i> Final</button> <button class="btn btn-danger btn-outline" (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
                                                     </tr>
                                                 </tbody>
                                             </table>    
@@ -177,7 +177,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr *ngFor="let finalDiagnosis of finalDiagnosises">
-                                                        <td>{{finalDiagnosis.diagnosisType?.code}}</td>
+                                                        <td><button class="btn btn-success" style="min-width: 2cm;">{{finalDiagnosis.diagnosisType?.code}}</button> </td>
                                                         <td>{{finalDiagnosis.diagnosisType?.name}}</td>
                                                         <td>{{finalDiagnosis?.doctor}}</td>
                                                         <td><button class="btn btn-danger btn-outline" (click)="deleteFinalDiagnosis(finalDiagnosis.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
@@ -210,7 +210,7 @@
                                                 <tr>
                                                     <th>Lab Test</th>
                                                     <th>Price</th>
-                                                    <th>Payment Status</th>
+                                                    <th>Payment</th>
                                                     <th>Status</th>
                                                     <th>Report</th>
                                                     <!--<th>Attachments</th>-->
@@ -242,7 +242,7 @@
                                                         </td>-->
                                                         <td>
                                                             
-                                                            <a (click)="deleteLabTest(labTest.id)"><i class="fa fa-trash text-danger"></i></a>
+                                                            <button class="btn btn-danger btn-outline" (click)="deleteLabTest(labTest.id)"><i class="fa fa-trash text-danger"></i> Delete</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -268,7 +268,7 @@
                                                 <tr>
                                                     <th>Radiology</th>
                                                     <th>Price</th>
-                                                    <th>Payment Status</th>
+                                                    <th>Payment</th>
                                                     <th>Status</th>
                                                     <th>Report</th>
                                                     <!--<th>Attachments</th>-->
@@ -300,7 +300,7 @@
                                                         </td>-->
                                                         <td>
                                                              
-                                                            <a (click)="deleteRadiology(radiology?.id)"><i class="fa fa-trash text-danger"></i></a>
+                                                            <button class="btn btn-danger btn-outline" (click)="deleteRadiology(radiology?.id)"><i class="fa fa-trash text-danger"></i> Delete</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -350,7 +350,7 @@
                                                 <th>Days</th>
                                                 <th>Qty</th>
                                                 <th>Amount</th>
-                                                <th>Payment Status</th>
+                                                <th>Payment</th>
                                                 <th>Status</th>
                                                 <th>Instructions</th>
                                                 <th>Action</th>
@@ -373,7 +373,7 @@
                                                     </td>
                                                     <td>{{prescription.status}}</td>
                                                     <td>{{prescription.instructions}}</td>
-                                                    <td><a (click)="deletePrescription(prescription.id)"><i class="fa fa-trash text-danger"></i></a></td>
+                                                    <td><button class="btn btn-danger btn-outline" (click)="deletePrescription(prescription.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
                                                 </tr>
                                                 <tr *ngIf="medicineName != ''">
                                                     <td>{{medicineName}}</td>
@@ -418,8 +418,8 @@
                                                         <textarea class="form-control" [(ngModel)]="prescriptionInstructions"></textarea>
                                                     </td>
                                                     <td>
-                                                        <a (click)="savePrescription(medicineId)"><i class="glyphicon glyphicon-plus-sign"></i>Add</a>
-                                                        <a  class="text-danger" (click)="clearPrescription()"><i class="glyphicon glyphicon-remove-sign"></i></a>
+                                                        <button class="btn btn-primary btn-outline" (click)="savePrescription(medicineId)"><i class="glyphicon glyphicon-plus-sign"></i> Add</button>
+                                                        <button class="btn btn-danger btn-outline"  (click)="clearPrescription()"><i class="glyphicon glyphicon-remove-sign"></i> Clear</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -555,7 +555,7 @@
                                                                     <a (click)="showProcedureNote(procedure.id, procedure.procedureType.name, procedure.note)" *ngIf="(procedure.patientBill?.status === 'COVERED' || procedure.patientBill?.status === 'PAID') && procedure.note != null" data-toggle="modal" data-target="#add-procedure-note-to-procedure-modal"><i class="fa fa-pencil"></i></a>
                                                                 </td>
                                                                 <td>
-                                                                    <a (click)="deleteProcedure(procedure.id)"><i class="fa fa-trash text-danger"></i></a>
+                                                                    <button class="btn btn-danger btn-outline" (click)="deleteProcedure(procedure.id)"><i class="fa fa-trash text-danger"></i> Delete</button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
