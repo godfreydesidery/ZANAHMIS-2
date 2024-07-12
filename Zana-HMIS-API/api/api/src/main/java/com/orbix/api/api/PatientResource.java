@@ -4330,7 +4330,8 @@ public class PatientResource {
 	public ResponseEntity<List<Patient>> getPharmacyOutpatientList(
 			HttpServletRequest request){
 		//Review this for performance, later
-		List<Consultation> cs = consultationRepository.findAllByStatusOrFollowUp("IN-PROCESS", true);
+		//List<Consultation> cs = consultationRepository.findAllByStatusOrFollowUp("IN-PROCESS", true); THIS WAS A BUG
+		List<Consultation> cs = consultationRepository.findAllByStatus("IN-PROCESS");
 		List<Prescription> prescriptions = prescriptionRepository.findAllByConsultationIn(cs);			
 		List<Patient> patients = new ArrayList<>();		
 		for(Prescription t : prescriptions) {

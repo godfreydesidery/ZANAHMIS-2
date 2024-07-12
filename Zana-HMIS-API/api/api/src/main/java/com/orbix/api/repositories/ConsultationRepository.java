@@ -106,7 +106,7 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 
 	List<Consultation> findAllByClinicianAndFollowUpAndStatusIn(Clinician clinician, boolean b, List<String> statuses);
 
-	List<Consultation> findAllByStatusOrFollowUp(String string, boolean b);
+	//List<Consultation> findAllByStatusOrFollowUp(String string, boolean b); THIS IS A BUG
 
 	Optional<Consultation> findByPatientAndStatusOrFollowUp(Patient patient, String string, boolean b);
 
