@@ -149,6 +149,7 @@ import { CashierComponent } from './pages/admin/personnel/cashier/cashier.compon
 import { ManagementDashboardComponent } from './pages/management/management-dashboard/management-dashboard.component';
 import { ManagementComponent } from './pages/admin/personnel/management/management.component';
 import { EmployeeRegisterComponent } from './pages/human-resource/employee-register/employee-register.component';
+import { PayrollComponent } from './pages/human-resource/payroll/payroll.component';
 
 @NgModule({
   declarations: [
@@ -170,7 +171,8 @@ import { EmployeeRegisterComponent } from './pages/human-resource/employee-regis
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-  ],
+    SearchFilterPipe
+],
   schemas: [ 
     NO_ERRORS_SCHEMA
    ],

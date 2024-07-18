@@ -41,6 +41,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setActive(true);
 		}
 		log.info("Saving new employee to the database");
+		
+		employee.setNo(String.valueOf(Math.random()));		
+		employee = employeeRepository.save(employee);		
+		employee.setNo("EMP/" + employee.getId());
+		
 		return employeeRepository.save(employee);
 	}
 

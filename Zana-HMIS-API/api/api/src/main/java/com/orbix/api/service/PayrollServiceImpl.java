@@ -1,0 +1,321 @@
+package com.orbix.api.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
+import com.orbix.api.accessories.Formater;
+import com.orbix.api.domain.Employee;
+import com.orbix.api.domain.Payroll;
+import com.orbix.api.domain.PayrollDetail;
+import com.orbix.api.exceptions.InvalidOperationException;
+import com.orbix.api.exceptions.NotFoundException;
+import com.orbix.api.models.PayrollDetailModel;
+import com.orbix.api.models.PayrollModel;
+import com.orbix.api.models.RecordModel;
+import com.orbix.api.repositories.DayRepository;
+import com.orbix.api.repositories.EmployeeRepository;
+import com.orbix.api.repositories.PayrollDetailRepository;
+import com.orbix.api.repositories.PayrollRepository;
+import com.orbix.api.repositories.StoreRepository;
+import com.orbix.api.repositories.SupplierRepository;
+import com.orbix.api.repositories.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+@Slf4j
+public class PayrollServiceImpl implements PayrollService {
+	private final UserRepository userRepository;
+	private final UserService userService;
+	private final DayRepository dayRepository;
+	private final DayService dayService;
+	private final SupplierRepository supplierRepository;
+	private final PayrollRepository payrollRepository;
+	private final PayrollDetailRepository payrollDetailRepository;
+	private final EmployeeRepository employeeRepository;
+	private final StoreRepository storeRepository;
+	
+	@Override
+	public PayrollModel save(Payroll payroll, HttpServletRequest request) {
+		
+		Payroll lpo;
+		
+		if(payroll.getId() == null) {
+	
+			payroll.setCreatedBy(userService.getUser(request).getId());
+			payroll.setCreatedOn(dayService.getDay().getId());
+			payroll.setCreatedAt(dayService.getTimeStamp());
+			
+			payroll.setStatus("PENDING");
+			payroll.setStatusDescription("Payroll pending for verification");
+			lpo = payroll;
+		}else {
+			Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+			if(payroll_.isEmpty()) {
+				throw new NotFoundException("Payroll not found");
+			}
+			if(!payroll_.get().getStatus().equals("PENDING")) {
+				throw new InvalidOperationException("Can not edit. Only pending payrolls can be edited");
+			}
+			if(!payroll.getNo().equals(payroll_.get().getNo())) {
+				throw new InvalidOperationException("Editing payroll no is not allowed");
+			}
+			
+			lpo = payroll_.get();
+			
+			lpo.setStartDate(payroll.getStartDate());
+			lpo.setEndDate(payroll.getEndDate());
+			
+			lpo.setDescription(payroll.getDescription());
+			lpo.setComments(payroll.getComments());
+		}
+		lpo = payrollRepository.save(lpo);		
+		return(showPayroll(lpo));
+	}
+	
+	@Override
+	public PayrollModel verify(Payroll payroll, HttpServletRequest request) {
+		
+		Payroll lpo;
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}
+		if(!payroll_.get().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Could not verify. Only pending payrolls can be verified");
+		}
+		if(payroll_.get().getPayrollDetails().isEmpty()) {
+			throw new InvalidOperationException("Could not verify. Payroll has no employees");
+		}
+		
+		payroll_.get().setStatus("VERIFIED");
+		payroll_.get().setStatusDescription("Payroll awaiting for approval");
+		
+		payroll_.get().setVerifiedBy(userService.getUser(request).getId());
+		payroll_.get().setVerifiedOn(dayService.getDay().getId());
+		payroll_.get().setVerifiedAt(dayService.getTimeStamp());
+		
+		lpo = payrollRepository.save(payroll_.get());
+		
+		return(showPayroll(lpo));
+	}
+	
+	@Override
+	public PayrollModel approve(Payroll payroll, HttpServletRequest request) {
+		
+		Payroll lpo;
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}
+		if(!payroll_.get().getStatus().equals("VERIFIED")) {
+			throw new InvalidOperationException("Could not approve. Only verified payrolls can be approved");
+		}
+		if(payroll_.get().getPayrollDetails().isEmpty()) {
+			throw new InvalidOperationException("Could not approve. Payroll has no employees");
+		}
+		
+		payroll_.get().setStatus("APPROVED");
+		payroll_.get().setStatusDescription("Payroll awaiting for submission");
+		
+		payroll_.get().setApprovedBy(userService.getUser(request).getId());
+		payroll_.get().setApprovedOn(dayService.getDay().getId());
+		payroll_.get().setApprovedAt(dayService.getTimeStamp());
+		
+		lpo = payrollRepository.save(payroll_.get());
+		
+		return(showPayroll(lpo));
+	}
+	
+	@Override
+	public PayrollModel submit(Payroll payroll, HttpServletRequest request) {
+		
+		Payroll lpo;
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}
+		if(!payroll_.get().getStatus().equals("APPROVED")) {
+			throw new InvalidOperationException("Could not submit. Only approved payrolls can be submitted");
+		}
+		if(payroll_.get().getPayrollDetails().isEmpty()) {
+			throw new InvalidOperationException("Could not submit. Payroll has no employees");
+		}
+		
+		payroll_.get().setStatus("SUBMITTED");
+		payroll_.get().setStatusDescription("Submited to supplier. Payroll awaiting for delivery");
+		
+		lpo = payrollRepository.save(payroll_.get());
+		
+		return(showPayroll(lpo));
+	}
+	
+	@Override
+	public PayrollModel _return(Payroll payroll, HttpServletRequest request) {
+		
+		Payroll lpo;
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}		
+		if(!(payroll_.get().getStatus().equals("PENDING") || payroll_.get().getStatus().equals("VERIFIED"))) {
+			throw new InvalidOperationException("Could not returned. Only PENDING or VERIFIED payrolls can be returned");
+		}
+		
+		payroll_.get().setStatus("RETURNED");
+		payroll_.get().setStatusDescription("Payroll returned for ammendment");
+		
+		lpo = payrollRepository.save(payroll_.get());
+		
+		return(showPayroll(lpo));
+	}
+	
+	@Override
+	public PayrollModel reject(Payroll payroll, HttpServletRequest request) {
+		
+		Payroll lpo;
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}		
+		if(!(payroll_.get().getStatus().equals("PENDING") || payroll_.get().getStatus().equals("VERIFIED"))) {
+			throw new InvalidOperationException("Could not reject. Only PENDING or VERIFIED payrolls can be rejected");
+		}
+		
+		payroll_.get().setStatus("REJECTED");
+		payroll_.get().setStatusDescription("Payroll rejected");
+		
+		lpo = payrollRepository.save(payroll_.get());
+		
+		return(showPayroll(lpo));
+	}
+	
+	@Override
+	public boolean saveDetail(PayrollDetail lpoDetail, HttpServletRequest request) {
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(lpoDetail.getPayroll().getId());
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}
+		
+		if(!payroll_.get().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Could not edit. only PENDING LPO can be edited");
+		}
+		
+		Optional<Employee> employee_ = employeeRepository.findById(lpoDetail.getEmployee().getId());
+		if(employee_.isEmpty()) {
+			throw new NotFoundException("Employee not found");
+		}
+		
+		
+		
+		if(lpoDetail.getId() == null) {
+			List<PayrollDetail> detail_ = payrollDetailRepository.findAllByPayrollAndEmployee(payroll_.get(), employee_.get());
+			if(!detail_.isEmpty()) {
+				throw new InvalidOperationException("Duplicates employees are not allowed");
+			}
+		}
+		
+		
+		PayrollDetail detail = new PayrollDetail();
+		detail.setId(lpoDetail.getId());
+		detail.setPayroll(payroll_.get());
+		detail.setEmployee(employee_.get());
+		
+		
+		
+		detail.setCreatedBy(userService.getUser(request).getId());
+		detail.setCreatedOn(dayService.getDay().getId());
+		detail.setCreatedAt(dayService.getTimeStamp());
+		
+		payrollDetailRepository.save(detail);
+	
+		return true;
+	}
+	
+	private PayrollModel showPayroll(Payroll ro) {
+		PayrollModel model = new PayrollModel();
+		List<PayrollDetailModel> modelDetails = new ArrayList<>();
+		
+		model.setId(ro.getId());
+		model.setNo(ro.getNo());
+		model.setName(ro.getName());
+		model.setStartDate(ro.getStartDate());
+		model.setEndDate(ro.getEndDate());
+		model.setDescription(ro.getDescription());
+		model.setStatus(ro.getStatus());
+		model.setStatusDescription(ro.getStatusDescription());
+		model.setComments(ro.getComments());
+		if(ro.getPayrollDetails() != null) {
+			for(PayrollDetail d : ro.getPayrollDetails()) {
+				PayrollDetailModel modelDetail = new PayrollDetailModel();
+				modelDetail.setId(d.getId());
+				modelDetail.setEmployee(d.getEmployee());
+				modelDetail.setBasicSalary(d.getBasicSalary());
+				modelDetail.setGrossSalary(d.getGrossSalary());
+				modelDetail.setNetSalary(d.getNetSalary());
+				modelDetail.setAddOns(d.getAddOns());
+				modelDetail.setDeductions(d.getDeductions());
+				modelDetail.setEmployerContributions(d.getEmployerContributions());
+
+				if(d.getCreatedAt() != null) {
+					modelDetail.setCreated(d.getCreatedAt().toString()+" | "+userService.getUserById(d.getCreatedBy()).getNickname());
+				}else {
+					modelDetail.setCreated(null);
+				}
+				modelDetails.add(modelDetail);
+			}
+			model.setPayrollDetailModels(modelDetails);
+		}
+		
+		if(ro.getCreatedAt() != null) {
+			model.setCreated(ro.getCreatedAt().toString()+" | "+userService.getUserById(ro.getCreatedBy()).getNickname());
+		}else {
+			model.setCreated(null);
+		}
+		if(ro.getVerifiedAt() != null) {
+			model.setVerified(ro.getVerifiedAt().toString()+" | "+userService.getUserById(ro.getVerifiedBy()).getNickname());
+		}else {
+			model.setVerified(null);
+		}
+		if(ro.getApprovedAt() != null) {
+			model.setApproved(ro.getApprovedAt().toString()+" | "+userService.getUserById(ro.getApprovedBy()).getNickname());
+		}else {
+			model.setApproved(null);
+		}
+		
+		return model;
+	}
+	
+	@Override
+	public PayrollModel get(Payroll payroll, HttpServletRequest request) {
+		return showPayroll(payroll);
+	}
+	
+	
+
+	@Override
+	public RecordModel requestPayrollNo() {
+		Long id = 1L;
+		try {
+			id = payrollRepository.getLastId() + 1;
+		}catch(Exception e) {}
+		RecordModel model = new RecordModel();
+		model.setNo(Formater.formatWithCurrentDate("PRL",id.toString()));
+		return model;
+	}
+}

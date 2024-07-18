@@ -472,6 +472,7 @@ export class AppComponent {
     loadHRModule(){
       this.router.config.push(
         {path : 'employee-register', loadComponent: () => import('./pages/human-resource/employee-register/employee-register.component').then(m => m.EmployeeRegisterComponent), canActivate: [AuthGuard]},
+        {path : 'payroll', loadComponent: () => import('./pages/human-resource/payroll/payroll.component').then(m => m.PayrollComponent), canActivate: [AuthGuard]},
       )
     }
 
