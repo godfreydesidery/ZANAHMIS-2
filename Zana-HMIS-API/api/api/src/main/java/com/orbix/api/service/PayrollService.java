@@ -19,6 +19,8 @@ public interface PayrollService {
 	PayrollModel reject(Payroll payroll, HttpServletRequest request);
 	
 	PayrollModel get(Payroll payroll, HttpServletRequest request);
+	
+	boolean importEmployees(Payroll payroll, HttpServletRequest request);
 
 	/**
 	 * @return

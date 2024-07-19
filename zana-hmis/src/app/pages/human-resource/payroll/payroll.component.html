@@ -47,6 +47,8 @@
                         </div>
                     </div>
                     <hr>
+                    <button class="btn btn-success" *ngIf="id != null" (click)="importEmployees(id)">Import Employees</button>
+                    <hr>
                     <table class="table table-responsive table striped table-bordered">
                         <thead>
                             <tr style="font-weight: bold;">
@@ -63,7 +65,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let d of payroll?.payrollDetails | searchFilter : filterRecords">
-                                <td>{{d?.no}}</td>
+                                <td>{{d?.employee?.no}}</td>
                                 <td>{{d?.employee?.firstName}} {{d?.employee?.middleName}} {{d?.employee?.lastName}}</td>
                                 <td style="text-align: right;">{{d.basicSalary | currency:'':''}}</td>
                                 <td style="text-align: right;">{{d.addOns | currency:'':''}}</td>

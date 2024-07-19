@@ -127,6 +127,16 @@ public class PayrollResource {
 		return ResponseEntity.created(uri).body(payrollService.reject(payroll, request));
 	}
 	
+	@PostMapping("/payrolls/import_employees")
+	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	public ResponseEntity<Boolean>importEmployees(
+			@RequestBody Payroll payroll,
+			HttpServletRequest request){
+
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/payrolls/import_employees").toUriString());
+		return ResponseEntity.created(uri).body(payrollService.importEmployees(payroll, request));
+	}
+	
 	@GetMapping("/payrolls/request_no")
 	public RecordModel requestNo(){
 		return payrollService.requestPayrollNo();
@@ -161,7 +171,7 @@ public class PayrollResource {
 				}
 				modelDetails.add(modelDetail);
 			}
-			model.setPayrollDetailModels(modelDetails);
+			model.setPayrollDetails(modelDetails);
 		}
 		
 		if(lpo_.get().getCreatedAt() != null) {
@@ -213,7 +223,7 @@ public class PayrollResource {
 				}
 				modelDetails.add(modelDetail);
 			}
-			model.setPayrollDetailModels(modelDetails);
+			model.setPayrollDetails(modelDetails);
 		}
 		
 		if(lpo_.get().getCreatedAt() != null) {
@@ -265,7 +275,7 @@ public class PayrollResource {
 				}
 				modelDetails.add(modelDetail);
 			}
-			model.setPayrollDetailModels(modelDetails);
+			model.setPayrollDetails(modelDetails);
 		}
 		
 		if(lpo_.get().getCreatedAt() != null) {

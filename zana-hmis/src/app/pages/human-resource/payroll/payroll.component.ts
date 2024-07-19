@@ -365,6 +365,37 @@ export class PayrollComponent {
     )
   }
 
+
+  async importEmployees(id : any){
+    if(!window.confirm('Confirm importing employees. Confirm?')){
+      return
+    }
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    var order = {
+      id  : this.id,
+      no : this.no
+    }
+    this.spinner.show()
+    await this.http.post<IPayroll>(API_URL+'/payrolls/import_employees', order, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        
+        this.search(id)
+
+        this.msgBox.showSuccessMessage('Import successifuly')
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+
   
 
   postOrder(){

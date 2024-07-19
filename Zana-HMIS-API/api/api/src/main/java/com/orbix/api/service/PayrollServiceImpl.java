@@ -279,7 +279,7 @@ public class PayrollServiceImpl implements PayrollService {
 				}
 				modelDetails.add(modelDetail);
 			}
-			model.setPayrollDetailModels(modelDetails);
+			model.setPayrollDetails(modelDetails);
 		}
 		
 		if(ro.getCreatedAt() != null) {
@@ -306,6 +306,42 @@ public class PayrollServiceImpl implements PayrollService {
 		return showPayroll(payroll);
 	}
 	
+	@Override
+	public boolean importEmployees(Payroll payroll, HttpServletRequest request) {
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+		
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}
+		List<PayrollDetail> payrollDetails = payrollDetailRepository.findByPayroll(payroll_.get());
+		List<Employee> employees = employeeRepository.findAll();
+		for(Employee e : employees) {
+			boolean isPresent = false;
+			for(PayrollDetail d : payrollDetails) {
+				if(d.getEmployee().getId() == e.getId()) {
+					isPresent = true;
+					break;
+				}
+			}
+			if(isPresent == false) {
+				PayrollDetail payrollDetail = new PayrollDetail();
+				payrollDetail.setPayroll(payroll_.get());
+				payrollDetail.setEmployee(e);
+				payrollDetail.setBasicSalary(e.getBasicSalary());
+				payrollDetail.setStatus("PENDING");
+				payrollDetail.setStatusDescription("Pending for Approval");
+				
+				payrollDetail.setCreatedBy(userService.getUser(request).getId());
+				payrollDetail.setCreatedOn(dayService.getDay().getId());
+				payrollDetail.setCreatedAt(dayService.getTimeStamp());
+				
+				payrollDetailRepository.save(payrollDetail);
+			}
+		}
+		return true;
+	}
+	
 	
 
 	@Override
@@ -318,4 +354,6 @@ public class PayrollServiceImpl implements PayrollService {
 		model.setNo(Formater.formatWithCurrentDate("PRL",id.toString()));
 		return model;
 	}
+
+	
 }

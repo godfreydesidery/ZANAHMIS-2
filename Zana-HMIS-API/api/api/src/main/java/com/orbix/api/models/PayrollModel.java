@@ -19,5 +19,5 @@ public class PayrollModel {
 	String created;
 	String verified;
 	String approved;
-	List<PayrollDetailModel> payrollDetailModels;
+	List<PayrollDetailModel> payrollDetails;
 }

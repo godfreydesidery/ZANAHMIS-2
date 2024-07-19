@@ -12,4 +12,6 @@ public interface PayrollDetailRepository extends JpaRepository<PayrollDetail, Lo
 
 	List<PayrollDetail> findAllByPayrollAndEmployee(Payroll payroll, Employee employee);
 
+	List<PayrollDetail> findByPayroll(Payroll payroll);
+
 }
