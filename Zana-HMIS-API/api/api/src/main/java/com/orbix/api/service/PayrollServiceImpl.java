@@ -13,6 +13,7 @@ import com.orbix.api.accessories.Formater;
 import com.orbix.api.domain.Employee;
 import com.orbix.api.domain.Payroll;
 import com.orbix.api.domain.PayrollDetail;
+import com.orbix.api.exceptions.InvalidEntryException;
 import com.orbix.api.exceptions.InvalidOperationException;
 import com.orbix.api.exceptions.NotFoundException;
 import com.orbix.api.models.PayrollDetailModel;
@@ -56,7 +57,8 @@ public class PayrollServiceImpl implements PayrollService {
 			payroll.setCreatedAt(dayService.getTimeStamp());
 			
 			payroll.setStatus("PENDING");
-			payroll.setStatusDescription("Payroll pending for verification");
+			//payroll.setStatusDescription("Payroll pending for verification");
+			payroll.setStatusDescription("Payroll pending for approval");
 			lpo = payroll;
 		}else {
 			Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
@@ -119,15 +121,54 @@ public class PayrollServiceImpl implements PayrollService {
 		if(payroll_.isEmpty()) {
 			throw new NotFoundException("Payroll not found");
 		}
-		if(!payroll_.get().getStatus().equals("VERIFIED")) {
-			throw new InvalidOperationException("Could not approve. Only verified payrolls can be approved");
+		//if(!payroll_.get().getStatus().equals("VERIFIED")) {
+			//throw new InvalidOperationException("Could not approve. Only verified payrolls can be approved");
+		//}
+		if(!payroll_.get().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Could not approve. Only Pending payrolls can be approved");
 		}
 		if(payroll_.get().getPayrollDetails().isEmpty()) {
 			throw new InvalidOperationException("Could not approve. Payroll has no employees");
 		}
 		
+		for(PayrollDetail d : payroll_.get().getPayrollDetails()) {
+			if(d.getNetSalary() != ((d.getBasicSalary() + d.getAddOns()) - d.getDeductions())) {
+				throw new InvalidOperationException("Invalid payroll details. Please check " + d.getEmployee().getNo());
+			}
+		}
+		
 		payroll_.get().setStatus("APPROVED");
-		payroll_.get().setStatusDescription("Payroll awaiting for submission");
+		payroll_.get().setStatusDescription("Payroll approved for execution");
+		
+		payroll_.get().setApprovedBy(userService.getUser(request).getId());
+		payroll_.get().setApprovedOn(dayService.getDay().getId());
+		payroll_.get().setApprovedAt(dayService.getTimeStamp());
+		
+		lpo = payrollRepository.save(payroll_.get());
+		
+		return(showPayroll(lpo));
+	}
+	
+	@Override
+	public PayrollModel cancel(Payroll payroll, HttpServletRequest request) {
+		
+		Payroll lpo;
+		
+		Optional<Payroll> payroll_ = payrollRepository.findById(payroll.getId());
+		if(payroll_.isEmpty()) {
+			throw new NotFoundException("Payroll not found");
+		}
+		//if(!payroll_.get().getStatus().equals("VERIFIED")) {
+			//throw new InvalidOperationException("Could not approve. Only verified payrolls can be approved");
+		//}
+		if(!payroll_.get().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Could not cancel. Only Pending payrolls can be cancelled");
+		}
+		
+		
+		payroll_.get().setStatus("CANCELED");
+		payroll_.get().setName(payroll_.get().getName() + " " + payroll_.get().getNo());
+		payroll_.get().setStatusDescription("Payroll canceled");
 		
 		payroll_.get().setApprovedBy(userService.getUser(request).getId());
 		payroll_.get().setApprovedOn(dayService.getDay().getId());
@@ -205,45 +246,46 @@ public class PayrollServiceImpl implements PayrollService {
 	}
 	
 	@Override
-	public boolean saveDetail(PayrollDetail lpoDetail, HttpServletRequest request) {
+	public boolean saveDetail(PayrollDetail detail, HttpServletRequest request) {
 		
-		Optional<Payroll> payroll_ = payrollRepository.findById(lpoDetail.getPayroll().getId());
-		if(payroll_.isEmpty()) {
-			throw new NotFoundException("Payroll not found");
+		Optional<PayrollDetail> detail_ = payrollDetailRepository.findById(detail.getId());
+		if(detail_.isEmpty()) {
+			throw new NotFoundException("Detail not found");
+		}
+		if(detail_.get().getPayroll().getId() != detail.getPayroll().getId()) {
+			throw new InvalidOperationException("Payroll do not match");			
 		}
 		
-		if(!payroll_.get().getStatus().equals("PENDING")) {
-			throw new InvalidOperationException("Could not edit. only PENDING LPO can be edited");
+		if(!detail_.get().getPayroll().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Only a Pending payroll can be modified");
 		}
 		
-		Optional<Employee> employee_ = employeeRepository.findById(lpoDetail.getEmployee().getId());
-		if(employee_.isEmpty()) {
-			throw new NotFoundException("Employee not found");
+		double basicSalary = detail_.get().getBasicSalary();
+		double grossSalary = detail_.get().getGrossSalary();
+		double netSalary = detail_.get().getNetSalary();
+		
+		double addOns = detail.getAddOns();
+		double deductions = detail.getDeductions();
+		double employerContributions = detail.getEmployerContributions();
+		
+		if(addOns < 0 || deductions < 0 || employerContributions < 0) {
+			throw new InvalidEntryException("Invalid Input");
 		}
 		
+		grossSalary = basicSalary + addOns;
+		netSalary = grossSalary - deductions;
 		
-		
-		if(lpoDetail.getId() == null) {
-			List<PayrollDetail> detail_ = payrollDetailRepository.findAllByPayrollAndEmployee(payroll_.get(), employee_.get());
-			if(!detail_.isEmpty()) {
-				throw new InvalidOperationException("Duplicates employees are not allowed");
-			}
+		if(netSalary < 0) {
+			throw new InvalidOperationException("Negative Net Salary is not allowed");
 		}
 		
+		detail_.get().setAddOns(addOns);
+		detail_.get().setDeductions(deductions);
+		detail_.get().setGrossSalary(grossSalary);
+		detail_.get().setNetSalary(netSalary);
+		detail_.get().setEmployerContributions(employerContributions);
 		
-		PayrollDetail detail = new PayrollDetail();
-		detail.setId(lpoDetail.getId());
-		detail.setPayroll(payroll_.get());
-		detail.setEmployee(employee_.get());
-		
-		
-		
-		detail.setCreatedBy(userService.getUser(request).getId());
-		detail.setCreatedOn(dayService.getDay().getId());
-		detail.setCreatedAt(dayService.getTimeStamp());
-		
-		payrollDetailRepository.save(detail);
-	
+		payrollDetailRepository.save(detail_.get());
 		return true;
 	}
 	
@@ -314,8 +356,14 @@ public class PayrollServiceImpl implements PayrollService {
 		if(payroll_.isEmpty()) {
 			throw new NotFoundException("Payroll not found");
 		}
+		
+		if(!payroll_.get().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Only a pending payroll can be modified");
+		}
+		
 		List<PayrollDetail> payrollDetails = payrollDetailRepository.findByPayroll(payroll_.get());
-		List<Employee> employees = employeeRepository.findAll();
+		List<Employee> employees = employeeRepository.findAllByActive(true);
+		int count = 0;
 		for(Employee e : employees) {
 			boolean isPresent = false;
 			for(PayrollDetail d : payrollDetails) {
@@ -337,7 +385,11 @@ public class PayrollServiceImpl implements PayrollService {
 				payrollDetail.setCreatedAt(dayService.getTimeStamp());
 				
 				payrollDetailRepository.save(payrollDetail);
+				count = count + 1;
 			}
+		}
+		if(count == 0) {
+			throw new InvalidOperationException("Nothing to import");
 		}
 		return true;
 	}

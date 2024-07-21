@@ -152,7 +152,14 @@
                                                         <td><button class="btn btn-success" style="min-width: 2cm;">{{workingDiagnosis.diagnosisType?.code}}</button></td>
                                                         <td>{{workingDiagnosis.diagnosisType?.name}}</td>
                                                         <!--<td>{{workingDiagnosis?.doctor}}</td>-->
-                                                        <td> <button class="btn btn-primary btn-outline" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'><i class="fa fa-sign-out"></i> Final</button> <button class="btn btn-danger btn-outline" (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
+                                                        <td>
+                                                            <table>
+                                                                <tr>
+                                                                    <td><button class="btn btn-primary btn-outline" (click)='moveToFinalDiagnosis(workingDiagnosis.diagnosisType.id, workingDiagnosis.diagnosisType.code, workingDiagnosis.diagnosisType.name, "")'><i class="fa fa-sign-out"></i> Final</button></td>
+                                                                    <td><button class="btn btn-danger btn-outline" (click)="deleteWorkingDiagnosis(workingDiagnosis.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>    

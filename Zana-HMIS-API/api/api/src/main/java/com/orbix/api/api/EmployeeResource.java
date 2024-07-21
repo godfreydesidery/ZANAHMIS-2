@@ -62,7 +62,7 @@ public class EmployeeResource {
 	}
 	
 	@PostMapping("/employees/save")
-	@PreAuthorize("hasAnyAuthority('ADMIN-ACCESS')")
+	@PreAuthorize("hasAnyAuthority('EMPLOYEE-ALL')")
 	public ResponseEntity<Employee>save(
 			@RequestBody Employee employee,
 			HttpServletRequest request){

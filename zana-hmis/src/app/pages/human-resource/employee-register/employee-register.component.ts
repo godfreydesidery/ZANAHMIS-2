@@ -216,7 +216,7 @@ export class EmployeeRegisterComponent {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
     this.spinner.show()
-    await this.http.get<IEmployee[]>(API_URL+'/employees/get_all_active', options)
+    await this.http.get<IEmployee[]>(API_URL+'/employees', options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(

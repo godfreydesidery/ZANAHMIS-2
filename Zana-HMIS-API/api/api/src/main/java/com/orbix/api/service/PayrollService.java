@@ -13,6 +13,7 @@ public interface PayrollService {
 	
 	PayrollModel verify(Payroll payroll, HttpServletRequest request);
 	PayrollModel approve(Payroll payroll, HttpServletRequest request);
+	PayrollModel cancel(Payroll payroll, HttpServletRequest request);
 	PayrollModel submit(Payroll payroll, HttpServletRequest request);
 	
 	PayrollModel _return(Payroll payroll, HttpServletRequest request);

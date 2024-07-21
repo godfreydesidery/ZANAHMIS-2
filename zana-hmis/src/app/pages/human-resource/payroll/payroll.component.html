@@ -15,10 +15,15 @@
                     <button class="btn btn-primary btn-outline" (click)="requestNo()"><span class="glyphicon glyphicon-file"></span>New</button>
                     <button class="btn btn-primary btn-outline" (click)="openToEdit()"><span class="glyphicon glyphicon-pencil"></span>Edit</button>
                     <button class="btn btn-primary btn-outline" (click)="saveOrder()"><span class="glyphicon glyphicon-floppy-disk"></span>Save</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="status === 'PENDING'" (click)="cancelOrder()"><span class="fa fa-close"></span>Cancel</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="status === 'PENDING'" (click)="approveOrder()"><span class="glyphicon glyphicon-ok"></span>Approve</button>
+                    <button class="btn btn-primary btn-outline" (click)="print()"><span class="fa fa-file-pdf-o"></span> Print</button>
+                    <!--
                     <button class="btn btn-primary btn-outline" *ngIf="status === 'PENDING'" (click)="verifyOrder()"><span class="glyphicon glyphicon-arrow-right"></span>Verify</button>
                     <button class="btn btn-primary btn-outline" *ngIf="status === 'VERIFIED'" (click)="approveOrder()"><span class="glyphicon glyphicon-ok"></span>Approve</button>
                     <button class="btn btn-primary btn-outline" *ngIf="status === 'APPROVED'" (click)="submitOrder()"><span class="glyphicon glyphicon-arrow-right"></span>Submit</button>
                     <button class="btn btn-primary btn-outline" *ngIf="status === 'SUBMITTED'" (click)="printOrder()"><span class="glyphicon glyphicon-print"></span>Print</button>
+                    -->
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -73,7 +78,11 @@
                                 <td style="text-align: right;">{{d.deductions | currency:'':''}}</td>
                                 <td style="text-align: right;">{{d.netSalary | currency:'':''}}</td>
                                 <td style="text-align: right;">{{d.employerContributions | currency:'':''}}</td>
-                                <td><button class="btn btn-success">Approve</button></td>
+                                <td>
+                                    <!--<span style="padding-right: 5mm;"><i class="fa fa-check text-success"></i>  </span>-->
+                                    <span *ngIf="status === 'PENDING'" style="padding-right: 5mm;"><i class="fa fa-pencil text-primary" (click)="searchDetail(d.id)" data-toggle="modal" data-target="#edit-modal"></i>  </span>
+                                    <span *ngIf="status === 'PENDING'"><i class="fa fa-trash text-danger" (click)="deleteDetail(d.id)"></i>  </span>
+                                </td>
                             </tr>                       
                         </tbody>
                     </table>
@@ -253,49 +262,53 @@
     </div><!-- /.modal -->
 </div>
 
-<!--<div class="modal fade modal-success" id="medicine-modal" tabindex="-1" role="dialog">
+<div class="modal fade modal-success" id="edit-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Add/Edit Item</h3>
+                <h3 class="modal-title">Edit</h3>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <input type="hidden" [(ngModel)]="detailId">
-                    <div class="col-sm-3">
-                        <h4>Code</h4>
+                    <div class="col-sm-6">
+                        <label class="text-primary">Emp#</label>
+                        <span class="form-control">{{detailEmployeeNo}}</span>
+                        <label class="text-primary">Name</label>
+                        <span class="form-control">{{detailEmployeeName}}</span>
+                        <label class="text-primary">Basic Salary</label>
+                        <span class="form-control" style="text-align: right; font-weight: bold;">{{detailBasicSalary | currency:'':''}}</span>
+                        <label class="text-primary">Gross Salary</label>
+                        <span class="form-control" style="text-align: right; font-weight: bold;">{{detailGrossSalary | currency:'':''}}</span>
+                        <label class="text-primary">Net Salary</label>
+                        <span class="form-control" style="text-align: right; font-weight: bold;">{{detailNetSalary | currency:'':''}}</span>
                     </div>
+                    <div class="col-sm-6">
+                        <label class="text-primary">Total Add Ons</label>
+                        <input type="number" class="form-control" [(ngModel)]="detailAddOns" style="text-align: right; font-weight: bold;" min="0">
+                        <label class="text-primary">Total Deductions</label>
+                        <input type="number" class="form-control" [(ngModel)]="detailDeductions" style="text-align: right; font-weight: bold;" min="0">
+                        <label class="text-primary">Employer's Contributions</label>
+                        <input type="number" class="form-control" [(ngModel)]="detailEmployerContributions" style="text-align: right; font-weight: bold;" min="0">
+                    </div>
+
+
+
+
                     <div class="col-sm-9">
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" [(ngModel)]="detailItemCode">
                             </div>
                             <div class="col-sm-4">
                                 <button (click)="searchItem()">Search</button>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <h4>Name</h4>
-                    </div>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" list="names" [(ngModel)]="detailItemName">
-                        <datalist id="names" style="padding: 0px;" >
-                            <option *ngFor="let n of itemNames" [ngValue]="n">{{n}}</option>
-                        </datalist> 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <h4>Qty</h4>
-                    </div>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" [(ngModel)]="detailQty">
-                    </div>
-                </div>
+                
+                
                 <div class="row">
                     <hr>
                     <div class="col-sm-12">
@@ -305,6 +318,6 @@
             </div>
         </div>
     </div>
-</div>-->
+</div>
 
 

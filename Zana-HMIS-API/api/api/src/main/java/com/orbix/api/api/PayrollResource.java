@@ -45,7 +45,7 @@ public class PayrollResource {
 	private final UserService userService;
 	
 	@GetMapping("/payrolls")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<List<Payroll>> getVisiblePayrolls(
 			HttpServletRequest request){
 		
@@ -68,7 +68,7 @@ public class PayrollResource {
 	
 	
 	@PostMapping("/payrolls/save")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL','LOCAL_PURCHASE_ORDER-CREATE','LOCAL_PURCHASE_ORDER-UPDATE')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL','PAYROLL-CREATE','PAYROLL-UPDATE')")
 	public ResponseEntity<PayrollModel>savePayroll(
 			@RequestBody Payroll payroll,
 			HttpServletRequest request){
@@ -78,7 +78,7 @@ public class PayrollResource {
 	}
 	
 	@PostMapping("/payrolls/verify")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel>verifyPayroll(
 			@RequestBody Payroll payroll,
 			HttpServletRequest request){
@@ -88,7 +88,7 @@ public class PayrollResource {
 	}
 	
 	@PostMapping("/payrolls/approve")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel> approvePayroll(
 			@RequestBody Payroll payroll,
 			HttpServletRequest request){
@@ -97,8 +97,18 @@ public class PayrollResource {
 		return ResponseEntity.created(uri).body(payrollService.approve(payroll, request));
 	}
 	
+	@PostMapping("/payrolls/cancel")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
+	public ResponseEntity<PayrollModel> cancelPayroll(
+			@RequestBody Payroll payroll,
+			HttpServletRequest request){
+
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/payrolls/approve").toUriString());
+		return ResponseEntity.created(uri).body(payrollService.cancel(payroll, request));
+	}
+	
 	@PostMapping("/payrolls/submit")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel>submitPayroll(
 			@RequestBody Payroll payroll,
 			HttpServletRequest request){
@@ -108,7 +118,7 @@ public class PayrollResource {
 	}
 	
 	@PostMapping("/payrolls/return")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel>returnPayroll(
 			@RequestBody Payroll payroll,
 			HttpServletRequest request){
@@ -118,7 +128,7 @@ public class PayrollResource {
 	}
 	
 	@PostMapping("/payrolls/reject")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel>rejectPayroll(
 			@RequestBody Payroll payroll,
 			HttpServletRequest request){
@@ -128,7 +138,7 @@ public class PayrollResource {
 	}
 	
 	@PostMapping("/payrolls/import_employees")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<Boolean>importEmployees(
 			@RequestBody Payroll payroll,
 			HttpServletRequest request){
@@ -143,7 +153,7 @@ public class PayrollResource {
 	}
 	
 	@GetMapping("/payrolls/get")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel> getPayroll(
 			@RequestParam(name = "id") Long id,
 			HttpServletRequest request){
@@ -196,7 +206,7 @@ public class PayrollResource {
 	}
 	
 	@GetMapping("/payrolls/search")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel> searchSupplierOrderAndSupplier(
 			@RequestParam(name = "id") Long id,
 			HttpServletRequest request){
@@ -248,7 +258,7 @@ public class PayrollResource {
 	}
 	
 	@GetMapping("/payrolls/search_by_no")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<PayrollModel> searchSupplierOrderByNoAndSupplier(
 			@RequestParam(name = "no") String no,
 			HttpServletRequest request){
@@ -300,7 +310,7 @@ public class PayrollResource {
 	}
 	
 	@PostMapping("/payrolls/save_detail")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public ResponseEntity<Boolean>savePayrollDetail(
 			@RequestBody PayrollDetail detail,
 			HttpServletRequest request){
@@ -309,8 +319,23 @@ public class PayrollResource {
 		return ResponseEntity.created(uri).body(payrollService.saveDetail(detail, request));
 	}
 	
+	@GetMapping("/payrolls/search_detail")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
+	public ResponseEntity<PayrollDetail> searchPayrollDetail(
+			@RequestParam(name = "detail_id") Long id,
+			HttpServletRequest request){
+		
+		Optional<PayrollDetail> detail_ = payrollDetailRepository.findById(id);
+		if(detail_.isEmpty()) {
+			throw new NotFoundException("Detail not found");
+		}
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/payrolls/search_detail").toUriString());
+		return ResponseEntity.created(uri).body(detail_.get());
+	}	
+	
 	@PostMapping("/payrolls/delete_detail")
-	@PreAuthorize("hasAnyAuthority('LOCAL_PURCHASE_ORDER-ALL')")
+	@PreAuthorize("hasAnyAuthority('PAYROLL-ALL')")
 	public boolean deletePayrollDetail(
 			@RequestBody PayrollDetail detail,
 			HttpServletRequest request){
@@ -320,10 +345,10 @@ public class PayrollResource {
 			throw new NotFoundException("Detail not found");
 		}
 		if(detail_.get().getPayroll().getId() != detail.getPayroll().getId()) {
-			throw new InvalidOperationException("Could not delete, order do not match");
+			throw new InvalidOperationException("Could not delete, do not match");
 		}
 		if(!detail_.get().getPayroll().getStatus().equals("PENDING")) {
-			throw new InvalidOperationException("Only pending orders can be  modified");
+			throw new InvalidOperationException("Only pending payrolls can be  modified");
 		}
 
 		URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/payrolls/delete_detail").toUriString());
