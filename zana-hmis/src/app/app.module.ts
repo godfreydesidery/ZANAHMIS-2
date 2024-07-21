@@ -150,6 +150,7 @@ import { ManagementDashboardComponent } from './pages/management/management-dash
 import { ManagementComponent } from './pages/admin/personnel/management/management.component';
 import { EmployeeRegisterComponent } from './pages/human-resource/employee-register/employee-register.component';
 import { PayrollComponent } from './pages/human-resource/payroll/payroll.component';
+import { AssetRegisterComponent } from './pages/human-resource/asset-register/asset-register.component';
 
 @NgModule({
   declarations: [
