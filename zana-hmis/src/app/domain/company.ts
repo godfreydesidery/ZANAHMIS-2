@@ -43,6 +43,8 @@ export interface ICompanyProfile {
   registrationFee : number
 
   publicPath : string
+
+  employeePrefix : string
 }
 
 export interface ILogo{

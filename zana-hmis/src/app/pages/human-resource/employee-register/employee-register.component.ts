@@ -51,9 +51,9 @@ export class EmployeeRegisterComponent {
   kinPhoneNo : string = ''
   tinNo : string = ''
   basicSalary : number = 0
-  joiningDate! : Date
-  employmentDate! : Date
-  terminationDate! : Date
+  joiningDate : Date | string = ''
+  employmentDate : Date | string = ''
+  terminationDate : Date | string = ''
   bankAccountNo : string = ''
   bankAccountName : string = ''
   bankName : string = ''
@@ -210,6 +210,44 @@ export class EmployeeRegisterComponent {
     }
   }
 
+
+  public async changeStatus(employee : IEmployee){
+    
+
+    var msg = ''
+    if(employee.active === true){
+      msg = 'Deactivate Employee: ' + employee.firstName + ' ' + employee.middleName + ' ' + employee.lastName + '?'
+    }else{
+      msg = 'Activate Employee: ' + employee.firstName + ' ' + employee.middleName + ' ' + employee.lastName + '?'
+    }
+
+    if(!(await this.msgBox.showConfirmMessageDialog(msg, '', 'question', 'Yes Do', 'No, Do not'))){
+      return
+    }
+
+    var employeeId : any = employee.id
+
+
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    
+    this.spinner.show()
+    await this.http.get<Boolean>(API_URL+'/employees/change_status?id='+ employeeId, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        this.loadEmployees()
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+
   async loadEmployees(){
     this.employees = []
     let options = {
@@ -221,8 +259,11 @@ export class EmployeeRegisterComponent {
     .toPromise()
     .then(
       data => {
+        var sn = 1
         data?.forEach(element => {
+          element.sn = sn
           this.employees.push(element)
+          sn = sn + 1
         })
       }
     )

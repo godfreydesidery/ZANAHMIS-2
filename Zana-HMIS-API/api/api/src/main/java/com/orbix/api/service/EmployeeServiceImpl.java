@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.orbix.api.domain.CompanyProfile;
 import com.orbix.api.domain.Employee;
 import com.orbix.api.domain.User;
 import com.orbix.api.exceptions.InvalidOperationException;
@@ -29,6 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private final DayRepository dayRepository;
 	private final DayService dayService;
 	private final EmployeeRepository employeeRepository;
+	private final CompanyProfileService companyProfileService;
 	
 	@Override
 	public Employee save(Employee employee, HttpServletRequest request) {
@@ -43,9 +45,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 		log.info("Saving new employee to the database");
 		
 		employee.setNo(String.valueOf(Math.random()));		
-		employee = employeeRepository.save(employee);		
-		employee.setNo("EMP/" + employee.getId());
+		employee = employeeRepository.save(employee);	
 		
+		try {
+			CompanyProfile profile = companyProfileService.getCompanyProfile(request);		
+			if(!profile.getEmployeePrefix().equals("")) {
+				employee.setNo(profile.getEmployeePrefix() + "/" + employee.getId());
+			}else {
+				employee.setNo("EMP/" + employee.getId());
+			}
+		}catch(Exception e) {
+			employee.setNo("EMP/" + employee.getId());
+		}		
 		return employeeRepository.save(employee);
 	}
 

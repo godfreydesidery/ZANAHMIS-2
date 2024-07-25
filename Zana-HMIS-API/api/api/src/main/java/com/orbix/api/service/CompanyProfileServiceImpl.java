@@ -87,6 +87,8 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 				
 				profile.setRegistrationFee(companyProfile.getRegistrationFee());
 				profile.setPublicPath(companyProfile.getPublicPath());
+				
+				profile.setEmployeePrefix(companyProfile.getEmployeePrefix());
 			}else {
 				profile = companyProfile;
 			}

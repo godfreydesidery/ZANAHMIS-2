@@ -32,5 +32,8 @@ export interface IEmployee {
     created : string
 
 
+    sn : number
+
+
 }
 

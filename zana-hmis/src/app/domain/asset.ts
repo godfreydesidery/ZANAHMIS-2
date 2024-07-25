@@ -7,4 +7,6 @@ export interface IAsset {
     multiple : boolean
 
     created : string
+
+    sn : number
 }

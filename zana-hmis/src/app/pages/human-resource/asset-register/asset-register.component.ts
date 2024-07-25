@@ -141,8 +141,11 @@ export class AssetRegisterComponent {
     .toPromise()
     .then(
       data => {
+        var sn = 1
         data?.forEach(element => {
+          element.sn = sn
           this.assets.push(element)
+          sn = sn + 1
         })
       }
     )
@@ -262,21 +265,15 @@ export class AssetRegisterComponent {
       ]
     ]  
 
-    var sn : number = 1
-
-    
-    
-    
     this.assets.forEach((element) => {
       var detail = [
-        {text : sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
-        {text : element?.code, fontSize : 7, fillColor : '#ffffff'},  
-        {text : element?.name, fontSize : 7, fillColor : '#ffffff'}, 
-        {text : element?.qty.toString(), fontSize : 7, fillColor : '#ffffff'},     
+        {text : element?.sn.toString(), fontSize : 7, fillColor : '#ffffff'},
+        {text : element?.code, fontSize : 7, fillColor : '#ffffff'},
+        {text : element?.name, fontSize : 7, fillColor : '#ffffff'},
+        {text : element?.qty.toString(), fontSize : 7, fillColor : '#ffffff'},
         {text : element?.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', fillColor : '#ffffff'}
       ]
-      sn = sn + 1
-
+      
       report.push(detail)
     })
 

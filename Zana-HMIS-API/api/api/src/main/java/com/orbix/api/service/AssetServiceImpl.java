@@ -48,7 +48,7 @@ public class AssetServiceImpl implements AssetService {
 		}
 		
 		if(asset.isMultiple() == false && asset.getQty() > 1) {
-			throw new InvalidEntryException("Non multiple must not be more than one");
+			//throw new InvalidEntryException("Non multiple must not be more than one");
 		}
 		
 		return assetRepository.save(asset);

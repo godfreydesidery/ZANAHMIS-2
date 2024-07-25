@@ -61,6 +61,24 @@ public class EmployeeResource {
 		return ResponseEntity.ok().body(employeeService.getEmployeeById(id, request));
 	}
 	
+	@GetMapping("/employees/change_status")
+	public boolean changeStatus(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		
+		Optional<Employee> employee_ = employeeRepository.findById(id);
+		if(employee_.isEmpty()) {
+			throw new NotFoundException("Employee not found");
+		}
+		if(employee_.get().isActive()) {
+			employee_.get().setActive(false);
+		}else {
+			employee_.get().setActive(true);
+		}
+		employeeRepository.save(employee_.get());
+		return true;
+	}
+	
 	@PostMapping("/employees/save")
 	@PreAuthorize("hasAnyAuthority('EMPLOYEE-ALL')")
 	public ResponseEntity<Employee>save(

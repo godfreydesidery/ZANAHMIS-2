@@ -12,15 +12,11 @@
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading">
                     <div class="btn"> 
-                        <button type="button" class="btn btn-success m-r-2 m-b-5" data-toggle="modal" data-target="#add-edit-modal" (click)="clear()">New</button>
+                        <button type="button" class="btn btn-success m-r-2 m-b-5" data-toggle="modal" data-target="#add-edit-modal" (click)="clear()"><i class="fa fa-pencil-square-o"></i>  New Employee</button>
                     </div>
                 </div>
                 <div class="panel-body">
 
-                    
-
-
-                    
                     <div class="col-sm-12" style="height: 100%; overflow: scroll;">
                         <div class="row">
                             <div class="col-sm-4"></div>
@@ -32,21 +28,37 @@
                         <br>
                         <table class="table table-bordered table-small">
                             <thead>
-                                <tr>
-                                    <td>no</td>
+                                <tr style="font-weight: bold;">
+                                    <td>SN</td>
                                     <td>Full Name</td>
-                                    <td>Active</td>
+                                    <td>Emp#</td>
+                                    <td>Mobile</td>
+                                    <td>Email</td>
+                                    <td>Joining Date</td>
+                                    <td>Status</td>
                                     <td>Action</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let employee of employees | searchFilter : filterRecords">
-                                    <td>{{employee.no}}</td>
+                                    <td>{{employee.sn}}</td>
                                     <td>{{employee.firstName}} {{employee.middleName}} {{employee.lastName}}</td>
-                                    <td>{{employee.active}}</td>
+                                    <td>{{employee.no}}</td>
+                                    <td>{{employee.phoneNo}}</td>
+                                    <td>{{employee.email}}</td>
+                                    <td>{{employee.joiningDate | date}}</td>
                                     <td>
-                                        <button class="btn btn-primary" (click)="getEmployee(employee.id)" data-toggle="modal" data-target="#add-edit-modal" style="margin: 1px;">Edit</button>
-                                        <!--<button class="btn btn-primary" (click)="getCashier(cashier.id)" (click)="clearUser()" data-toggle="modal" data-target="#assign-user-profile" style="margin: 1px;">Assign User Profile</button>-->
+                                        <button class="btn btn-danger" *ngIf="employee.active === true" (click)="changeStatus(employee)">Inactive</button>
+                                        <button class="btn btn-success" *ngIf="employee.active === false" (click)="changeStatus(employee)">Active</button>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <td><button class="btn btn-primary btn-outline" (click)="getEmployee(employee.id)" data-toggle="modal" data-target="#view-modal" style="margin: 1px;"><i class="fa fa-eye"></i>  View</button></td>
+                                                <td><button class="btn btn-warning btn-outline" (click)="getEmployee(employee.id)" data-toggle="modal" data-target="#add-edit-modal" style="margin: 1px;"><i class="fa fa-pencil"></i>  Edit</button></td>
+                                            </tbody>
+                                        </table>
+                                        
                                     </td>
                                 </tr>
                             </tbody>
@@ -73,37 +85,37 @@
                         <h4 class="text-primary"><b>Personal Information</b></h4>
                         <input type="hidden" [(ngModel)]="id">
                         <div class="row">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Code*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="no" readonly>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">First Name*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="firstName" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Middle Name</h4>
                                 <input type="text" class="form-control" [(ngModel)]="middleName">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Last Name*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="lastName" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">National ID No*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="nationalIdNo" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Phone No*</h4>
                                 <input type="tel" class="form-control" [(ngModel)]="phoneNo" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Email</h4>
                                 <input type="email" class="form-control" [(ngModel)]="email" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Gender*</h4>
                                 <select class="form-control" [(ngModel)]="gender" >
                                     <option></option>
@@ -111,14 +123,14 @@
                                     <option>Female</option>
                                 </select>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Date of Birth*</h4>
                                 <input type="date" class="form-control" [(ngModel)]="dateOfBirth" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <!--<div class="col-sm-4 form-group">
                                 <h4 class="text-primary">Active</h4>
                                 <input type="checkbox" [(ngModel)]="active">
-                            </div>
+                            </div>-->
                             <!--<div class="col-sm-4 form-group">
                                 <h4 class="text-primary">Payable</h4>
                                 <input type="checkbox" [(ngModel)]="payable">
@@ -129,27 +141,27 @@
                     <div class="col-sm-12">
                         <h4 class="text-primary"><b>Address and Contacts</b></h4>
                         <div class="row">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Physical Address*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="physicalAddress">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Postal Address*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="postalAddress">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Permanent Residence*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="permanentResidence">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Temporary Residence*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="temporaryResidence">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Next of Kin*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="kinName" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Next of Kin Phone*</h4>
                                 <input type="tel" class="form-control" [(ngModel)]="kinPhoneNo" required>
                             </div>
@@ -160,31 +172,31 @@
                     <div class="col-sm-12">
                         <h4 class="text-primary"><b>Employment Information</b></h4>
                         <div class="row">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">TIN No*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="tinNo" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Basic Salary*</h4>
                                 <input type="number" class="form-control" [(ngModel)]="basicSalary" style="text-align: right;" min="0">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Joining Date*</h4>
                                 <input type="date" class="form-control" [(ngModel)]="joiningDate" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Employment Date</h4>
                                 <input type="date" class="form-control" [(ngModel)]="employmentDate">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Termination Date</h4>
                                 <input type="date" class="form-control" [(ngModel)]="terminationDate">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Social Security No</h4>
                                 <input type="text" class="form-control" [(ngModel)]="socialSecurityNo">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Social Security Name</h4>
                                 <input type="text" class="form-control" [(ngModel)]="socialSecurityName">
                             </div>
@@ -194,29 +206,183 @@
                     <div class="col-sm-12">
                         <h4 class="text-primary"><b>Bank Information</b></h4>
                         <div class="row">
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Bank Acc No*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="bankAccountNo" required>
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Bank Acc Name*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="bankAccountName" min="0">
                             </div>
-                            <div class="col-sm-4 form-group">
+                            <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">Bank Name*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="bankName" required>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" (click)="saveEmployee()"><span *ngIf="id != null">Update</span><span *ngIf="id === null">Add</span></button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+    <!-- Modal success -->
+<div class="modal fade modal-success" id="view-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h1 class="modal-title">View Employee</h1>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="text-primary"><b>Personal Information</b></h4>
+                        <input type="hidden" [(ngModel)]="id">
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Code*</h4>
+                                <span class="form-control">{{no}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">First Name*</h4>
+                                <span class="form-control">{{firstName}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Middle Name</h4>
+                                <span class="form-control">{{middleName}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Last Name*</h4>
+                                <span class="form-control">{{lastName}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">National ID No*</h4>
+                                <span class="form-control">{{nationalIdNo}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Phone No*</h4>
+                                <span class="form-control">{{phoneNo}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Email</h4>
+                                <span class="form-control">{{email}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Gender*</h4>
+                                <span class="form-control">{{gender}}</span>
+                                
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Date of Birth*</h4>
+                                <span class="form-control">{{dateOfBirth}}</span>
+                            </div>
+                            <!--<div class="col-sm-4 form-group">
+                                <h4 class="text-primary">Active</h4>
+                                <input type="checkbox" [(ngModel)]="active">
+                            </div>-->
+                            <!--<div class="col-sm-4 form-group">
+                                <h4 class="text-primary">Payable</h4>
+                                <input type="checkbox" [(ngModel)]="payable">
+                            </div>-->
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4 class="text-primary"><b>Address and Contacts</b></h4>
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Physical Address*</h4>
+                                <span class="form-control">{{physicalAddress}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Postal Address*</h4>
+                                <span class="form-control">{{postalAddress}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Permanent Residence*</h4>
+                                <span class="form-control">{{permanentResidence}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Temporary Residence*</h4>
+                                <span class="form-control">{{temporaryResidence}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Next of Kin*</h4>
+                                <span class="form-control">{{kinName}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Next of Kin Phone*</h4>
+                                <span class="form-control">{{kinPhoneNo}}</span>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4 class="text-primary"><b>Employment Information</b></h4>
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">TIN No*</h4>
+                                <span class="form-control">{{tinNo}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Basic Salary*</h4>
+                                <span class="form-control">{{basicSalary}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Joining Date*</h4>
+                                <span class="form-control">{{joiningDate}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Employment Date</h4>
+                                <span class="form-control">{{employmentDate}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Termination Date</h4>
+                                <span class="form-control">{{terminationDate}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Social Security No</h4>
+                                <span class="form-control">{{socialSecurityNo}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Social Security Name</h4>
+                                <span class="form-control">{{socialSecurityName}}</span>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4 class="text-primary"><b>Bank Information</b></h4>
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Bank Acc No*</h4>
+                                <span class="form-control">{{bankAccountNo}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Bank Acc Name*</h4>
+                                <span class="form-control">{{bankAccountName}}</span>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Bank Name*</h4>
+                                <span class="form-control">{{bankName}}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" (click)="saveEmployee()"><span *ngIf="id != null">Update</span><span *ngIf="id === null">Add</span></button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
     
 

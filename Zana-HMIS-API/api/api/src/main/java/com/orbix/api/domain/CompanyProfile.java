@@ -76,5 +76,8 @@ public class CompanyProfile {
 	
 	private double registrationFee = 0;
 	private String publicPath;
+	
+	//Prefixes
+	private String employeePrefix = "EMP";
 
 }

@@ -29,10 +29,9 @@
                         <br>
                         <table class="table table-bordered table-small">
                             <thead>
-                                <tr>
+                                <tr><td>SN</td>
                                     <td>code</td>
                                     <td>Asset Name</td>
-                                    <td>Multiple</td>
                                     <td>Qty</td>
                                     <td>Unit Price</td>
                                     <td>Action</td>
@@ -40,9 +39,9 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let asset of assets | searchFilter : filterRecords">
+                                    <td>{{asset.sn}}</td>
                                     <td>{{asset.code}}</td>
                                     <td>{{asset.name}}</td>
-                                    <td>{{asset.multiple}}</td>
                                     <td>{{asset.qty}}</td>
                                     <td style="text-align: right;">{{asset.price | currency:'':''}}</td>
                                     <td>

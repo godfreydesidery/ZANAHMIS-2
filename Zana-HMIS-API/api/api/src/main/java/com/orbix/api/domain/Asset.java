@@ -33,7 +33,7 @@ public class Asset {
 	private double qty = 0;
 	private double price = 0;
 	
-	private boolean multiple = false;
+	private boolean multiple = true;
 	
 	@Column(name = "created_by_user_id", nullable = false , updatable = false)
     private Long createdBy;	
