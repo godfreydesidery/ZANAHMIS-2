@@ -77,6 +77,12 @@ public class Employee {
 	private LocalDate terminationDate;
 	
 	/**
+	 * Auxiliary/temporary
+	 */
+	private String jobTitleName;
+	private String departmentName;
+	
+	/**
 	 * Bank information
 	 */
 	private String bankAccountNo;

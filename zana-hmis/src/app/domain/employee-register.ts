@@ -29,6 +29,9 @@ export interface IEmployee {
     socialSecurityNo : string
     socialSecurityName : string
 
+    jobTitleName : string
+    departmentName : string
+
     created : string
 
 

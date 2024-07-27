@@ -60,6 +60,9 @@ export class EmployeeRegisterComponent {
   socialSecurityNo : string = ''
   socialSecurityName : string = ''
 
+  jobTitleName : string = ''
+  departmentName : string = ''
+
   employees : IEmployee[] = []
 
 
@@ -112,7 +115,9 @@ export class EmployeeRegisterComponent {
       bankAccountName : this.bankAccountName,
       bankName : this.bankName,
       socialSecurityNo : this.socialSecurityNo,
-      socialSecurityName : this.socialSecurityName
+      socialSecurityName : this.socialSecurityName,
+      jobTitleName : this.jobTitleName,
+      departmentName : this.departmentName
     }
     if(this.id == null || this.id == ''){
       //save a new clinic
@@ -150,6 +155,9 @@ export class EmployeeRegisterComponent {
           this.bankName = data!.bankName
           this.socialSecurityNo = data!.socialSecurityNo
           this.socialSecurityName = data!.socialSecurityName
+
+          this.jobTitleName = data!.jobTitleName
+          this.departmentName = data!.departmentName
 
           this.msgBox.showSuccessMessage('Employee created successifully')
           this.loadEmployees()
@@ -198,6 +206,9 @@ export class EmployeeRegisterComponent {
           this.bankName = data!.bankName
           this.socialSecurityNo = data!.socialSecurityNo
           this.socialSecurityName = data!.socialSecurityName
+
+          this.jobTitleName = data!.jobTitleName
+          this.departmentName = data!.departmentName
           this.msgBox.showSuccessMessage('Employee updated successifully')
           this.loadEmployees()
         }
@@ -303,6 +314,9 @@ export class EmployeeRegisterComponent {
     this.bankName = ''
     this.socialSecurityNo = ''
     this.socialSecurityName = ''
+
+    this.departmentName = ''
+    this.jobTitleName = ''
   }
 
   async getEmployee(key: string) {
@@ -347,6 +361,9 @@ export class EmployeeRegisterComponent {
           this.bankName = data!.bankName
           this.socialSecurityNo = data!.socialSecurityNo
           this.socialSecurityName = data!.socialSecurityName
+
+          this.jobTitleName = data!.jobTitleName
+          this.departmentName = data!.departmentName
 
         
       }

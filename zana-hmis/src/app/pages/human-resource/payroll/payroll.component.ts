@@ -79,7 +79,17 @@ export class PayrollComponent {
   detailEmployerContributions : number = 0
 
   filterRecords : string = ''
+  filterEmpRecords : string = ''
   filterOrders : string = ''
+
+
+
+  basicSalaryTotal : number = 0
+  grossSalaryTotal : number = 0
+  netSalaryTotal : number = 0
+  addOnsTotal : number = 0
+  deductionsTotal : number = 0
+  employerContributionsTotal : number = 0
 
 
   constructor(
@@ -482,6 +492,13 @@ export class PayrollComponent {
     this.verified   = ''
     this.approved   = ''
     this.payroll!
+
+    this.basicSalaryTotal =  0
+    this.grossSalaryTotal = 0
+    this.netSalaryTotal = 0
+    this.addOnsTotal = 0
+    this.deductionsTotal  = 0
+    this.employerContributionsTotal = 0
   }
 
 
@@ -510,6 +527,11 @@ export class PayrollComponent {
         this.approved   = data!.approved
 
         this.payroll = data!
+
+        this.showTotal(this.payroll)
+        
+
+
         this.lock()
         console.log(data)
       },
@@ -546,6 +568,8 @@ export class PayrollComponent {
 
         this.payroll = data!
 
+        this.showTotal(this.payroll)
+
         this.lock()
         console.log(data)
       },
@@ -554,6 +578,24 @@ export class PayrollComponent {
         this.msgBox.showErrorMessage(error, '')
       }
     )
+  }
+
+    showTotal(payroll : IPayroll){
+    this.basicSalaryTotal =  0
+    this.grossSalaryTotal = 0
+    this.netSalaryTotal = 0
+    this.addOnsTotal = 0
+    this.deductionsTotal  = 0
+    this.employerContributionsTotal = 0
+
+      this.payroll.payrollDetails.forEach(element => {
+      this.basicSalaryTotal =  this.basicSalaryTotal + element.basicSalary
+      this.grossSalaryTotal = this.grossSalaryTotal + element.grossSalary
+      this.netSalaryTotal = this.netSalaryTotal + element.netSalary
+      this.addOnsTotal = this.addOnsTotal + element.addOns
+      this.deductionsTotal  = this.deductionsTotal + element.deductions
+      this.employerContributionsTotal = this.employerContributionsTotal + element.employerContributions
+    })
   }
 
   async searchDetail(detail_id : any){
@@ -625,15 +667,17 @@ export class PayrollComponent {
 
     var report = [
       [
-        {text : 'SN', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'EMP#', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'Name', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'Basic Salary', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'Add Ons', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'Gross Salary', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'Deductions', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'Net Salary', fontSize : 9, fillColor : '#bdc6c7'},
-        {text : 'Employer s Contr', fontSize : 9, fillColor : '#bdc6c7'},
+        {text : 'SN', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'EMP#', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Name', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Title', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Department', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Basic Salary', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Allowances', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Gross Salary', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Deductions', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Net Salary', fontSize : 7, fillColor : '#bdc6c7'},
+        {text : 'Employer s Contr', fontSize : 7, fillColor : '#bdc6c7'},
       ]
     ]  
 
@@ -644,15 +688,17 @@ export class PayrollComponent {
     
     this.payroll.payrollDetails.forEach((element) => {
       var detail = [
-        {text : sn.toString(), fontSize : 7, fillColor : '#ffffff'}, 
-        {text : element?.employee.no, fontSize : 7, fillColor : '#ffffff'},       
-        {text : element?.employee?.firstName + ' ' + element?.employee?.middleName + ' ' + element?.employee?.lastName, fontSize : 7, fillColor : '#ffffff'},
-        {text : element.basicSalary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', fillColor : '#ffffff'},
-        {text : element.addOns.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', fillColor : '#ffffff'},
-        {text : element.grossSalary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', fillColor : '#ffffff'},
-        {text : element.deductions.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', fillColor : '#ffffff'},
-        {text : element.netSalary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', fillColor : '#ffffff'},
-        {text : element.employerContributions.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', fillColor : '#ffffff'},
+        {text : sn.toString(), fontSize : 6, fillColor : '#ffffff'}, 
+        {text : element?.employee.no, fontSize : 6, fillColor : '#ffffff'},       
+        {text : element?.employee?.firstName + ' ' + element?.employee?.middleName + ' ' + element?.employee?.lastName, fontSize : 6, fillColor : '#ffffff'},
+        {text : element?.employee?.jobTitleName, fontSize : 6, fillColor : '#ffffff'}, 
+        {text : element?.employee?.departmentName, fontSize : 6, fillColor : '#ffffff'},     
+        {text : element.basicSalary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.addOns.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.grossSalary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.deductions.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.netSalary.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', fillColor : '#ffffff'},
+        {text : element.employerContributions.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', fillColor : '#ffffff'},
       ]
       sn = sn + 1
 
@@ -668,15 +714,17 @@ export class PayrollComponent {
     })
 
     var detailSummary = [
-      {text : '', fontSize : 7, fillColor : '#ffffff'},
-      {text : '', fontSize : 7, fillColor : '#ffffff'},
-      {text : '', fontSize : 7, fillColor : '#ffffff'},
-      {text : basicSalaryTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', bold : true, fillColor : '#ffffff'},
-      {text : addOnsTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', bold : true, fillColor : '#ffffff'},
-      {text : grossSalaryTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', bold : true, fillColor : '#ffffff'},
-      {text : deductionsTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', bold : true, fillColor : '#ffffff'},
-      {text : netSalaryTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', bold : true, fillColor : '#ffffff'},
-      {text : employerContributionsTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 7, alignment : 'right', bold : true, fillColor : '#ffffff'},
+      {text : '', fontSize : 6, fillColor : '#ffffff'},
+      {text : '', fontSize : 6, fillColor : '#ffffff'},
+      {text : '', fontSize : 6, fillColor : '#ffffff'},
+      {text : '', fontSize : 6, fillColor : '#ffffff'},
+      {text : '', fontSize : 6, fillColor : '#ffffff'},
+      {text : basicSalaryTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', bold : true, fillColor : '#ffffff'},
+      {text : addOnsTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', bold : true, fillColor : '#ffffff'},
+      {text : grossSalaryTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', bold : true, fillColor : '#ffffff'},
+      {text : deductionsTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', bold : true, fillColor : '#ffffff'},
+      {text : netSalaryTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', bold : true, fillColor : '#ffffff'},
+      {text : employerContributionsTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fontSize : 6, alignment : 'right', bold : true, fillColor : '#ffffff'},
       
     ]
     report.push(detailSummary)
@@ -725,7 +773,7 @@ export class PayrollComponent {
             //layout : 'noBorders',
             table : {
                 headerRows : 1,
-                widths : [20, 30, 100, 50, 50, 50, 50, 50, 50],
+                widths : [20, 30, 70, 45, 45, 45, 35, 45, 35, 45, 35],
                 body : report
             }
         },

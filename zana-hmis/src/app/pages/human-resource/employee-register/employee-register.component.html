@@ -32,6 +32,8 @@
                                     <td>SN</td>
                                     <td>Full Name</td>
                                     <td>Emp#</td>
+                                    <td>Title</td>
+                                    <td>Department</td>
                                     <td>Mobile</td>
                                     <td>Email</td>
                                     <td>Joining Date</td>
@@ -44,12 +46,14 @@
                                     <td>{{employee.sn}}</td>
                                     <td>{{employee.firstName}} {{employee.middleName}} {{employee.lastName}}</td>
                                     <td>{{employee.no}}</td>
+                                    <td>{{employee?.jobTitleName}}</td>
+                                    <td>{{employee?.departmentName}}</td>
                                     <td>{{employee.phoneNo}}</td>
                                     <td>{{employee.email}}</td>
                                     <td>{{employee.joiningDate | date}}</td>
                                     <td>
-                                        <button class="btn btn-danger" *ngIf="employee.active === true" (click)="changeStatus(employee)">Inactive</button>
-                                        <button class="btn btn-success" *ngIf="employee.active === false" (click)="changeStatus(employee)">Active</button>
+                                        <button class="btn btn-success" *ngIf="employee.active === true" (click)="changeStatus(employee)">Active</button>
+                                        <button class="btn btn-danger" *ngIf="employee.active === false" (click)="changeStatus(employee)">Inactive</button>
                                     </td>
                                     <td>
                                         <table>
@@ -86,7 +90,7 @@
                         <input type="hidden" [(ngModel)]="id">
                         <div class="row">
                             <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Code*</h4>
+                                <h4 class="text-primary">Employee No*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="no" readonly>
                             </div>
                         </div>
@@ -127,14 +131,7 @@
                                 <h4 class="text-primary">Date of Birth*</h4>
                                 <input type="date" class="form-control" [(ngModel)]="dateOfBirth" required>
                             </div>
-                            <!--<div class="col-sm-4 form-group">
-                                <h4 class="text-primary">Active</h4>
-                                <input type="checkbox" [(ngModel)]="active">
-                            </div>-->
-                            <!--<div class="col-sm-4 form-group">
-                                <h4 class="text-primary">Payable</h4>
-                                <input type="checkbox" [(ngModel)]="payable">
-                            </div>-->
+                            
                         </div>
                         <hr>
                     </div>
@@ -172,6 +169,14 @@
                     <div class="col-sm-12">
                         <h4 class="text-primary"><b>Employment Information</b></h4>
                         <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Job Title</h4>
+                                <input type="text" class="form-control" [(ngModel)]="jobTitleName" required>
+                            </div>
+                            <div class="col-sm-3 form-group">
+                                <h4 class="text-primary">Department</h4>
+                                <input type="text" class="form-control" [(ngModel)]="departmentName" required>
+                            </div>
                             <div class="col-sm-3 form-group">
                                 <h4 class="text-primary">TIN No*</h4>
                                 <input type="text" class="form-control" [(ngModel)]="tinNo" required>
@@ -243,141 +248,75 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="text-primary"><b>Personal Information</b></h4>
-                        <input type="hidden" [(ngModel)]="id">
-                        <div class="row">
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Code*</h4>
-                                <span class="form-control">{{no}}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">First Name*</h4>
-                                <span class="form-control">{{firstName}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Middle Name</h4>
-                                <span class="form-control">{{middleName}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Last Name*</h4>
-                                <span class="form-control">{{lastName}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">National ID No*</h4>
-                                <span class="form-control">{{nationalIdNo}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Phone No*</h4>
-                                <span class="form-control">{{phoneNo}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Email</h4>
-                                <span class="form-control">{{email}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Gender*</h4>
-                                <span class="form-control">{{gender}}</span>
-                                
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Date of Birth*</h4>
-                                <span class="form-control">{{dateOfBirth}}</span>
-                            </div>
-                            <!--<div class="col-sm-4 form-group">
-                                <h4 class="text-primary">Active</h4>
-                                <input type="checkbox" [(ngModel)]="active">
-                            </div>-->
-                            <!--<div class="col-sm-4 form-group">
-                                <h4 class="text-primary">Payable</h4>
-                                <input type="checkbox" [(ngModel)]="payable">
-                            </div>-->
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="col-sm-12">
-                        <h4 class="text-primary"><b>Address and Contacts</b></h4>
-                        <div class="row">
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Physical Address*</h4>
-                                <span class="form-control">{{physicalAddress}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Postal Address*</h4>
-                                <span class="form-control">{{postalAddress}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Permanent Residence*</h4>
-                                <span class="form-control">{{permanentResidence}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Temporary Residence*</h4>
-                                <span class="form-control">{{temporaryResidence}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Next of Kin*</h4>
-                                <span class="form-control">{{kinName}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Next of Kin Phone*</h4>
-                                <span class="form-control">{{kinPhoneNo}}</span>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="col-sm-12">
-                        <h4 class="text-primary"><b>Employment Information</b></h4>
-                        <div class="row">
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">TIN No*</h4>
-                                <span class="form-control">{{tinNo}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Basic Salary*</h4>
-                                <span class="form-control">{{basicSalary}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Joining Date*</h4>
-                                <span class="form-control">{{joiningDate}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Employment Date</h4>
-                                <span class="form-control">{{employmentDate}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Termination Date</h4>
-                                <span class="form-control">{{terminationDate}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Social Security No</h4>
-                                <span class="form-control">{{socialSecurityNo}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Social Security Name</h4>
-                                <span class="form-control">{{socialSecurityName}}</span>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="col-sm-12">
-                        <h4 class="text-primary"><b>Bank Information</b></h4>
-                        <div class="row">
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Bank Acc No*</h4>
-                                <span class="form-control">{{bankAccountNo}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Bank Acc Name*</h4>
-                                <span class="form-control">{{bankAccountName}}</span>
-                            </div>
-                            <div class="col-sm-3 form-group">
-                                <h4 class="text-primary">Bank Name*</h4>
-                                <span class="form-control">{{bankName}}</span>
-                            </div>
+
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <h3 class="text-primary"><b>Personal Information</b></h3>
+                            <table class="table table-bordered table-small table-striped" style="text-align: center;">
+                                <tbody>
+                                    <input type="hidden" [(ngModel)]="id">
+                                    <tr><td><b>Employee No</b></td><td>{{no}}</td></tr>
+                                    <tr><td><b>First Name</b></td><td>{{firstName}}</td></tr>
+                                    <tr><td><b>Last Name</b></td><td>{{lastName}}</td></tr>
+                                    <tr><td><b>Other Names</b></td><td>{{middleName}}</td></tr>
+                                    <tr><td><b>Date of Birth</b></td><td>{{dateOfBirth | date}}</td></tr>  
+                                    <tr><td><b>Gender</b></td><td>{{gender}}</td></tr>  
+                                    <tr><td><b>National ID#</b></td><td>{{nationalIdNo}}</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <h3 class="text-primary"><b>Address and Contacts</b></h3>
+                            <table class="table table-bordered table-small table-striped" style="text-align: center;">
+                                <tbody>
+                                    <tr><td><b>Phone No</b></td><td>{{phoneNo}}</td></tr>
+                                    <tr><td><b>Email</b></td><td>{{email}}</td></tr>
+                                    <tr><td><b>Physical Address</b></td><td>{{physicalAddress}}</td></tr>
+                                    <tr><td><b>Postal Address</b></td><td>{{postalAddress}}</td></tr>
+                                    <tr><td><b>Permanent Residence</b></td><td>{{permanentResidence}}</td></tr>
+                                    <tr><td><b>Temporary Residence</b></td><td>{{temporaryResidence}}</td></tr>
+                                    <tr><td><b>Next of Kin</b></td><td>{{kinName}}</td></tr>  
+                                    <tr><td><b>Next of Kin Phone</b></td><td>{{kinPhoneNo}}</td></tr>  
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <h3 class="text-primary"><b>Employment Information</b></h3>
+                            <table class="table table-bordered table-small table-striped" style="text-align: center;">
+                                <tbody>
+                                    <tr><td><b>Title</b></td><td>{{jobTitleName}}</td></tr>
+                                    <tr><td><b>Department</b></td><td>{{departmentName}}</td></tr>
+                                    <tr><td><b>TIN No</b></td><td>{{tinNo}}</td></tr>
+                                    <tr><td><b>Basic Salary</b></td><td>{{basicSalary | currency:'':''}}</td></tr>
+                                    <tr><td><b>Joining Date</b></td><td>{{joiningDate | date}}</td></tr>
+                                    <tr><td><b>Employment Date</b></td><td>{{employmentDate | date}}</td></tr>
+                                    <tr><td><b>Termination Date</b></td><td>{{terminationDate | date}}</td></tr>  
+                                    <tr><td><b>Social Security No</b></td><td>{{socialSecurityNo}}</td></tr>  
+                                    <tr><td><b>Social Security Name</b></td><td>{{socialSecurityName}}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <h3 class="text-primary"><b>Bank Information</b></h3>
+                            <table class="table table-bordered table-small table-striped" style="text-align: center;">
+                                <tbody>
+                                    <tr><td><b>Bank Acc No</b></td><td>{{bankAccountNo}}</td></tr>
+                                    <tr><td><b>Bank Acc Name</b></td><td>{{bankAccountName}}</td></tr>
+                                    <tr><td><b>Bank Name</b></td><td>{{bankName}}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div><!-- /.modal-content -->
