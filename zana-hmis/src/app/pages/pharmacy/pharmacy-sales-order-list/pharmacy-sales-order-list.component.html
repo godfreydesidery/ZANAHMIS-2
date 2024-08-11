@@ -1,0 +1,71 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="header-title">
+        <h1>Pharmacy - Sales Order List (<span class="text-primary">{{pharmacyName}}</span>)</h1>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- Form controls -->
+        <div class="col-sm-12">
+            <div class="panel panel-bd lobidrag">
+                <div class="panel-heading">
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-sales-order">New Sales Order</button>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="success">
+                            <tr>
+                                <th>Order#</th>
+                                <th>Customer#</th>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SLO/10</td>
+                                    <td>CST/23</td>
+                                    <td>Godfrey D. Shirima</td>
+                                    <td style="text-align: right;">25,000.00</td>
+                                    <td>PENDING</td>
+                                    <td><button class="btn btn-success" >Select</button></td>
+                                </tr>
+                                <tr>
+                                    <td>SLO/10</td>
+                                    <td>CST/23</td>
+                                    <td>Godfrey D. Shirima</td>
+                                    <td style="text-align: right;">25,000.00</td>
+                                    <td>PAID</td>
+                                    <td><button class="btn btn-success" >Select</button></td>
+                                </tr>
+                                <tr>
+                                    <td>SLO/10</td>
+                                    <td>CST/23</td>
+                                    <td>Godfrey D. Shirima</td>
+                                    <td style="text-align: right;">25,000.00</td>
+                                    <td>GIVEN</td>
+                                    <td><button class="btn btn-success" >Select</button></td>
+                                </tr>
+                            </tbody>
+                        </table>    
+                    </div>
+                </div> 
+                    
+            </div>
+        </div>
+    </div>
+     
+</section> <!-- /.content -->

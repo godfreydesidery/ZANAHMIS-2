@@ -11,12 +11,12 @@
         <div class="col-sm-12">
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading">
-                    <button class="btn btn-primary btn-outline" (click)="loadPayrolls()" data-toggle="modal" data-target="#order-list-modal"><span class="glyphicon glyphicon-list"></span>List</button>
-                    <button class="btn btn-primary btn-outline" (click)="requestNo()"><span class="glyphicon glyphicon-file"></span>New</button>
-                    <button class="btn btn-primary btn-outline" (click)="openToEdit()"><span class="glyphicon glyphicon-pencil"></span>Edit</button>
-                    <button class="btn btn-primary btn-outline" (click)="saveOrder()"><span class="glyphicon glyphicon-floppy-disk"></span>Save</button>
-                    <button class="btn btn-primary btn-outline" *ngIf="status === 'PENDING'" (click)="cancelOrder()"><span class="fa fa-close"></span>Cancel</button>
-                    <button class="btn btn-primary btn-outline" *ngIf="status === 'PENDING'" (click)="approveOrder()"><span class="glyphicon glyphicon-ok"></span>Approve</button>
+                    <button class="btn btn-primary btn-outline" (click)="loadPayrolls()" *ngIf="grant(['PAYROLL-ALL', 'PAYROLL-READ', 'PAYROLL-UPDATE'])" data-toggle="modal" data-target="#order-list-modal"><span class="glyphicon glyphicon-list"></span>List</button>
+                    <button class="btn btn-primary btn-outline" (click)="requestNo()" *ngIf="grant(['PAYROLL-ALL', 'PAYROLL-CREATE'])"><span class="glyphicon glyphicon-file"></span>New</button>
+                    <button class="btn btn-primary btn-outline" (click)="openToEdit()" *ngIf="grant(['PAYROLL-ALL', 'PAYROLL-UPDATE'])"><span class="glyphicon glyphicon-pencil"></span>Edit</button>
+                    <button class="btn btn-primary btn-outline" (click)="saveOrder()" *ngIf="grant(['PAYROLL-ALL', 'PAYROLL-CREATE', 'PAYROLL-UPDATE'])"><span class="glyphicon glyphicon-floppy-disk"></span>Save</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="status === 'PENDING' && grant(['PAYROLL-ALL', 'PAYROLL-CANCEL'])" (click)="cancelOrder()"><span class="fa fa-close"></span>Cancel</button>
+                    <button class="btn btn-primary btn-outline" *ngIf="status === 'PENDING' && grant(['PAYROLL-ALL', 'PAYROLL-APPROVE'])" (click)="approveOrder()"><span class="glyphicon glyphicon-ok"></span>Approve</button>
                     <button class="btn btn-primary btn-outline" (click)="print()"><span class="fa fa-file-pdf-o"></span> Print</button>
                 </div>
                 <div class="panel-body">
