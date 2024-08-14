@@ -11,9 +11,8 @@
         <div class="col-sm-12">
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading">
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-sales-order">New Sales Order</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-sales-order">New</button>
                     <button class="btn btn-primary btn-outline">Save</button>
-                    <button class="btn btn-primary btn-outline">Give Medicine</button>
                     <button class="btn btn-primary btn-outline">Cancel</button>
                     <button class="btn btn-primary btn-outline">Archive</button>
                 </div>
@@ -37,16 +36,21 @@
                                             <button style="width: 50mm; margin: 3px;">Existing Customer</button>
                                         </td>
                                         <td>
-                                            <div>
+                                            <!--<div>
                                                 <input class="form-control" placeholder="Enter Name">
                                                 <input class="form-control" placeholder="Enter Phone">
-                                            </div>
+                                            </div>-->
                                             <div>
                                                 <input class="form-control" placeholder="Search By Name/Phone">
                                                 <span class="form-control"></span>
                                             </div>
+                                            <div>
+                                                <button class="btn btn-primary pull-right">Update</button>
+                                            </div>
                                         </td>
                                     </tr>
+
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -71,69 +75,132 @@
                     </div>
 
                     <div class="row">
-                        <hr>
+                        
+
+
+
+
+
+                        
+
                         <div class="col-sm-12">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" placeholder="Search Medicine">
+                            <h4 class="text-primary"><b>Medications</b></h4>
+                            <div class="jumbotron jumbotron-fluid"> 
+                                <div class="row">
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4">
+                                        
+                                        <h4>Search Medicine (Enter 2 Characters to search)</h4>
+                                        <input type="text" class="form-control">
+                                        <!--<div class="row">
+                                            <select class="form-control" multiple="multiple">
+                                                <option style="height: 1cm; cursor: pointer; font-size: large;"></option>
+                                            </select>
+                                        </div>-->
+                                    </div>
+                                    <div class="col-sm-4"></div>
                                 </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" style="text-align: center;" placeholder="Enter Quantity">
+                                <hr>                              
+                                <div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover  table-striped">
+                                            <thead class="success">
+                                            <tr>
+                                                <th>Medicine</th>
+                                                <th>Unit</th>
+                                                <th>Dosage</th>
+                                                <th>Frequency</th>
+                                                <th>Route</th>
+                                                <th>Days</th>
+                                                <th>Qty</th>
+                                                <th>Amount</th>
+                                                <th>Payment</th>
+                                                <th>Status</th>
+                                                <th>Instructions</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td style="text-align: right;"></td>
+                                                    <td>
+                                                        <span></span>
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td><button class="btn btn-danger btn-outline" ><i class="fa fa-trash text-danger"></i> Delete</button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td><span class="form-control"></span></td>
+                                                    <td><input type="text" class="form-control"></td>
+                                                    <td>
+                                                        <select class="form-control">
+                                                            <option></option>
+                                                            <option>24 Hour</option>
+                                                            <option>12 Hours</option>
+                                                            <option>8 Hours</option>
+                                                            <option>6 Hrs</option>
+                                                            <option>4 Hours</option>
+                                                            <option>Third Per Week</option>
+                                                            <option>Four Per Week</option>
+                                                            <option>Four Per Day</option>
+                                                            <option>Weekly</option>
+                                                            <option>4.5 Hours</option>
+                                                            <option>1 Hours</option>
+                                                            <option>2 Hours </option>
+                                                        </select>                                                    
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control">
+                                                            <option></option>
+                                                            <option>IV</option>
+                                                            <option>IM</option>
+                                                            <option>ORAL</option>
+                                                            <option>SC</option>
+                                                            <option>Topical</option>
+                                                            <option>Drops</option>
+                                                            <option>Per Rectal</option>
+                                                            <option>Per Vaginal</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" class="form-control" min="0"></td>
+                                                    <td><input type="number" class="form-control" min="0"></td>
+                                                    <td><span class="form-control"></span></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        <textarea class="form-control"></textarea>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-success btn-outline"><i class="glyphicon glyphicon-plus-sign"></i>Add</button>
+                                                        <button class="btn btn-danger btn-outline"><i class="glyphicon glyphicon-remove-sign"></i>Clear</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>    
+                                    </div>
                                 </div>
-                                <div class="col-sm-3">
-                                    <span class="form-control"></span>
-                                </div>
-                                <div class="col-sm-3">
-                                    <button class="btn btn-success">Add</button>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <thead class="success">
-                                    <tr>
-                                        <th>Drug</th>
-                                        <th>Quantity</th>
-                                        <th>Unit Price</th>
-                                        <th>Amount</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Paracetamol 100ml</td>
-                                            <td>30</td>
-                                            <td style="text-align: right;">100.00</td>
-                                            <td style="text-align: right;">9,000.00</td>
-                                            <td><button class="btn btn-success" >Remove</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Paracetamol 100ml</td>
-                                            <td>30</td>
-                                            <td style="text-align: right;">100.00</td>
-                                            <td style="text-align: right;">9,000.00</td>
-                                            <td><button class="btn btn-success" >Remove</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Paracetamol 100ml</td>
-                                            <td>30</td>
-                                            <td style="text-align: right;">100.00</td>
-                                            <td style="text-align: right;">9,000.00</td>
-                                            <td><button class="btn btn-success" >Remove</button></td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr style="font-weight: bold;">
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td style="text-align: right;">9,000.00</td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>    
                             </div>
                         </div>
+
+
+
+
+
+
+                    
+
+
+
+
                     </div>
                     
                 </div> 
