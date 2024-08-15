@@ -24,7 +24,7 @@
                                     <input type="text" class="form-control" [(ngModel)]="labTestTypeName" (ngModelChange)="loadLabTestTypesLike($event)" placeholder="Search Lab Test...">
                                     <div class="row"  *ngIf="labTestTypes.length > 0">
                                         <div class="col-sm-12">
-                                            <select class="form-control" multiple="multiple" size="4">
+                                            <select class="form-control" multiple="multiple" size="4" style="position: absolute; z-index: 1;">
                                                 <option *ngFor="let lab of labTestTypes" (click)="getLabTestType(lab.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{lab.name}}</option>
                                             </select>
                                         </div>

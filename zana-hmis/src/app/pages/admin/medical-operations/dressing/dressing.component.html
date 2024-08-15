@@ -20,7 +20,7 @@
                                 <input type="text" class="form-control" [(ngModel)]="procedureTypeName" (ngModelChange)="loadProcedureTypesLike($event)" placeholder="Select Procedure...">
                                 <div class="row"  *ngIf="procedureTypes.length > 0">
                                     <div class="col-sm-12">
-                                        <select class="form-control" multiple="multiple">
+                                        <select class="form-control" multiple="multiple" style="position: absolute;">
                                             <option *ngFor="let pro of procedureTypes" (click)="getProcedureType(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro.name}}</option>
                                         </select>
                                     </div>

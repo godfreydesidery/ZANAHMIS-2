@@ -21,10 +21,10 @@
                                     <div class="row">
                                         <div class="col-xs-8">
                                             <h4 class="text-primary"><b>Search Patient(Enter 3 characters)Name, File No or Phone</b></h4>
-                                            <input type="text" class="form-control" [(ngModel)]="searchKey" (ngModelChange)="loadPatientsLike($event)" [readonly]="lockSearchKey" style="max-width: 15cm;" placeholder="Search...">
+                                            <input type="text" class="form-control" [(ngModel)]="searchKey" (ngModelChange)="loadPatientsLike($event)" [readonly]="lockSearchKey" style="max-width: 15cm;" placeholder="Search..." autocomplete="off">
                                             <div class="row" *ngIf="lockSearchKey === false && patients.length > 0">
                                                 <div class="col-sm-12">
-                                                    <select class="form-control" multiple="multiple" style="max-width: 15cm">
+                                                    <select class="form-control" multiple="multiple" style="max-width: 15cm; position: absolute;">
                                                         <option *ngFor="let p of patients" (click)="getPatient(p.id)" style="height: 1cm; cursor: pointer; font-size: large;"><b>{{p.firstName}} {{p.middleName}} {{p.lastName}} | </b> FileNo: <b>{{p.no}}</b></option>
                                                     </select>
                                                 </div>

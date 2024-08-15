@@ -19,7 +19,7 @@
                             <input type="text" class="form-control" [(ngModel)]="medicineName" (ngModelChange)="loadMedicinesLike($event)" placeholder="Search Drug...">
                             <div class="row"  *ngIf="medicines.length > 0">
                                 <div class="col-sm-12">
-                                    <select class="form-control" multiple="multiple" size="4">
+                                    <select class="form-control" multiple="multiple" size="4" style="position: absolute; z-index: 1;">
                                         <option *ngFor="let medicine of medicines" (click)="getMedicine(medicine.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{medicine.name}}</option>
                                     </select>
                                 </div>

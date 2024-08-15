@@ -20,7 +20,7 @@
                                 <input type="text" class="form-control" [(ngModel)]="medicineName" (ngModelChange)="loadMedicinesLike($event)">
                                 <div class="row"  *ngIf="medicines.length > 0">
                                     <div class="col-sm-12">
-                                        <select class="form-control" multiple="multiple">
+                                        <select class="form-control" multiple="multiple" style="position: absolute;">
                                             <option *ngFor="let pro of medicines" (click)="getMedicine(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro.name}}</option>
                                         </select>
                                     </div>

@@ -31,7 +31,7 @@
                                                 <input type="text" class="form-control" [(ngModel)]="searchKey" (ngModelChange)="loadPatientsLike($event)" [readonly]="lockSearchKey" placeholder="Search...">
                                                 <div class="row" *ngIf="lockSearchKey === false && patients.length > 0">
                                                     <div class="col-sm-12">
-                                                        <select class="form-control" multiple="multiple" style="max-width: 15cm">
+                                                        <select class="form-control" multiple="multiple" style="max-width: 15cm; position: absolute;">
                                                             <option *ngFor="let p of patients" (click)="getPatient(p.id)" style="height: 1cm; cursor: pointer; font-size: large;"><b>{{p.firstName}} {{p.middleName}} {{p.lastName}} | </b> FileNo: <b>{{p.no}}</b></option>
                                                         </select>
                                                     </div>

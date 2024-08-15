@@ -21,14 +21,14 @@
                                 <div class="col-sm-3">
                                     <h4>Doctor Name</h4>
                                     <div class="input-group">
-                                        <input type="text" name="q" class="form-control" [(ngModel)]="clinicianName" (ngModelChange)="loadCliniciansLike($event)" [readonly]="clinicianLocked" placeholder="Search Doctor...">
+                                        <input type="text" name="q" class="form-control" [(ngModel)]="clinicianName" (ngModelChange)="loadCliniciansLike($event)" [readonly]="clinicianLocked" placeholder="Search Doctor..." autocomplete="off">
                                         <span class="input-group-btn">
                                             <button class="btn" (click)="clear()"><i class="fa fa-times-rectangle"></i></button>
                                         </span>
                                     </div>
                                     <div class="row"  *ngIf="clinicians.length > 0">
                                         <div class="col-sm-12">
-                                            <select class="form-control" multiple="multiple">
+                                            <select class="form-control" multiple="multiple" style="position: absolute; z-index: 1;">
                                                 <option *ngFor="let pro of clinicians" (click)="getClinician(pro.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{pro?.firstName}} {{pro?.middleName}} {{pro?.lastName}} </option>
                                             </select>
                                         </div>
