@@ -28,6 +28,11 @@ import com.orbix.api.domain.PatientNursingChart;
 import com.orbix.api.domain.PatientNursingProgressNote;
 import com.orbix.api.domain.PatientObservationChart;
 import com.orbix.api.domain.PatientPrescriptionChart;
+import com.orbix.api.domain.Pharmacist;
+import com.orbix.api.domain.Pharmacy;
+import com.orbix.api.domain.PharmacyCustomer;
+import com.orbix.api.domain.PharmacySaleOrder;
+import com.orbix.api.domain.PharmacySaleOrderDetail;
 import com.orbix.api.domain.Prescription;
 import com.orbix.api.domain.Procedure;
 import com.orbix.api.domain.Radiology;
@@ -73,4 +78,12 @@ public interface PatientService {
 	
 	ResponseEntity<Map<String, String>> saveLabTestAttachment(LabTest labTest, MultipartFile file, String name, HttpServletRequest request);
 	ResponseEntity<Map<String, String>> saveRadiologyAttachment(Radiology radiology, MultipartFile file, String name, HttpServletRequest request);
+
+
+	
+	
+	PharmacyCustomer doRegister(PharmacyCustomer pharmacyCustomer, HttpServletRequest request);
+	PharmacySaleOrder createPharmacySaleOrder(PharmacyCustomer pharmacyCustomer, Pharmacy pharmacy, Pharmacist pharmacist, HttpServletRequest request);
+	
+	PharmacySaleOrderDetail savePharmacySaleOrderDetail(PharmacySaleOrderDetail detail, Optional<PharmacySaleOrder> o, HttpServletRequest request);
 }

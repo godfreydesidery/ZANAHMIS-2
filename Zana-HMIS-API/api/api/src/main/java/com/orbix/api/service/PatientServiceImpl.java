@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.ArrayList;
@@ -53,6 +54,11 @@ import com.orbix.api.domain.PatientNursingChart;
 import com.orbix.api.domain.PatientNursingProgressNote;
 import com.orbix.api.domain.PatientObservationChart;
 import com.orbix.api.domain.PatientPrescriptionChart;
+import com.orbix.api.domain.Pharmacist;
+import com.orbix.api.domain.Pharmacy;
+import com.orbix.api.domain.PharmacyCustomer;
+import com.orbix.api.domain.PharmacySaleOrder;
+import com.orbix.api.domain.PharmacySaleOrderDetail;
 import com.orbix.api.domain.LabTest;
 import com.orbix.api.domain.LabTestAttachment;
 import com.orbix.api.domain.LabTestType;
@@ -110,6 +116,9 @@ import com.orbix.api.repositories.PatientBillRepository;
 import com.orbix.api.repositories.PatientConsumableChartRepository;
 import com.orbix.api.repositories.PatientDressingChartRepository;
 import com.orbix.api.repositories.PatientRepository;
+import com.orbix.api.repositories.PharmacyCustomerRepository;
+import com.orbix.api.repositories.PharmacySaleOrderDetailRepository;
+import com.orbix.api.repositories.PharmacySaleOrderRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
 import com.orbix.api.repositories.ProcedureRepository;
 import com.orbix.api.repositories.ProcedureTypeInsurancePlanRepository;
@@ -186,6 +195,11 @@ public class PatientServiceImpl implements PatientService {
 	private final ConsultationTransferRepository consultationTransferRepository;
 	private final LabTestAttachmentRepository labTestAttachmentRepository;
 	private final RadiologyAttachmentRepository radiologyAttachmentRepository;
+	
+	
+	private final PharmacyCustomerRepository pharmacyCustomerRepository;
+	private final PharmacySaleOrderRepository pharmacySaleOrderRepository;
+	private final PharmacySaleOrderDetailRepository pharmacySaleOrderDetailRepository;
 	
 	@Override
 	public List<Patient> getAll() {
@@ -2990,4 +3004,135 @@ public class PatientServiceImpl implements PatientService {
 	      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	  }	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public PharmacyCustomer doRegister(PharmacyCustomer cust, HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		/**
+		 * Save customer after validating credentials
+		 */
+		cust.setCreatedBy(userService.getUser(request).getId());
+		cust.setCreatedOn(dayService.getDay().getId());
+		cust.setCreatedAt(dayService.getTimeStamp());
+		
+		PharmacyCustomer pharmacyCustomer = pharmacyCustomerRepository.save(cust);		
+		/**
+		 * Generate customer unique file no// change this to conventional no, this is only for starting
+		 */
+		pharmacyCustomer.setNo("PCST/"+String.valueOf(Year.now().getValue())+"/"+ pharmacyCustomer.getId().toString());
+		
+		pharmacyCustomer = pharmacyCustomerRepository.save(pharmacyCustomer);
+		
+		return pharmacyCustomer;
+	}
+	
+	
+	
+	@Override
+	public PharmacySaleOrder createPharmacySaleOrder(PharmacyCustomer cust, Pharmacy phar, Pharmacist pharst, HttpServletRequest request) {
+		
+		/**
+		 * Create a general patient
+		 */
+		Patient generalPatient = new Patient();
+		
+		Optional<Patient> patient_ = patientRepository.findByNo("GENERAL");
+		
+		if(patient_.isEmpty()) {
+			/**
+			 * Create a general patient
+			 * This patient is a dummy patient
+			 */
+			generalPatient.setFirstName("GENERAL");
+			generalPatient.setMiddleName("GENERAL");
+			generalPatient.setLastName("GENERAL");
+			generalPatient.setActive(false);
+			generalPatient.setDateOfBirth(LocalDate.now());
+			generalPatient.setGender("NONE");
+			
+			
+			generalPatient = this.doRegister(generalPatient, request);
+			
+			generalPatient.setNo("GENERAL");
+			
+			patientRepository.save(generalPatient);
+			
+		}else {
+			generalPatient = patient_.get();
+		}
+		
+		PharmacySaleOrder pharmacySaleOrder = new PharmacySaleOrder();
+		pharmacySaleOrder.setPharmacyCustomer(cust);
+		pharmacySaleOrder.setPharmacy(phar);
+		pharmacySaleOrder.setPharmacist(pharst);
+		
+		pharmacySaleOrder.setStatus("PENDING");
+		
+		pharmacySaleOrder.setCreatedBy(userService.getUser(request).getId());
+		pharmacySaleOrder.setCreatedOn(dayService.getDay().getId());
+		pharmacySaleOrder.setCreatedAt(dayService.getTimeStamp());
+		
+		pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
+		
+		return null;
+	}
+	
+	
+	
+	
+	@Override
+	public PharmacySaleOrderDetail savePharmacySaleOrderDetail(PharmacySaleOrderDetail detail, Optional<PharmacySaleOrder> ord, HttpServletRequest request) {
+		Optional<Medicine> md = medicineRepository.findByName(detail.getMedicine().getName());
+		
+		Optional<Patient> patient_ = patientRepository.findByNo("GENERAL");
+		 
+		if(!md.isPresent()) {
+			throw new NotFoundException("Medicine not found");
+		}
+		if(ord.isPresent()) {
+			throw new InvalidOperationException("Could not save, no order available");
+		}		
+		
+		if(ord.isPresent()) {
+			detail.setPharmacySaleOrder(ord.get());
+			detail.setPharmacist(ord.get().getPharmacist());
+		}
+		
+		detail.setMedicine(md.get());
+		detail.setStatus("NOT-GIVEN");
+		detail.setPayStatus("UNPAID");
+		PatientBill patientBill = new PatientBill();
+		patientBill.setAmount(detail.getMedicine().getPrice() * detail.getQty());
+		patientBill.setPaid(0);
+		patientBill.setBalance(detail.getMedicine().getPrice() * detail.getQty());
+		patientBill.setQty(detail.getQty());
+		patientBill.setBillItem("Medicine Sale");
+		patientBill.setDescription("Medicine: "+detail.getMedicine().getName());
+		patientBill.setStatus("UNPAID");
+		
+		patientBill.setCreatedBy(userService.getUser(request).getId());
+		patientBill.setCreatedOn(dayService.getDay().getId());
+		patientBill.setCreatedAt(dayService.getTimeStamp());
+		
+		patientBill.setPatient(patient_.get());
+		
+		patientBill = patientBillRepository.save(patientBill);
+		
+		
+		detail.setIssued(0);
+		detail.setBalance(detail.getQty());
+		detail.setPatientBill(patientBill);
+		return pharmacySaleOrderDetailRepository.save(detail);		
+	}
+	
+	
 }

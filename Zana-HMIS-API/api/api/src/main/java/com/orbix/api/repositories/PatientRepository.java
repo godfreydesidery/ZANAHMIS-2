@@ -49,4 +49,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
 	List<Patient> findAllByNoContainingOrFirstNameContainingOrMiddleNameContainingOrLastNameContainingOrPhoneNoContainingOrMembershipNoContaining(
 			String value, String value2, String value3, String value4, String value5, String value6);
+
+	List<Patient> findAllByNo(String string);
 }
