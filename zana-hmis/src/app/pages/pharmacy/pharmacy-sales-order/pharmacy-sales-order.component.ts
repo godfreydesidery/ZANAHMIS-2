@@ -69,6 +69,13 @@ export class PharmacySalesOrderComponent {
     
     pharmacySaleDetails : IPharmacySaleDetail[] = []
 
+
+    pharmacyCustomerId : any = null
+    pharmacyCustomer! : IPharmacyCustomer
+    pharmacyCustomerMode : string = 'New Customer'
+
+
+
   async ngOnInit(): Promise<void> {
     await this.loadPharmacist()
   }
@@ -288,6 +295,20 @@ export class PharmacySalesOrderComponent {
     this.pharmacySaleDetailPrice        = 0
     this.pharmacySaleDetailQty          = 0
     this.pharmacySaleDetailInstructions = ''
+
+  }
+
+  clearPharmacyCustomer(){
+    this.pharmacyCustomerMode = 'New Customer'
+    this.pharmacyCustomerId = null
+    this.pharmacyCustomer!
+  }
+
+  searchingPharmacyCustomer(){
+    this.pharmacyCustomerMode = 'Existing Customer'
+  }
+
+  getPharmacyCustomer(id : any){
 
   }
 }

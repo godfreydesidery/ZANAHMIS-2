@@ -31,19 +31,23 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <button style="width: 50mm; margin: 3px;">New Customer</button><br>
-                                            <button style="width: 50mm; margin: 3px;">Existing Customer</button>
+                                            <button class="btn btn-success btn-outline" style="width: 50mm; margin: 3px;" (click)="clearPharmacyCustomer()">New Customer</button><br>
+                                            <button class="btn btn-success btn-outline" style="width: 50mm; margin: 3px;" (click)="searchingPharmacyCustomer()">Existing Customer</button>
                                         </td>
                                         <td>
-                                            <!--<div>
-                                                <input class="form-control" placeholder="Enter Name">
-                                                <input class="form-control" placeholder="Enter Phone">
-                                            </div>-->
                                             <div>
-                                                <input class="form-control" placeholder="Search By Name/Phone">
+                                                <label class="form-control">{{pharmacyCustomerMode}}</label>
+                                            </div>
+                                            <div *ngIf="pharmacyCustomerMode === 'New Customer'">
+                                                <input class="form-control" placeholder="Enter Name"><br>
+                                                <input class="form-control" placeholder="Enter Phone">
+                                            </div>
+                                            <div *ngIf="pharmacyCustomerMode != 'New Customer'">
+                                                <input class="form-control" placeholder="Search By Name/Phone"><br>
                                                 <span class="form-control"></span>
                                             </div>
                                             <div>
+                                                <br>
                                                 <button class="btn btn-primary pull-right">Update</button>
                                             </div>
                                         </td>
