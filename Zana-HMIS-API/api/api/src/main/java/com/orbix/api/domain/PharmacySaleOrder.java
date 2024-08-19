@@ -34,6 +34,10 @@ public class PharmacySaleOrder {
 	private Long id;
 	
 	@NotBlank
+	@Column(unique = true)
+	private String no;
+	
+	@NotBlank
 	private String paymentType;//CASH,DEBIT CARD, CREDIT CARD, MOBILE, INSURANCE
 	//private String membershipNo;
 	@NotBlank

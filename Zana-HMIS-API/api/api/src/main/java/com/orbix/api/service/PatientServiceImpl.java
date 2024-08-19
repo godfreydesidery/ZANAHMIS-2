@@ -116,7 +116,9 @@ import com.orbix.api.repositories.PatientBillRepository;
 import com.orbix.api.repositories.PatientConsumableChartRepository;
 import com.orbix.api.repositories.PatientDressingChartRepository;
 import com.orbix.api.repositories.PatientRepository;
+import com.orbix.api.repositories.PharmacistRepository;
 import com.orbix.api.repositories.PharmacyCustomerRepository;
+import com.orbix.api.repositories.PharmacyRepository;
 import com.orbix.api.repositories.PharmacySaleOrderDetailRepository;
 import com.orbix.api.repositories.PharmacySaleOrderRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
@@ -195,6 +197,10 @@ public class PatientServiceImpl implements PatientService {
 	private final ConsultationTransferRepository consultationTransferRepository;
 	private final LabTestAttachmentRepository labTestAttachmentRepository;
 	private final RadiologyAttachmentRepository radiologyAttachmentRepository;
+	
+	private final PharmacyRepository pharmacyRepository;
+	private final PharmacistRepository pharmacistRepository;
+	
 	
 	
 	private final PharmacyCustomerRepository pharmacyCustomerRepository;
@@ -3012,7 +3018,7 @@ public class PatientServiceImpl implements PatientService {
 	
 	
 	@Override
-	public PharmacyCustomer doRegister(PharmacyCustomer cust, HttpServletRequest request) {
+	public PharmacyCustomer createPharmacyCustomer(PharmacyCustomer cust, HttpServletRequest request) {
 		// TODO Auto-generated method stub
 		
 		
@@ -3038,7 +3044,7 @@ public class PatientServiceImpl implements PatientService {
 	
 	
 	@Override
-	public PharmacySaleOrder createPharmacySaleOrder(PharmacyCustomer cust, Pharmacy phar, Pharmacist pharst, HttpServletRequest request) {
+	public PharmacySaleOrder savePharmacySaleOrder(PharmacyCustomer cust, Pharmacy phar, Pharmacist pharst, HttpServletRequest request) {
 		
 		/**
 		 * Create a general patient
@@ -3059,6 +3065,11 @@ public class PatientServiceImpl implements PatientService {
 			generalPatient.setDateOfBirth(LocalDate.now());
 			generalPatient.setGender("NONE");
 			
+			generalPatient.setSearchKey(String.valueOf(Math.random()));
+			generalPatient.setPaymentType("NONE");
+			generalPatient.setType("NONE");
+			generalPatient.setNo(String.valueOf(Math.random()));
+			
 			
 			generalPatient = this.doRegister(generalPatient, request);
 			
@@ -3070,12 +3081,41 @@ public class PatientServiceImpl implements PatientService {
 			generalPatient = patient_.get();
 		}
 		
+		PharmacyCustomer pharmacyCustomer;
+		if(cust.getId() != null) {
+			pharmacyCustomer = pharmacyCustomerRepository.findById(cust.getId()).get();
+			if(!pharmacyCustomer.getNo().equals(cust.getNo())) {
+				throw new InvalidOperationException("Invalid customer");
+			}
+		}else {
+			pharmacyCustomer = new PharmacyCustomer();
+			pharmacyCustomer.setNo(String.valueOf(Math.random()));
+			pharmacyCustomer.setName(cust.getName());
+			pharmacyCustomer.setPhoneNo(cust.getPhoneNo());
+			
+			pharmacyCustomer.setCreatedBy(userService.getUser(request).getId());
+			pharmacyCustomer.setCreatedOn(dayService.getDay().getId());
+			pharmacyCustomer.setCreatedAt(dayService.getTimeStamp());
+						
+			pharmacyCustomer = pharmacyCustomerRepository.save(pharmacyCustomer);
+			pharmacyCustomer.setNo("PCST"+pharmacyCustomer.getId());
+			pharmacyCustomer = pharmacyCustomerRepository.save(pharmacyCustomer);
+		}		
+		
 		PharmacySaleOrder pharmacySaleOrder = new PharmacySaleOrder();
-		pharmacySaleOrder.setPharmacyCustomer(cust);
-		pharmacySaleOrder.setPharmacy(phar);
-		pharmacySaleOrder.setPharmacist(pharst);
+		pharmacySaleOrder.setPharmacyCustomer(pharmacyCustomer);
+		
+		Optional<Pharmacy> pharmacy_ = pharmacyRepository.findByName(phar.getName());
+		
+		pharmacySaleOrder.setPharmacy(pharmacy_.get());
+		
+		Optional<Pharmacist> pharmacist_ = pharmacistRepository.findById(pharst.getId());
+		pharmacySaleOrder.setPharmacist(pharmacist_.get());
 		
 		pharmacySaleOrder.setStatus("PENDING");
+		pharmacySaleOrder.setPaymentType("CASH");
+		
+		pharmacySaleOrder.setNo(String.valueOf(Math.random()));
 		
 		pharmacySaleOrder.setCreatedBy(userService.getUser(request).getId());
 		pharmacySaleOrder.setCreatedOn(dayService.getDay().getId());
@@ -3083,7 +3123,11 @@ public class PatientServiceImpl implements PatientService {
 		
 		pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
 		
-		return null;
+		pharmacySaleOrder.setNo("PSO/"+pharmacySaleOrder.getId());
+		
+		pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
+		
+		return pharmacySaleOrder;
 	}
 	
 	

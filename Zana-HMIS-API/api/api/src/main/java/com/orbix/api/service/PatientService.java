@@ -82,8 +82,8 @@ public interface PatientService {
 
 	
 	
-	PharmacyCustomer doRegister(PharmacyCustomer pharmacyCustomer, HttpServletRequest request);
-	PharmacySaleOrder createPharmacySaleOrder(PharmacyCustomer pharmacyCustomer, Pharmacy pharmacy, Pharmacist pharmacist, HttpServletRequest request);
+	PharmacyCustomer createPharmacyCustomer(PharmacyCustomer pharmacyCustomer, HttpServletRequest request);
+	PharmacySaleOrder savePharmacySaleOrder(PharmacyCustomer pharmacyCustomer, Pharmacy pharmacy, Pharmacist pharmacist, HttpServletRequest request);
 	
 	PharmacySaleOrderDetail savePharmacySaleOrderDetail(PharmacySaleOrderDetail detail, Optional<PharmacySaleOrder> o, HttpServletRequest request);
 }

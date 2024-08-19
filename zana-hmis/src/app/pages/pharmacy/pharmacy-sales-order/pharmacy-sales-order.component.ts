@@ -11,12 +11,13 @@ import { IConsultation } from 'src/app/domain/consultation';
 import { IMedicine } from 'src/app/domain/medicine';
 import { IPatient } from 'src/app/domain/patient';
 import { IPharmacyCustomer } from 'src/app/domain/pharmacy-customer';
-import { IPharmacySale } from 'src/app/domain/pharmacy-sale';
-import { IPharmacySaleDetail } from 'src/app/domain/pharmacy-sale-detail';
+import { IPharmacySaleOrder } from 'src/app/domain/pharmacy-sale-order';
+import { IPharmacySaleOrderDetail } from 'src/app/domain/pharmacy-sale-order-detail';
 import { ISingleObject } from 'src/app/domain/single-object';
 import { AgePipe } from 'src/app/pipes/age.pipe';
 import { SearchFilterPipe } from 'src/app/pipes/search-filter-pipe';
 import { MsgBoxService } from 'src/app/services/msg-box.service';
+import { noUndefined } from 'src/custom-packages/util';
 import { environment } from 'src/environments/environment';
 
 const API_URL = environment.apiUrl;
@@ -39,11 +40,12 @@ export class PharmacySalesOrderComponent {
 
   id : any
 
-  pharmacySale! : IPharmacySale
+  no : string = ''
+
+  pharmacySaleOrder! : IPharmacySaleOrder
 
   pharmacistId : any
 
-  pharmacyCustomers : IPharmacyCustomer[] = []
 
   pharmacyName = localStorage.getItem('selected-pharmacy-name')
 
@@ -57,20 +59,19 @@ export class PharmacySalesOrderComponent {
     private msgBox : MsgBoxService) { }
 
 
-    pharmacySaleDetailUnit        : number = 0
-    pharmacySaleDetailDosage      : string = ''
-    pharmacySaleDetailFrequency   : string = ''
-    pharmacySaleDetailRoute       : string = ''
-    pharmacySaleDetailDays        : string = ''
-    pharmacySaleDetailPrice       : number = 0
-    pharmacySaleDetailQty         : number = 0
-    pharmacySaleDetailInstructions : string = '' 
+    pharmacySaleOrderDetailUnit        : number = 0
+    pharmacySaleOrderDetailDosage      : string = ''
+    pharmacySaleOrderDetailFrequency   : string = ''
+    pharmacySaleOrderDetailRoute       : string = ''
+    pharmacySaleOrderDetailDays        : string = ''
+    pharmacySaleOrderDetailPrice       : number = 0
+    pharmacySaleOrderDetailQty         : number = 0
+    pharmacySaleOrderDetailInstructions : string = '' 
     
     
-    pharmacySaleDetails : IPharmacySaleDetail[] = []
+    pharmacySaleOrderDetails : IPharmacySaleOrderDetail[] = []
 
 
-    pharmacyCustomerId : any = null
     pharmacyCustomer! : IPharmacyCustomer
     pharmacyCustomerMode : string = 'New Customer'
 
@@ -100,6 +101,38 @@ export class PharmacySalesOrderComponent {
       }
     )
   }
+
+
+  pharmacyCustomerId : any =  null
+  pharmacyCustomerNo : string = ''
+  pharmacyCustomerName : string = ''
+  pharmacyCustomerPhone : string = ''
+  pharmacyCustomerAddress : string = ''
+  pharmacyCustomers : IPharmacyCustomer[] = []
+  async loadPharmacyCustomerLike(value : string){
+    this.medicines = []
+    if(value.length < 2){
+      return
+    }
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    await this.http.get<IPharmacyCustomer[]>(API_URL+'/medicines/load_pharmacy_customers_like?name_like='+value, options)
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.pharmacyCustomers = data!
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+      }
+    )
+  }
+
+
 
   medicineId : any =  null
   medicineCode : string = ''
@@ -155,7 +188,7 @@ export class PharmacySalesOrderComponent {
   }
 
   async getMedicineUnit(id : any){
-    this.pharmacySaleDetailUnit = 0
+    this.pharmacySaleOrderDetailUnit = 0
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
@@ -169,7 +202,7 @@ export class PharmacySalesOrderComponent {
     .then(
       data => {
         console.log(data)
-        this.pharmacySaleDetailUnit = data!
+        this.pharmacySaleOrderDetailUnit = data!
         return data
       }
     )
@@ -181,12 +214,12 @@ export class PharmacySalesOrderComponent {
     )
   }
 
-  async deletePharmacySaleDetail(pharmacySaleDetailId : any){
+  async deletePharmacySaleOrderDetail(pharmacySaleDetailId : any){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
     this.spinner.show()
-    await this.http.post<boolean>(API_URL+'/patients/delete_pharmacy_sale_detail?id='+pharmacySaleDetailId, options)
+    await this.http.post<boolean>(API_URL+'/patients/delete_pharmacy_sale_order_detail?id='+pharmacySaleDetailId, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
@@ -200,22 +233,22 @@ export class PharmacySalesOrderComponent {
         this.msgBox.showErrorMessage(error, '')
       }
     )
-    this.loadPharmacySaleDetails(this.id)
+    this.loadPharmacySaleOrderDetails(this.id)
   }
 
-  async loadPharmacySaleDetails(pharmacySaleId : any){
+  async loadPharmacySaleOrderDetails(pharmacySaleOrderId : any){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
-    this.pharmacySaleDetails = []
+    this.pharmacySaleOrderDetails = []
     this.spinner.show()
-    await this.http.get<IPharmacySaleDetail[]>(API_URL+'/patients/load_pharmacy_sale_details?pharmacy_sale_id='+pharmacySaleId, options)
+    await this.http.get<IPharmacySaleOrderDetail[]>(API_URL+'/patients/load_pharmacy_sale_order_details?pharmacy_sale_order_id='+pharmacySaleOrderId, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
       data => {
         console.log(data)
-        this.pharmacySaleDetails = data!
+        this.pharmacySaleOrderDetails = data!
       }
     )
     .catch(
@@ -226,50 +259,50 @@ export class PharmacySalesOrderComponent {
     
   }
 
-  async savePharmacySaleDetail(medicineId : string){
+  async savePharmacySaleOrderDetail(medicineId : string){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
 
-    var pharmacySaleDetail = {
+    var pharmacySaleOrderDetail = {
       medicine : {
         id : this.medicineId,
         code : this.medicineCode,
         name : this.medicineName
       },
-      dosage    : this.pharmacySaleDetailDosage,
-      frequency : this.pharmacySaleDetailFrequency,
-      route     : this.pharmacySaleDetailRoute,
-      days      : this.pharmacySaleDetailDays,
-      price     : this.pharmacySaleDetailPrice,
-      qty       : this.pharmacySaleDetailQty,
-      instructions : this.pharmacySaleDetailInstructions
+      dosage    : this.pharmacySaleOrderDetailDosage,
+      frequency : this.pharmacySaleOrderDetailFrequency,
+      route     : this.pharmacySaleOrderDetailRoute,
+      days      : this.pharmacySaleOrderDetailDays,
+      price     : this.pharmacySaleOrderDetailPrice,
+      qty       : this.pharmacySaleOrderDetailQty,
+      instructions : this.pharmacySaleOrderDetailInstructions
     }
 
-    if( pharmacySaleDetail.medicine.name === '' || 
-        pharmacySaleDetail.dosage === '' || 
-        pharmacySaleDetail.frequency === '' || 
-        pharmacySaleDetail.route === '' || 
-        pharmacySaleDetail.days === ''){
+    if( pharmacySaleOrderDetail.medicine.name === '' || 
+        pharmacySaleOrderDetail.dosage === '' || 
+        pharmacySaleOrderDetail.frequency === '' || 
+        pharmacySaleOrderDetail.route === '' || 
+        pharmacySaleOrderDetail.days === ''){
       this.msgBox.showErrorMessage3('Can not save, please fill in all the required fields')
       return
     }
 
     this.spinner.show()
-    await this.http.post<IPharmacySaleDetail>(API_URL+'/patients/save_pharmacy_sale_detail?pharmacy_sale_id='+this.id, pharmacySaleDetail, options)
+    await this.http.post<IPharmacySaleOrderDetail>(API_URL+'/patients/save_pharmacy_sale_order_detail?pharmacy_sale_order_id='+this.id, pharmacySaleOrderDetail, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
       (data) => {
-        this.loadPharmacySaleDetails(this.id)
-        this.clearPharmacySaleDetail()
+        this.loadPharmacySaleOrderDetails(this.id)
+        this.clearPharmacySaleOrderDetail()
         this.msgBox.showSuccessMessage('Sale Saved successifully')
       }
     )
     .catch(
       error => {
-        this.loadPharmacySaleDetails(this.id)
-        this.clearPharmacySaleDetail()
+        this.loadPharmacySaleOrderDetails(this.id)
+        this.clearPharmacySaleOrderDetail()
         this.msgBox.showErrorMessage(error, '')
         console.log(error)
       }
@@ -277,30 +310,87 @@ export class PharmacySalesOrderComponent {
 
   }
 
+  async savePharmacySaleOrder(){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    var pharmacySaleOrder = {
+      id: undefined,
+      pharmacyCustomer: {
+        id: this.pharmacyCustomerId,
+        no: this.pharmacyCustomerNo,
+        name: this.pharmacyCustomerName,
+        phoneNo: this.pharmacyCustomerPhone,
+        address: this.pharmacyCustomerAddress
+      },
+      status: '',
+      paymentType: 'CASH',
+      pharmacist: {id : this.pharmacistId},
+      pharmacy: {name : this.pharmacyName},
+    }
+
+    this.spinner.show()
+    await this.http.post<IPharmacySaleOrder>(API_URL+'/pharmacies/save_pharmacy_sale_order', pharmacySaleOrder, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      (data) => {
+
+        this.loadPharmacySaleOrderDetails(data!.id)
+        this.clearPharmacySaleOrderDetail()
+        this.msgBox.showSuccessMessage('Sale Saved successifully')
+      }
+    )
+    .catch(
+      error => {
+        this.loadPharmacySaleOrderDetails(this.id)
+        this.clearPharmacySaleOrderDetail()
+        this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+
+
+  }
+
+
+
+  clearPharmacyOrder(){
+    this.clearPharmacyCustomer()
+    this.id = null
+    this.no = ''
+    this.clearPharmacySaleOrderDetail()
+  }
+
 
 
 
   
 
-  clearPharmacySaleDetail(){
+  clearPharmacySaleOrderDetail(){
     this.medicineId = null
     this.medicineCode = ''
     this.medicineName = ''
 
-    this.pharmacySaleDetailUnit         = 0
-    this.pharmacySaleDetailDosage       = ''
-    this.pharmacySaleDetailFrequency    = ''
-    this.pharmacySaleDetailRoute        = ''
-    this.pharmacySaleDetailDays         = ''
-    this.pharmacySaleDetailPrice        = 0
-    this.pharmacySaleDetailQty          = 0
-    this.pharmacySaleDetailInstructions = ''
+    this.pharmacySaleOrderDetailUnit         = 0
+    this.pharmacySaleOrderDetailDosage       = ''
+    this.pharmacySaleOrderDetailFrequency    = ''
+    this.pharmacySaleOrderDetailRoute        = ''
+    this.pharmacySaleOrderDetailDays         = ''
+    this.pharmacySaleOrderDetailPrice        = 0
+    this.pharmacySaleOrderDetailQty          = 0
+    this.pharmacySaleOrderDetailInstructions = ''
 
   }
 
   clearPharmacyCustomer(){
     this.pharmacyCustomerMode = 'New Customer'
     this.pharmacyCustomerId = null
+    this.pharmacyCustomerNo = ''
+    this.pharmacyCustomerName = ''
+    this.pharmacyCustomerPhone = ''
+    this.pharmacyCustomerAddress = ''
     this.pharmacyCustomer!
   }
 

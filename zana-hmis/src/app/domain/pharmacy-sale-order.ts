@@ -1,19 +1,18 @@
+import { IPatientBill } from "./patient-bill"
 import { IPharmacist } from "./pharmacist"
 import { IPharmacy } from "./pharmacy"
 import { IPharmacyCustomer } from "./pharmacy-customer"
-import { IPharmacyCustomerBill } from "./pharmacy-customer-bill"
 
-export interface IPharmacySale {
+export interface IPharmacySaleOrder {
     id : any
 
     pharmacyCustomer : IPharmacyCustomer
 
     status          : string
-    paymentType     : string
 
-    pharmacyCustomerBill : IPharmacyCustomerBill
+    patientBill : IPatientBill
     pharmacist       : IPharmacist
-    Pharmacy          : IPharmacy
+    pharmacy          : IPharmacy
     
     created : string
 

@@ -1,9 +1,9 @@
 import { IMedicine } from "./medicine"
+import { IPatientBill } from "./patient-bill"
 import { IPharmacy } from "./pharmacy"
-import { IPharmacyCustomerBill } from "./pharmacy-customer-bill"
-import { IPharmacySale } from "./pharmacy-sale"
+import { IPharmacySaleOrder } from "./pharmacy-sale-order"
 
-export interface IPharmacySaleDetail {
+export interface IPharmacySaleOrderDetail {
     id          : any
     unit        : string
     dosage      : string
@@ -21,8 +21,8 @@ export interface IPharmacySaleDetail {
     membershipNo : string
     paymentType : string
 
-    pharmacySale    : IPharmacySale
-    pharmacyCustomerBill     : IPharmacyCustomerBill
+    pharmacySaleOrder    : IPharmacySaleOrder
+    patientBill     : IPatientBill
     medicine        : IMedicine
 
     pharmacy   : IPharmacy

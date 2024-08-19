@@ -11,7 +11,8 @@
         <div class="col-sm-12">
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading">
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-sales-order">New</button>
+                    <button class="btn btn-primary btn-outline" (click)="clearPharmacyOrder()">New</button>
+                    <button class="btn btn-primary btn-outline" (click)="savePharmacySaleOrder()">Save</button>
                     <button class="btn btn-primary btn-outline">Cancel</button>
                     <button class="btn btn-primary btn-outline">Archive</button>
                 </div>
@@ -23,11 +24,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Order#</td>
-                                        <td><span class="form-control"></span></td>
+                                        <td><span class="form-control">{{no}}</span></td>
                                     </tr>
                                     <tr>
                                         <td>Customer#</td>
-                                        <td><span class="form-control"></span></td>
+                                        <td><span class="form-control">{{pharmacyCustomerNo}}</span></td>
                                     </tr>
                                     <tr>
                                         <td>
@@ -39,11 +40,16 @@
                                                 <label class="form-control">{{pharmacyCustomerMode}}</label>
                                             </div>
                                             <div *ngIf="pharmacyCustomerMode === 'New Customer'">
-                                                <input class="form-control" placeholder="Enter Name"><br>
-                                                <input class="form-control" placeholder="Enter Phone">
+                                                <input class="form-control" [(ngModel)]="pharmacyCustomerName" placeholder="Enter Name"><br>
+                                                <input class="form-control" [(ngModel)]="pharmacyCustomerPhone" placeholder="Enter Phone">
                                             </div>
                                             <div *ngIf="pharmacyCustomerMode != 'New Customer'">
-                                                <input class="form-control" placeholder="Search By Name/Phone"><br>
+                                                <input class="form-control" [(ngModel)]="pharmacyCustomerName" (ngModelChange)="loadPharmacyCustomerLike($event)" placeholder="Search By Name/Phone"><br>
+                                                <div class="row"  *ngIf="pharmacyCustomers.length > 0">
+                                                    <select class="form-control" multiple="multiple" style="position: absolute;">
+                                                        <option *ngFor="let p of pharmacyCustomers" (click)="getPharmacyCustomer(p.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{p.name}}</option>
+                                                    </select>
+                                                </div>
                                                 <span class="form-control"></span>
                                             </div>
                                             <div>
@@ -99,9 +105,6 @@
                                             <select class="form-control" multiple="multiple" style="position: absolute;">
                                                 <option *ngFor="let med of medicines" (click)="getMedicine(med.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{med.name}}</option>
                                             </select>
-                                            <!--<div class="col-sm-12">
-                                                <button class="form-control btn btn-primary btn-outline" *ngFor="let med of medicines" (click)="getMedicine(med.id)" style="text-align: left;">{{med.name}}</button>
-                                            </div>-->
                                         </div>
                                     </div>
                                     <div class="col-sm-4"></div>
@@ -127,30 +130,30 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                                <tr *ngFor="let pharmacySaleDetail of pharmacySaleDetails">
-                                                    <td>{{pharmacySaleDetail.medicine?.name}}</td>
+                                                <tr *ngFor="let pharmacySaleOrderDetail of pharmacySaleOrderDetails">
+                                                    <td>{{pharmacySaleOrderDetail.medicine?.name}}</td>
                                                     <td></td>
-                                                    <td>{{pharmacySaleDetail.dosage}}</td>
-                                                    <td>{{pharmacySaleDetail.frequency}}</td>
-                                                    <td>{{pharmacySaleDetail.route}}</td>
-                                                    <td>{{pharmacySaleDetail.days}}</td>
-                                                    <td>{{pharmacySaleDetail.qty}}</td>
-                                                    <td style="text-align: right;"><span>{{pharmacySaleDetail?.pharmacyCustomerBill?.amount | currency:'':''}}</span></td>
+                                                    <td>{{pharmacySaleOrderDetail.dosage}}</td>
+                                                    <td>{{pharmacySaleOrderDetail.frequency}}</td>
+                                                    <td>{{pharmacySaleOrderDetail.route}}</td>
+                                                    <td>{{pharmacySaleOrderDetail.days}}</td>
+                                                    <td>{{pharmacySaleOrderDetail.qty}}</td>
+                                                    <td style="text-align: right;"><span>{{pharmacySaleOrderDetail?.patientBill?.amount | currency:'':''}}</span></td>
                                                     <td>
                                                         <!--<span *ngIf="prescription.patientBill?.status === 'COVERED' && consultation.paymentType ==='INSURANCE'">{{prescription.patientBill?.status}}</span>
                                                         <span *ngIf="prescription.patientBill?.status != 'COVERED' && consultation.paymentType !='INSURANCE'">{{prescription.patientBill?.status}}</span>
                                                         <span *ngIf="prescription.patientBill?.status != 'COVERED' && consultation.paymentType ==='INSURANCE'">{{prescription.patientBill?.status}}(NOT COVERED)</span>-->
                                                     </td>
-                                                    <td>{{pharmacySaleDetail.status}}</td>
-                                                    <td>{{pharmacySaleDetail.instructions}}</td>
-                                                    <td><button class="btn btn-danger btn-outline" (click)="deletePharmacySaleDetail(pharmacySaleDetail.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
+                                                    <td>{{pharmacySaleOrderDetail.status}}</td>
+                                                    <td>{{pharmacySaleOrderDetail.instructions}}</td>
+                                                    <td><button class="btn btn-danger btn-outline" (click)="deletePharmacySaleOrderDetail(pharmacySaleOrderDetail.id)"><i class="fa fa-trash text-danger"></i> Delete</button></td>
                                                 </tr>
                                                 <tr *ngIf="medicineName != ''">
                                                     <td>{{medicineName}}</td>
-                                                    <td><span class="form-control">{{pharmacySaleDetailUnit}}</span></td>
-                                                    <td><input type="text" class="form-control" [(ngModel)]="pharmacySaleDetailDosage"></td>
+                                                    <td><span class="form-control">{{pharmacySaleOrderDetailUnit}}</span></td>
+                                                    <td><input type="text" class="form-control" [(ngModel)]="pharmacySaleOrderDetailDosage"></td>
                                                     <td>
-                                                        <select class="form-control" [(ngModel)]="pharmacySaleDetailFrequency">
+                                                        <select class="form-control" [(ngModel)]="pharmacySaleOrderDetailFrequency">
                                                             <option></option>
                                                             <option>24 Hour</option>
                                                             <option>12 Hours</option>
@@ -167,7 +170,7 @@
                                                         </select>                                                    
                                                     </td>
                                                     <td>
-                                                        <select class="form-control" [(ngModel)]="pharmacySaleDetailRoute">
+                                                        <select class="form-control" [(ngModel)]="pharmacySaleOrderDetailRoute">
                                                             <option></option>
                                                             <option>IV</option>
                                                             <option>IM</option>
@@ -179,17 +182,17 @@
                                                             <option>Per Vaginal</option>
                                                         </select>
                                                     </td>
-                                                    <td><input type="number" class="form-control" min="0" [(ngModel)]="pharmacySaleDetailDays"></td>
-                                                    <td><input type="number" class="form-control" min="0" [(ngModel)]="pharmacySaleDetailQty"></td>
-                                                    <td><span class="form-control">{{pharmacySaleDetailPrice * pharmacySaleDetailQty | currency:'':''}}</span></td>
+                                                    <td><input type="number" class="form-control" min="0" [(ngModel)]="pharmacySaleOrderDetailDays"></td>
+                                                    <td><input type="number" class="form-control" min="0" [(ngModel)]="pharmacySaleOrderDetailQty"></td>
+                                                    <td><span class="form-control">{{pharmacySaleOrderDetailPrice * pharmacySaleOrderDetailQty | currency:'':''}}</span></td>
                                                     <td></td>
                                                     <td></td>
                                                     <td>
-                                                        <textarea class="form-control" [(ngModel)]="pharmacySaleDetailInstructions"></textarea>
+                                                        <textarea class="form-control" [(ngModel)]="pharmacySaleOrderDetailInstructions"></textarea>
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-outline" (click)="savePharmacySaleDetail(medicineId)"><i class="glyphicon glyphicon-plus-sign"></i> Add</button>
-                                                        <button class="btn btn-danger btn-outline"  (click)="clearPharmacySaleDetail()"><i class="glyphicon glyphicon-remove-sign"></i> Clear</button>
+                                                        <button class="btn btn-primary btn-outline" (click)="savePharmacySaleOrderDetail(medicineId)"><i class="glyphicon glyphicon-plus-sign"></i> Add</button>
+                                                        <button class="btn btn-danger btn-outline"  (click)="clearPharmacySaleOrderDetail()"><i class="glyphicon glyphicon-remove-sign"></i> Clear</button>
                                                     </td>
                                                 </tr>
                                             </tbody>

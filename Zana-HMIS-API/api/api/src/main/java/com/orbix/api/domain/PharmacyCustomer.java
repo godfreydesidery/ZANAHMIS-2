@@ -49,11 +49,7 @@ public class PharmacyCustomer {
 	 */
 	@NotBlank
 	private String name;
-	private String gender;
-	/**
-	 * Payment method
-	 */
-	private String paymentType = "";
+	private String gender;	
 	/**
 	 * Contact details
 	 */

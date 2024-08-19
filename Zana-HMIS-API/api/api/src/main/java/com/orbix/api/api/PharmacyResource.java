@@ -28,8 +28,10 @@ import com.orbix.api.domain.Clinic;
 import com.orbix.api.domain.Item;
 import com.orbix.api.domain.Medicine;
 import com.orbix.api.domain.Pharmacy;
+import com.orbix.api.domain.PharmacyCustomer;
 import com.orbix.api.domain.PharmacyMedicine;
 import com.orbix.api.domain.PharmacyMedicineBatch;
+import com.orbix.api.domain.PharmacySaleOrder;
 import com.orbix.api.domain.PharmacyStockCard;
 import com.orbix.api.domain.Prescription;
 import com.orbix.api.domain.PrescriptionBatch;
@@ -38,14 +40,18 @@ import com.orbix.api.domain.StoreItemBatch;
 import com.orbix.api.exceptions.InvalidOperationException;
 import com.orbix.api.exceptions.NotFoundException;
 import com.orbix.api.repositories.MedicineRepository;
+import com.orbix.api.repositories.PharmacyCustomerRepository;
 import com.orbix.api.repositories.PharmacyMedicineBatchRepository;
 import com.orbix.api.repositories.PharmacyMedicineRepository;
 import com.orbix.api.repositories.PharmacyRepository;
+import com.orbix.api.repositories.PharmacySaleOrderDetailRepository;
+import com.orbix.api.repositories.PharmacySaleOrderRepository;
 import com.orbix.api.repositories.PharmacyStockCardRepository;
 import com.orbix.api.repositories.PrescriptionBatchRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
 import com.orbix.api.service.PharmacyService;
 import com.orbix.api.service.DayService;
+import com.orbix.api.service.PatientService;
 import com.orbix.api.service.UserService;
 
 import lombok.Data;
@@ -70,6 +76,12 @@ public class PharmacyResource {
 	private final PharmacyMedicineBatchRepository pharmacyMedicineBatchRepository;
 	private final PrescriptionBatchRepository prescriptionBatchRepository;
 	private final PrescriptionRepository prescriptionRepository;
+	
+	private final PharmacyCustomerRepository pharmacyCustomerRepository;
+	private final PharmacySaleOrderRepository pharmacySaleOrderRepository;
+	private final PharmacySaleOrderDetailRepository pharmacySaleOrderDetailRepository;
+	
+	private final PatientService patientService;
 	
 
 	private final UserService userService;
@@ -212,6 +224,48 @@ public class PharmacyResource {
 		pharmacyStockCardRepository.save(pharmacyStockCard);
 		
 	}
+	
+	
+	
+	//Pharmacy sales
+	/**
+	 * 
+	 * @param request
+	 * @return
+	 */
+	
+	@GetMapping("/pharmacies/pharmacy_customers")
+	public ResponseEntity<List<PharmacyCustomer>>getPharmacyCustomers(HttpServletRequest request){
+		return ResponseEntity.ok().body(pharmacyCustomerRepository.findAll());
+	}
+	
+	@GetMapping("/medicines/load_pharmacy_customers_like")
+	public ResponseEntity<List<PharmacyCustomer>> getPharmacyCustomersNameContains(
+			@RequestParam(name = "name_like") String value,
+			HttpServletRequest request){
+		List<PharmacyCustomer> customers = new ArrayList<PharmacyCustomer>();
+		customers = pharmacyCustomerRepository.findAllByNameContaining(value);
+		return ResponseEntity.ok().body(customers);
+	}
+	
+	@GetMapping("/pharmacies/pharmacy_customers/get")
+	public ResponseEntity<PharmacyCustomer> getPharmacyCustomerById(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		return ResponseEntity.ok().body(pharmacyCustomerRepository.findById(id).get());
+	}
+	
+	
+	@PostMapping("/pharmacies/save_pharmacy_sale_order")
+	//@PreAuthorize("hasAnyAuthority('ADMIN-ACCESS')")
+	public ResponseEntity<PharmacySaleOrder>savePharmacySaleOrder(
+			@RequestBody PharmacySaleOrder pharmacySaleOrder,
+			HttpServletRequest request){
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/pharmacies/save").toUriString());
+		return ResponseEntity.created(uri).body(patientService.savePharmacySaleOrder(pharmacySaleOrder.getPharmacyCustomer(), pharmacySaleOrder.getPharmacy(), pharmacySaleOrder.getPharmacist(), request));
+	}
+	
 	
 }
 
