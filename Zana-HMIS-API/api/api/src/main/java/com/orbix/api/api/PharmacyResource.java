@@ -24,14 +24,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.orbix.api.api.accessories.Sanitizer;
+import com.orbix.api.domain.Admission;
 import com.orbix.api.domain.Clinic;
+import com.orbix.api.domain.Consultation;
 import com.orbix.api.domain.Item;
 import com.orbix.api.domain.Medicine;
+import com.orbix.api.domain.NonConsultation;
 import com.orbix.api.domain.Pharmacy;
 import com.orbix.api.domain.PharmacyCustomer;
 import com.orbix.api.domain.PharmacyMedicine;
 import com.orbix.api.domain.PharmacyMedicineBatch;
 import com.orbix.api.domain.PharmacySaleOrder;
+import com.orbix.api.domain.PharmacySaleOrderDetail;
 import com.orbix.api.domain.PharmacyStockCard;
 import com.orbix.api.domain.Prescription;
 import com.orbix.api.domain.PrescriptionBatch;
@@ -39,6 +43,7 @@ import com.orbix.api.domain.Store;
 import com.orbix.api.domain.StoreItemBatch;
 import com.orbix.api.exceptions.InvalidOperationException;
 import com.orbix.api.exceptions.NotFoundException;
+import com.orbix.api.models.PharmacySaleOrderModel;
 import com.orbix.api.repositories.MedicineRepository;
 import com.orbix.api.repositories.PharmacyCustomerRepository;
 import com.orbix.api.repositories.PharmacyMedicineBatchRepository;
@@ -234,6 +239,11 @@ public class PharmacyResource {
 	 * @return
 	 */
 	
+	@GetMapping("/pharmacies/pharmacy_sale_orders")
+	public ResponseEntity<List<PharmacySaleOrder>>getPharmacySalesOrders(HttpServletRequest request){
+		return ResponseEntity.ok().body(patientService.getPharmacySaleOrders());
+	}
+	
 	@GetMapping("/pharmacies/pharmacy_customers")
 	public ResponseEntity<List<PharmacyCustomer>>getPharmacyCustomers(HttpServletRequest request){
 		return ResponseEntity.ok().body(pharmacyCustomerRepository.findAll());
@@ -258,14 +268,52 @@ public class PharmacyResource {
 	
 	@PostMapping("/pharmacies/save_pharmacy_sale_order")
 	//@PreAuthorize("hasAnyAuthority('ADMIN-ACCESS')")
-	public ResponseEntity<PharmacySaleOrder>savePharmacySaleOrder(
+	public ResponseEntity<PharmacySaleOrderModel>savePharmacySaleOrder(
 			@RequestBody PharmacySaleOrder pharmacySaleOrder,
 			HttpServletRequest request){
 		
 		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/pharmacies/save").toUriString());
-		return ResponseEntity.created(uri).body(patientService.savePharmacySaleOrder(pharmacySaleOrder.getPharmacyCustomer(), pharmacySaleOrder.getPharmacy(), pharmacySaleOrder.getPharmacist(), request));
+		return ResponseEntity.created(uri).body(patientService.savePharmacySaleOrder(pharmacySaleOrder, request));
 	}
 	
+	
+	@PostMapping("/pharmacies/save_pharmacy_sale_order_detail")
+	public ResponseEntity<PharmacySaleOrderDetail>saveSaleOrderDetail(
+			@RequestBody PharmacySaleOrderDetail detail,
+			HttpServletRequest request){
+
+		
+		Optional<Medicine> medicine_ = medicineRepository.findById(detail.getMedicine().getId());
+		if(medicine_.isEmpty()) {
+			throw new NotFoundException("Medicine not found");
+		}
+		
+		
+		if(detail.getId() == null) {
+			detail.setCreatedBy(userService.getUser(request).getId());
+			detail.setCreatedOn(dayService.getDay().getId());
+			detail.setCreatedAt(dayService.getTimeStamp());	
+			
+			detail.setOrderedby(userService.getUser(request).getId());
+			detail.setOrderedOn(dayService.getDay().getId());
+			detail.setOrderedAt(dayService.getTimeStamp());
+		}
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/save_prescription").toUriString());
+		return ResponseEntity.created(uri).body(patientService.savePharmacySaleOrderDetail(detail, request));
+	}
+	
+	@GetMapping("/pharmacies/load_pharmacy_sale_order_details")
+	public ResponseEntity<List<PharmacySaleOrderDetail>> getPharmacySaleOrderDetailsByOrderId(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		Optional<PharmacySaleOrder> order_ = pharmacySaleOrderRepository.findById(id);
+		if(order_.isEmpty()) {
+			throw new NotFoundException("Order not found");
+		}
+		List<PharmacySaleOrderDetail> details = pharmacySaleOrderDetailRepository.findAllByPharmacySaleOrder(order_.get());
+		return ResponseEntity.ok().body(details);
+	}
 	
 }
 

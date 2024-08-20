@@ -6,6 +6,8 @@ import { IPharmacyCustomer } from "./pharmacy-customer"
 export interface IPharmacySaleOrder {
     id : any
 
+    no : string
+
     pharmacyCustomer : IPharmacyCustomer
 
     status          : string

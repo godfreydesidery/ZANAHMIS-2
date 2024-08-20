@@ -35,28 +35,12 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>SLO/10</td>
-                                    <td>CST/23</td>
-                                    <td>Godfrey D. Shirima</td>
+                                <tr *ngFor="let order of pharmacySaleOrders">
+                                    <td>{{order!.no}}</td>
+                                    <td>{{order!.pharmacyCustomer!.no}}</td>
+                                    <td>{{order!.pharmacyCustomer!.name}}</td>
                                     <td style="text-align: right;">25,000.00</td>
-                                    <td>PENDING</td>
-                                    <td><button class="btn btn-success" >Select</button></td>
-                                </tr>
-                                <tr>
-                                    <td>SLO/10</td>
-                                    <td>CST/23</td>
-                                    <td>Godfrey D. Shirima</td>
-                                    <td style="text-align: right;">25,000.00</td>
-                                    <td>PAID</td>
-                                    <td><button class="btn btn-success" >Select</button></td>
-                                </tr>
-                                <tr>
-                                    <td>SLO/10</td>
-                                    <td>CST/23</td>
-                                    <td>Godfrey D. Shirima</td>
-                                    <td style="text-align: right;">25,000.00</td>
-                                    <td>GIVEN</td>
+                                    <td>{{order!.status}}</td>
                                     <td><button class="btn btn-success" >Select</button></td>
                                 </tr>
                             </tbody>

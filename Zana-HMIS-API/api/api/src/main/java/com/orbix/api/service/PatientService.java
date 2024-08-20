@@ -37,6 +37,7 @@ import com.orbix.api.domain.Prescription;
 import com.orbix.api.domain.Procedure;
 import com.orbix.api.domain.Radiology;
 import com.orbix.api.domain.WardBed;
+import com.orbix.api.models.PharmacySaleOrderModel;
 
 /**
  * @author Godfrey
@@ -81,9 +82,11 @@ public interface PatientService {
 
 
 	
+	List<PharmacySaleOrder> getPharmacySaleOrders();
+	
 	
 	PharmacyCustomer createPharmacyCustomer(PharmacyCustomer pharmacyCustomer, HttpServletRequest request);
-	PharmacySaleOrder savePharmacySaleOrder(PharmacyCustomer pharmacyCustomer, Pharmacy pharmacy, Pharmacist pharmacist, HttpServletRequest request);
+	PharmacySaleOrderModel savePharmacySaleOrder(PharmacySaleOrder order, HttpServletRequest request);
 	
-	PharmacySaleOrderDetail savePharmacySaleOrderDetail(PharmacySaleOrderDetail detail, Optional<PharmacySaleOrder> o, HttpServletRequest request);
+	PharmacySaleOrderDetail savePharmacySaleOrderDetail(PharmacySaleOrderDetail detail, HttpServletRequest request);
 }

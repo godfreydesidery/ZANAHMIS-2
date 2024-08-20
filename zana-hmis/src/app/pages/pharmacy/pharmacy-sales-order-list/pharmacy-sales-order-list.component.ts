@@ -8,6 +8,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import { IPatient } from 'src/app/domain/patient';
+import { IPharmacySaleOrder } from 'src/app/domain/pharmacy-sale-order';
 import { AgePipe } from 'src/app/pipes/age.pipe';
 import { SearchFilterPipe } from 'src/app/pipes/search-filter-pipe';
 import { MsgBoxService } from 'src/app/services/msg-box.service';
@@ -34,6 +35,8 @@ export class PharmacySalesOrderListComponent {
 
   patients : IPatient[] = []
 
+  pharmacySaleOrders : IPharmacySaleOrder[] = []
+
   pharmacyName = localStorage.getItem('selected-pharmacy-name')
 
   filterRecords : string = ''
@@ -47,6 +50,7 @@ export class PharmacySalesOrderListComponent {
 
   async ngOnInit(): Promise<void> {
     await this.loadPharmacist()
+    await this.loadPharmacySaleOrders()
   }
 
   async loadPharmacist(){    
@@ -69,4 +73,30 @@ export class PharmacySalesOrderListComponent {
       }
     )
   }
+
+
+  async loadPharmacySaleOrders(){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.pharmacySaleOrders = []
+    this.spinner.show()
+    await this.http.get<IPharmacySaleOrder[]>(API_URL+'/pharmacies/pharmacy_sale_orders', options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.pharmacySaleOrders = data!
+      }
+    )
+    .catch(
+      (error) => {
+        this.msgBox.showErrorMessage(error, 'Could not load sales')
+      }
+    )
+    
+  }
+
+
 }

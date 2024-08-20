@@ -85,6 +85,7 @@ import com.orbix.api.domain.WardTypeInsurancePlan;
 import com.orbix.api.exceptions.InvalidEntryException;
 import com.orbix.api.exceptions.InvalidOperationException;
 import com.orbix.api.exceptions.NotFoundException;
+import com.orbix.api.models.PharmacySaleOrderModel;
 import com.orbix.api.repositories.AdmissionBedRepository;
 import com.orbix.api.repositories.AdmissionRepository;
 import com.orbix.api.repositories.ClinicianRepository;
@@ -3013,8 +3014,15 @@ public class PatientServiceImpl implements PatientService {
 	
 	
 	
-	
-	
+	@Override
+	public List<PharmacySaleOrder> getPharmacySaleOrders(){
+		List<String> statuses = new ArrayList<>();
+		statuses.add("PENDING");
+		statuses.add("");
+		List<PharmacySaleOrder> orders = pharmacySaleOrderRepository.findAllByStatusIn(statuses);
+		
+		return orders;
+	};
 	
 	
 	@Override
@@ -3044,7 +3052,7 @@ public class PatientServiceImpl implements PatientService {
 	
 	
 	@Override
-	public PharmacySaleOrder savePharmacySaleOrder(PharmacyCustomer cust, Pharmacy phar, Pharmacist pharst, HttpServletRequest request) {
+	public PharmacySaleOrderModel savePharmacySaleOrder(PharmacySaleOrder order, HttpServletRequest request) {
 		
 		/**
 		 * Create a general patient
@@ -3082,16 +3090,16 @@ public class PatientServiceImpl implements PatientService {
 		}
 		
 		PharmacyCustomer pharmacyCustomer;
-		if(cust.getId() != null) {
-			pharmacyCustomer = pharmacyCustomerRepository.findById(cust.getId()).get();
-			if(!pharmacyCustomer.getNo().equals(cust.getNo())) {
+		if(order.getPharmacyCustomer().getId() != null) {
+			pharmacyCustomer = pharmacyCustomerRepository.findById(order.getPharmacyCustomer().getId()).get();
+			if(!pharmacyCustomer.getNo().equals(order.getPharmacyCustomer().getNo())) {
 				throw new InvalidOperationException("Invalid customer");
 			}
 		}else {
 			pharmacyCustomer = new PharmacyCustomer();
 			pharmacyCustomer.setNo(String.valueOf(Math.random()));
-			pharmacyCustomer.setName(cust.getName());
-			pharmacyCustomer.setPhoneNo(cust.getPhoneNo());
+			pharmacyCustomer.setName(order.getPharmacyCustomer().getName());
+			pharmacyCustomer.setPhoneNo(order.getPharmacyCustomer().getPhoneNo());
 			
 			pharmacyCustomer.setCreatedBy(userService.getUser(request).getId());
 			pharmacyCustomer.setCreatedOn(dayService.getDay().getId());
@@ -3100,41 +3108,73 @@ public class PatientServiceImpl implements PatientService {
 			pharmacyCustomer = pharmacyCustomerRepository.save(pharmacyCustomer);
 			pharmacyCustomer.setNo("PCST"+pharmacyCustomer.getId());
 			pharmacyCustomer = pharmacyCustomerRepository.save(pharmacyCustomer);
-		}		
+		}
 		
-		PharmacySaleOrder pharmacySaleOrder = new PharmacySaleOrder();
-		pharmacySaleOrder.setPharmacyCustomer(pharmacyCustomer);
+		PharmacySaleOrder pharmacySaleOrder;
 		
-		Optional<Pharmacy> pharmacy_ = pharmacyRepository.findByName(phar.getName());
+		if(order.getId() != null) {
+			Optional<PharmacySaleOrder> pharmacySaleOrder_ = pharmacySaleOrderRepository.findById(order.getId());
+			if(pharmacySaleOrder_.isEmpty()) {
+				throw new NotFoundException("Order not found");
+			}
+			
+			pharmacySaleOrder = pharmacySaleOrder_.get();
+			
+			pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
+			
+		}else {
+			
+			pharmacySaleOrder = new PharmacySaleOrder();
+			pharmacySaleOrder.setPharmacyCustomer(pharmacyCustomer);
+			
+			Optional<Pharmacy> pharmacy_ = pharmacyRepository.findByName(order.getPharmacy().getName());
+			
+			pharmacySaleOrder.setPharmacy(pharmacy_.get());
+			
+			Optional<Pharmacist> pharmacist_ = pharmacistRepository.findById(order.getPharmacist().getId());
+			pharmacySaleOrder.setPharmacist(pharmacist_.get());
+			
+			pharmacySaleOrder.setStatus("PENDING");
+			pharmacySaleOrder.setPaymentType("CASH");
+			
+			pharmacySaleOrder.setNo(String.valueOf(Math.random()));
+			
+			pharmacySaleOrder.setCreatedBy(userService.getUser(request).getId());
+			pharmacySaleOrder.setCreatedOn(dayService.getDay().getId());
+			pharmacySaleOrder.setCreatedAt(dayService.getTimeStamp());
+			
+			pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
+			
+			pharmacySaleOrder.setNo("PSO/"+pharmacySaleOrder.getId());
+			
+			pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
+		}
 		
-		pharmacySaleOrder.setPharmacy(pharmacy_.get());
+		PharmacySaleOrderModel pharmacySaleOrderModel = new PharmacySaleOrderModel();
 		
-		Optional<Pharmacist> pharmacist_ = pharmacistRepository.findById(pharst.getId());
-		pharmacySaleOrder.setPharmacist(pharmacist_.get());
+		pharmacySaleOrderModel.setId(pharmacySaleOrder.getId());
+		pharmacySaleOrderModel.setNo(pharmacySaleOrder.getNo());
+		pharmacySaleOrderModel.setPaymentType(pharmacySaleOrder.getPaymentType());
+		pharmacySaleOrderModel.setStatus(pharmacySaleOrder.getStatus());
+		pharmacySaleOrderModel.setPharmacy(pharmacySaleOrder.getPharmacy());
+		pharmacySaleOrderModel.setPharmacist(pharmacySaleOrder.getPharmacist());
+		pharmacySaleOrderModel.setPharmacyCustomer(pharmacySaleOrder.getPharmacyCustomer());
 		
-		pharmacySaleOrder.setStatus("PENDING");
-		pharmacySaleOrder.setPaymentType("CASH");
+		if(pharmacySaleOrder.getCreatedAt() != null) {
+			pharmacySaleOrderModel.setCreated(pharmacySaleOrder.getCreatedAt().toString() + " " + userService.getNicknameByUserId(pharmacySaleOrder.getCreatedBy()));
+		}else {
+			pharmacySaleOrderModel.setCreated("");
+		}
 		
-		pharmacySaleOrder.setNo(String.valueOf(Math.random()));
+		return pharmacySaleOrderModel;
 		
-		pharmacySaleOrder.setCreatedBy(userService.getUser(request).getId());
-		pharmacySaleOrder.setCreatedOn(dayService.getDay().getId());
-		pharmacySaleOrder.setCreatedAt(dayService.getTimeStamp());
-		
-		pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
-		
-		pharmacySaleOrder.setNo("PSO/"+pharmacySaleOrder.getId());
-		
-		pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
-		
-		return pharmacySaleOrder;
 	}
 	
 	
 	
 	
 	@Override
-	public PharmacySaleOrderDetail savePharmacySaleOrderDetail(PharmacySaleOrderDetail detail, Optional<PharmacySaleOrder> ord, HttpServletRequest request) {
+	public PharmacySaleOrderDetail savePharmacySaleOrderDetail(PharmacySaleOrderDetail detail, HttpServletRequest request) {
 		Optional<Medicine> md = medicineRepository.findByName(detail.getMedicine().getName());
 		
 		Optional<Patient> patient_ = patientRepository.findByNo("GENERAL");
@@ -3142,13 +3182,16 @@ public class PatientServiceImpl implements PatientService {
 		if(!md.isPresent()) {
 			throw new NotFoundException("Medicine not found");
 		}
-		if(ord.isPresent()) {
+		
+		Optional<PharmacySaleOrder> order_ = pharmacySaleOrderRepository.findById(detail.getPharmacySaleOrder().getId());
+		
+		if(order_.isEmpty()) {
 			throw new InvalidOperationException("Could not save, no order available");
 		}		
 		
-		if(ord.isPresent()) {
-			detail.setPharmacySaleOrder(ord.get());
-			detail.setPharmacist(ord.get().getPharmacist());
+		if(order_.isPresent()) {
+			detail.setPharmacySaleOrder(order_.get());
+			detail.setPharmacist(order_.get().getPharmacist());
 		}
 		
 		detail.setMedicine(md.get());

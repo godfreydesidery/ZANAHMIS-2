@@ -11,6 +11,7 @@
         <div class="col-sm-12">
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading">
+                    <button class="btn btn-primary btn-outline" (click)="loadPharmacySaleOrders()" data-toggle="modal" data-target="#list-modal"><i class="glyphicon glyphicon-list"></i> List</button>
                     <button class="btn btn-primary btn-outline" (click)="clearPharmacyOrder()">New</button>
                     <button class="btn btn-primary btn-outline" (click)="savePharmacySaleOrder()">Save</button>
                     <button class="btn btn-primary btn-outline">Cancel</button>
@@ -23,6 +24,7 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
+                                        <input type="hidden" [(ngModel)]="id">
                                         <td>Order#</td>
                                         <td><span class="form-control">{{no}}</span></td>
                                     </tr>
@@ -45,16 +47,15 @@
                                             </div>
                                             <div *ngIf="pharmacyCustomerMode != 'New Customer'">
                                                 <input class="form-control" [(ngModel)]="pharmacyCustomerName" (ngModelChange)="loadPharmacyCustomerLike($event)" placeholder="Search By Name/Phone"><br>
-                                                <div class="row"  *ngIf="pharmacyCustomers.length > 0">
+                                                <div class="row"  *ngIf="pharmacyCustomers.length > 0 && pharmacyCustomerName != ''">
                                                     <select class="form-control" multiple="multiple" style="position: absolute;">
                                                         <option *ngFor="let p of pharmacyCustomers" (click)="getPharmacyCustomer(p.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{p.name}}</option>
                                                     </select>
                                                 </div>
-                                                <span class="form-control"></span>
+                                                <span class="form-control">{{pharmacyCustomerPhone}}</span>
                                             </div>
                                             <div>
-                                                <br>
-                                                <button class="btn btn-primary pull-right">Update</button>
+                                                <!--<button class="btn btn-primary pull-right">Update</button>-->
                                             </div>
                                         </td>
                                     </tr>
@@ -68,11 +69,11 @@
                                 <tbody>
                                     <tr>
                                         <td>Status</td>
-                                        <td>PENDING</td>
+                                        <td>{{status}}</td>
                                     </tr>
                                     <tr>
                                         <td>Created</td>
-                                        <td>2024-07-30 12:01:50 Hamida A Mwaluko</td>
+                                        <td>{{created}}</td>
                                     </tr>
                                     <tr>
                                         <td>Approved</td>
@@ -92,7 +93,7 @@
 
                         
 
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" *ngIf="id != null">
                             <h4 class="text-primary"><b>Medications</b></h4>
                             <div class="jumbotron jumbotron-fluid"> 
                                 <div class="row">
@@ -222,3 +223,57 @@
     </div>
      
 </section> <!-- /.content -->
+
+
+
+
+<!-- Modal success -->
+<div class="modal fade modal-success" id="list-modal" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-lg" role="document" style="width: 75%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title"></h2>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control pull-right" [(ngModel)]="filterRecords" placeholder="Search..." style="max-width: 8cm;">
+                    </div>
+                </div>
+                <br>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="success">
+                        <tr>
+                            <th>Order#</th>
+                            <th>Customer#</th>
+                            <th>Name</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of pharmacySaleOrders | searchFilter : filterRecords">
+                                <td>{{order!.no}}</td>
+                                <td>{{order!.pharmacyCustomer!.no}}</td>
+                                <td>{{order!.pharmacyCustomer!.name}}</td>
+                                <td style="text-align: right;">25,000.00</td>
+                                <td>{{order!.status}}</td>
+                                <td><button class="btn btn-success" >Select</button></td>
+                            </tr>
+                        </tbody>
+                    </table>    
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
