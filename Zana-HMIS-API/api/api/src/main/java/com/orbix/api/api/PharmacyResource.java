@@ -244,6 +244,20 @@ public class PharmacyResource {
 		return ResponseEntity.ok().body(patientService.getPharmacySaleOrders());
 	}
 	
+	@GetMapping("/pharmacies/pharmacy_sale_orders/get")
+	public ResponseEntity<PharmacySaleOrderModel>getPharmacySalesOrderById(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		return ResponseEntity.ok().body(patientService.getPharmacySaleOrderById(id));
+	}
+	
+	@GetMapping("/pharmacies/pharmacy_sale_orders/cancel")
+	public ResponseEntity<PharmacySaleOrderModel>cancelPharmacySalesOrderById(
+			@RequestParam(name = "id") Long id,
+			HttpServletRequest request){
+		return ResponseEntity.ok().body(patientService.cancelPharmacySaleOrderById(id, request));
+	}
+	
 	@GetMapping("/pharmacies/pharmacy_customers")
 	public ResponseEntity<List<PharmacyCustomer>>getPharmacyCustomers(HttpServletRequest request){
 		return ResponseEntity.ok().body(pharmacyCustomerRepository.findAll());

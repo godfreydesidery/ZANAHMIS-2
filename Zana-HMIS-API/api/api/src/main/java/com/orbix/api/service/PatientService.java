@@ -83,6 +83,9 @@ public interface PatientService {
 
 	
 	List<PharmacySaleOrder> getPharmacySaleOrders();
+	PharmacySaleOrderModel getPharmacySaleOrderById(Long id);
+	
+	PharmacySaleOrderModel cancelPharmacySaleOrderById(Long id, HttpServletRequest request);
 	
 	
 	PharmacyCustomer createPharmacyCustomer(PharmacyCustomer pharmacyCustomer, HttpServletRequest request);

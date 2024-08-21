@@ -13,8 +13,7 @@
                 <div class="panel-heading">
                     <button class="btn btn-primary btn-outline" (click)="loadPharmacySaleOrders()" data-toggle="modal" data-target="#list-modal"><i class="glyphicon glyphicon-list"></i> List</button>
                     <button class="btn btn-primary btn-outline" (click)="clearPharmacyOrder()">New</button>
-                    <button class="btn btn-primary btn-outline" (click)="savePharmacySaleOrder()">Save</button>
-                    <button class="btn btn-primary btn-outline">Cancel</button>
+                    <button class="btn btn-primary btn-outline" (click)="cancelPharmacySaleOrder(id)">Cancel</button>
                     <button class="btn btn-primary btn-outline">Archive</button>
                 </div>
                 <div class="panel-body">
@@ -54,9 +53,13 @@
                                                 </div>
                                                 <span class="form-control">{{pharmacyCustomerPhone}}</span>
                                             </div>
-                                            <div>
-                                                <!--<button class="btn btn-primary pull-right">Update</button>-->
-                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <button class="btn btn-primary form-control" (click)="savePharmacySaleOrder()" *ngIf="id === null">Save Order</button>
+                                            <button class="btn btn-primary form-control" (click)="savePharmacySaleOrder()" *ngIf="id != null">Update Order</button>
                                         </td>
                                     </tr>
 
@@ -77,7 +80,11 @@
                                     </tr>
                                     <tr>
                                         <td>Approved</td>
-                                        <td></td>
+                                        <td>{{approved}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Canceled</td>
+                                        <td>{{canceled}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -140,7 +147,7 @@
                                                     <td>{{pharmacySaleOrderDetail.days}}</td>
                                                     <td>{{pharmacySaleOrderDetail.qty}}</td>
                                                     <td style="text-align: right;"><span>{{pharmacySaleOrderDetail?.patientBill?.amount | currency:'':''}}</span></td>
-                                                    <td>
+                                                    <td>{{pharmacySaleOrderDetail.patientBill?.status}}
                                                         <!--<span *ngIf="prescription.patientBill?.status === 'COVERED' && consultation.paymentType ==='INSURANCE'">{{prescription.patientBill?.status}}</span>
                                                         <span *ngIf="prescription.patientBill?.status != 'COVERED' && consultation.paymentType !='INSURANCE'">{{prescription.patientBill?.status}}</span>
                                                         <span *ngIf="prescription.patientBill?.status != 'COVERED' && consultation.paymentType ==='INSURANCE'">{{prescription.patientBill?.status}}(NOT COVERED)</span>-->
@@ -200,7 +207,7 @@
                                         </table>    
                                     </div>
                                 </div>
-                                <button class="btn btn-success" style="margin-left: 30px;">Pay</button>
+                                <button class="btn btn-success" (click)="calculateTotal()" data-toggle="modal" data-target="#confirm-payment-modal" style="margin-left: 30px;">Pay</button>
                             </div>
                         </div>
 
@@ -264,7 +271,7 @@
                                 <td>{{order!.pharmacyCustomer!.name}}</td>
                                 <td style="text-align: right;">25,000.00</td>
                                 <td>{{order!.status}}</td>
-                                <td><button class="btn btn-success" >Select</button></td>
+                                <td><button class="btn btn-success" (click)="getPharmacySaleOrder(order.id)" data-dismiss="modal">Select</button></td>
                             </tr>
                         </tbody>
                     </table>    
@@ -273,6 +280,51 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Modal success -->
+<div class="modal fade modal-success" id="confirm-payment-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title">Confirm Payment</h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Total Amount</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="form-control" style="text-align: right;"><b>{{total | currency:'':''}}</b></span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Amount Received</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" [(ngModel)]="amountReceived" style="text-align: center;">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span>Change</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="form-control" style="text-align: right;"><b>{{amountReceived - total | currency:'':''}}</b></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" *ngIf="amountReceived - total >= 0" (click)="confirmBillsPayment()" data-dismiss="modal">Confirm</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

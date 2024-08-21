@@ -35,6 +35,9 @@ import com.orbix.api.domain.PatientInvoice;
 import com.orbix.api.domain.PatientInvoiceDetail;
 import com.orbix.api.domain.PatientPayment;
 import com.orbix.api.domain.PatientPaymentDetail;
+import com.orbix.api.domain.PharmacyCustomer;
+import com.orbix.api.domain.PharmacySaleOrder;
+import com.orbix.api.domain.PharmacySaleOrderDetail;
 import com.orbix.api.domain.Prescription;
 import com.orbix.api.domain.Procedure;
 import com.orbix.api.domain.Radiology;
@@ -55,6 +58,9 @@ import com.orbix.api.repositories.PatientInvoiceRepository;
 import com.orbix.api.repositories.PatientPaymentDetailRepository;
 import com.orbix.api.repositories.PatientPaymentRepository;
 import com.orbix.api.repositories.PatientRepository;
+import com.orbix.api.repositories.PharmacyCustomerRepository;
+import com.orbix.api.repositories.PharmacySaleOrderDetailRepository;
+import com.orbix.api.repositories.PharmacySaleOrderRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
 import com.orbix.api.repositories.ProcedureRepository;
 import com.orbix.api.repositories.RadiologyRepository;
@@ -101,6 +107,10 @@ public class PatientBillResource {
 	private final DayService dayService;
 	
 	private final CollectionRepository collectionRepository;
+	
+	private final PharmacyCustomerRepository pharmacyCustomerRepository;
+	private final PharmacySaleOrderRepository pharmacySaleOrderRepository;
+	private final PharmacySaleOrderDetailRepository pharmacySaleOrderDetailRepository;
 	
 	
 	@GetMapping("/bills/get_registration_bill")
@@ -274,6 +284,9 @@ public class PatientBillResource {
 		
 		payment = patientPaymentRepository.save(payment);
 		
+		boolean isPharmacySaleOrder = false;
+		PharmacySaleOrder pharmacySaleOrder = new PharmacySaleOrder();
+		
 		for(PatientBill bill : bills) {
 			Optional<PatientBill> b = patientBillRepository.findById(bill.getId());
 			if(!b.isPresent()) {
@@ -281,6 +294,12 @@ public class PatientBillResource {
 			}
 			if(!(b.get().getStatus().equals("UNPAID") || b.get().getStatus().equals("VERIFIED"))) {
 				throw new InvalidOperationException("One or more bills have been paid/covered/canceled. Only unpaid or verified bills can be paid");
+			}
+			
+			Optional<PharmacySaleOrderDetail> detail_ = pharmacySaleOrderDetailRepository.findByPatientBill(bill);
+			if(detail_.isPresent() && isPharmacySaleOrder == false) {
+				isPharmacySaleOrder = true;
+				pharmacySaleOrder = detail_.get().getPharmacySaleOrder();
 			}
 			if(b.get().getStatus().equals("UNPAID") || b.get().getStatus().equals("VERIFIED")) {
 				b.get().setBalance(0);
@@ -346,6 +365,16 @@ public class PatientBillResource {
 				}
 			}
 		}
+		
+		if(isPharmacySaleOrder == true) {
+			pharmacySaleOrder.setStatus("APPROVED");
+			pharmacySaleOrder.setApprovedBy(userService.getUser(request).getId());
+			pharmacySaleOrder.setApprovedOn(dayService.getDay().getId());
+			pharmacySaleOrder.setApprovedAt(dayService.getTimeStamp());
+			
+			pharmacySaleOrderRepository.save(pharmacySaleOrder);
+		}
+		
 		if(amount != totalAmount) {
 			throw new InvalidOperationException("Could not confirm payment. Insufficient payment/ amount mismatch");
 		}		
@@ -547,6 +576,33 @@ public class PatientBillResource {
 			}
 		}
 		
+		return ResponseEntity.ok().body(bills);
+	}
+	
+	
+	@GetMapping("/bills/get_pharmacy_sale_order_bills")
+	public ResponseEntity<List<PatientBill>> getPharmacySaleOrderBills(
+			@RequestParam(name = "order_id") Long orderId,
+			HttpServletRequest request){
+		Optional<PharmacySaleOrder> order_ = pharmacySaleOrderRepository.findById(orderId);
+		if(order_.isEmpty()) {
+			throw new NotFoundException("Order not found");
+		}
+		
+		if(!order_.get().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Not a pending order");
+		}
+		
+		List<String> statuses = new ArrayList<>();
+		statuses.add("PENDING");
+		List<PharmacySaleOrderDetail> pharmacySaleOrderDetails = new ArrayList<>();
+		List<PatientBill> bills = new ArrayList<>();
+					
+		for(PharmacySaleOrderDetail detail : pharmacySaleOrderDetails) {
+			if(detail.getPatientBill().getStatus().equals("UNPAID")) {
+				bills.add(detail.getPatientBill());
+			}
+		}		
 		return ResponseEntity.ok().body(bills);
 	}
 	

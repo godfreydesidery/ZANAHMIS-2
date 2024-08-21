@@ -10,15 +10,19 @@ import { AuthService } from 'src/app/auth.service';
 import { IConsultation } from 'src/app/domain/consultation';
 import { IMedicine } from 'src/app/domain/medicine';
 import { IPatient } from 'src/app/domain/patient';
+import { IPatientBill } from 'src/app/domain/patient-bill';
 import { IPharmacyCustomer } from 'src/app/domain/pharmacy-customer';
 import { IPharmacySaleOrder } from 'src/app/domain/pharmacy-sale-order';
 import { IPharmacySaleOrderDetail } from 'src/app/domain/pharmacy-sale-order-detail';
+import { ReceiptItem } from 'src/app/domain/receipt-item';
 import { ISingleObject } from 'src/app/domain/single-object';
 import { AgePipe } from 'src/app/pipes/age.pipe';
 import { SearchFilterPipe } from 'src/app/pipes/search-filter-pipe';
 import { MsgBoxService } from 'src/app/services/msg-box.service';
 import { noUndefined } from 'src/custom-packages/util';
 import { environment } from 'src/environments/environment';
+import { IBill } from '../../payments/lab-test-payment/lab-test-payment.component';
+import { PharmacyPosReceiptService } from 'src/app/services/pharmacy-pos-receipt.service';
 
 const API_URL = environment.apiUrl;
 
@@ -38,7 +42,7 @@ const API_URL = environment.apiUrl;
 })
 export class PharmacySalesOrderComponent {
 
-  id : any
+  id : any = null
 
   no : string = ''
 
@@ -49,6 +53,8 @@ export class PharmacySalesOrderComponent {
   status : string = ''
 
   created : string = ''
+  approved : string = ''
+  canceled : string = ''
 
   pharmacistId : any
 
@@ -57,12 +63,18 @@ export class PharmacySalesOrderComponent {
 
   filterRecords : string = ''
 
+
+  pharmacySaleBills : IPatientBill[] = []
+
+  amountReceived : number = 0
+
   constructor(private auth : AuthService,
     private http :HttpClient,
     private modalService: NgbModal,
     private spinner : NgxSpinnerService,
     private router : Router,
-    private msgBox : MsgBoxService) { }
+    private msgBox : MsgBoxService,
+    private printer : PharmacyPosReceiptService) { }
 
 
     pharmacySaleOrderDetailUnit        : number = 0
@@ -358,7 +370,11 @@ export class PharmacySalesOrderComponent {
         this.pharmacyCustomerName = data!.pharmacyCustomer!.name
         this.pharmacyCustomerPhone = data!.pharmacyCustomer!.phoneNo
 
-        this.loadPharmacySaleOrderDetails(data!.id)
+        this.pharmacySaleOrderDetails = data!.pharmacySaleOrderDetails
+
+        this.pharmacySaleOrder = data!
+
+        //this.loadPharmacySaleOrderDetails(data!.id)
         this.clearPharmacySaleOrderDetail()
         this.msgBox.showSuccessMessage('Sale Saved successifully')
         
@@ -384,6 +400,8 @@ export class PharmacySalesOrderComponent {
     this.no = ''
     this.status = ''
     this.created = ''
+    this.approved = ''
+    this.canceled = ''
     this.clearPharmacySaleOrderDetail()
   }
 
@@ -455,6 +473,85 @@ export class PharmacySalesOrderComponent {
   }
 
 
+  async getPharmacySaleOrder(id : any){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.pharmacyCustomers = []
+    this.spinner.show()
+    await this.http.get<IPharmacySaleOrder>(API_URL+'/pharmacies/pharmacy_sale_orders/get?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      async (data) => {
+        this.id = data?.id
+        this.no = data!.no
+        this.status = data!.status
+        this.pharmacyCustomerId = data!.pharmacyCustomer!.id
+        this.pharmacyCustomerNo = data!.pharmacyCustomer!.no
+        this.pharmacyCustomerName = data!.pharmacyCustomer!.name
+        this.pharmacyCustomerPhone = data!.pharmacyCustomer!.phoneNo
+        this.pharmacyCustomerMode = 'Existing Customer'
+
+        this.pharmacySaleOrderDetails = data!.pharmacySaleOrderDetails
+
+        this.created = data!.created
+        this.approved = data!.approved
+        this.canceled = data!.canceled
+
+        this.pharmacySaleOrder = data!
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+  }
+
+  async cancelPharmacySaleOrder(id : any){
+
+    if(!(await this.msgBox.showConfirmMessageDialog('Are you sure you want to cancel this order?', 'Order will be canceled and rendered unusable.', 'question', 'Yes, Cancel', 'No, Do not cancel'))){
+      return
+    }
+
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.pharmacyCustomers = []
+    this.spinner.show()
+    await this.http.get<IPharmacySaleOrder>(API_URL+'/pharmacies/pharmacy_sale_orders/cancel?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      async (data) => {
+        this.id = data?.id
+        this.no = data!.no
+        this.status = data!.status
+        this.pharmacyCustomerId = data!.pharmacyCustomer!.id
+        this.pharmacyCustomerNo = data!.pharmacyCustomer!.no
+        this.pharmacyCustomerName = data!.pharmacyCustomer!.name
+        this.pharmacyCustomerPhone = data!.pharmacyCustomer!.phoneNo
+        this.pharmacyCustomerMode = 'Existing Customer'
+
+        this.pharmacySaleOrderDetails = data!.pharmacySaleOrderDetails
+
+        this.created = data!.created
+        this.approved = data!.approved
+        this.canceled = data!.canceled
+        console.log(data)
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+  }
+
+
   async loadPharmacySaleOrders(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -477,4 +574,116 @@ export class PharmacySalesOrderComponent {
     )
     
   }
+
+
+
+
+
+
+
+  total : number = 0
+  async loadPharmacySalesBills(){
+    this.pharmacySaleBills = []
+    this.total = 0
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    this.spinner.show()
+    await this.http.get<IPatientBill[]>(API_URL+'/bills/get_pharmacy_sale_order_bills?order_id='+this.id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.pharmacySaleBills = data! 
+        this.pharmacySaleBills.forEach(element => {
+          this.total = this.total + element.amount
+        })      
+      }
+    )
+    .catch(
+      error => {
+        console.log(error)
+        this.msgBox.showErrorMessage(error, 'Could not load pharmacy sales bills')
+      }
+    )
+  }
+
+  
+
+  billsToPrint : IBill[] = []
+  async confirmBillsPayment(){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+
+    var bills : IPatientBill[] = []
+    
+    /**
+     * Add medicine bills
+     */
+
+    this.pharmacySaleOrderDetails.forEach(element => {
+      bills.push(element.patientBill)
+    })
+
+    this.billsToPrint = bills
+    console.log(bills)
+
+    this.spinner.show()
+    await this.http.post<IPatientBill>(API_URL+'/bills/confirm_bills_payment?total_amount='+this.total, bills, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      data => {
+        console.log(data)
+        this.msgBox.showSuccessMessage('Payment successiful')
+        
+        this.printReceipt()
+
+        this.getPharmacySaleOrder(this.id)
+        
+      }
+    )
+    .catch(
+      error => {
+        console.log(error)
+        this.msgBox.showErrorMessage(error, 'Could not confirm payment')
+      }
+    )
+  }
+
+  printReceipt(){
+    var items : ReceiptItem[] = []
+    var item : ReceiptItem
+
+    this.billsToPrint.forEach(element => {
+      item = new ReceiptItem()
+      item.code = element.id
+      item.name = element.description
+      item.amount = element.amount
+      item.qty = element.qty
+      items.push(item)
+    })
+
+    
+
+    this.printer.print(items, 'NA', 0, this.pharmacySaleOrder.pharmacyCustomer)
+
+  }
+
+
+
+
+calculateTotal(){
+  this.total = 0
+  this.pharmacySaleOrderDetails.forEach(element => {
+    this.total = this.total + element.patientBill.amount
+  })
+}
+
+
+
+
 }

@@ -1,6 +1,7 @@
 package com.orbix.api.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,10 +11,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -73,4 +78,22 @@ public class PharmacySaleOrder {
 	@Column(name = "created_on_day_id", nullable = false , updatable = false)
     private Long createdOn;
 	private LocalDateTime createdAt = LocalDateTime.now();
+	
+	@Column(name = "approved_by_user_id", nullable = true , updatable = true)
+    private Long approvedBy;
+	@Column(name = "approved_on_day_id", nullable = true , updatable = true)
+    private Long approvedOn;
+	private LocalDateTime approvedAt;
+	
+	@Column(name = "canceled_by_user_id", nullable = true , updatable = true)
+    private Long canceledBy;
+	@Column(name = "canceled_on_day_id", nullable = true , updatable = true)
+    private Long canceledOn;
+	private LocalDateTime canceledAt;
+	
+	@OneToMany(targetEntity = PharmacySaleOrderDetail.class, mappedBy = "pharmacySaleOrder", fetch = FetchType.EAGER, orphanRemoval = true)
+    @Valid
+    @JsonIgnoreProperties("pharmacySaleOrder")
+	@Fetch(FetchMode.SUBSELECT)
+    private List<PharmacySaleOrderDetail> pharmacySaleOrderDetails;
 }

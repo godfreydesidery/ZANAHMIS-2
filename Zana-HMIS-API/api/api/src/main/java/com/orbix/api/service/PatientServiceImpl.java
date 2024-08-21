@@ -3018,12 +3018,102 @@ public class PatientServiceImpl implements PatientService {
 	public List<PharmacySaleOrder> getPharmacySaleOrders(){
 		List<String> statuses = new ArrayList<>();
 		statuses.add("PENDING");
-		statuses.add("");
+		statuses.add("APPROVED");
 		List<PharmacySaleOrder> orders = pharmacySaleOrderRepository.findAllByStatusIn(statuses);
 		
 		return orders;
 	};
 	
+	@Override
+	public PharmacySaleOrderModel getPharmacySaleOrderById(Long id) {
+		Optional<PharmacySaleOrder> order_ = pharmacySaleOrderRepository.findById(id);
+		if(order_.isEmpty()) {
+			throw new NotFoundException("Order not found");
+		}
+		
+		PharmacySaleOrderModel model = new PharmacySaleOrderModel();
+		
+		model.setId(order_.get().getId());
+		model.setNo(order_.get().getNo());
+		model.setPaymentType(order_.get().getPaymentType());
+		model.setPharmacy(order_.get().getPharmacy());
+		model.setPharmacist(order_.get().getPharmacist());
+		model.setPharmacyCustomer(order_.get().getPharmacyCustomer());
+		model.setStatus(order_.get().getStatus());
+		
+		model.setPharmacySaleOrderDetails(order_.get().getPharmacySaleOrderDetails());
+		
+		if(order_.get().getCreatedAt() != null) {
+			model.setCreated(order_.get().getCreatedAt().toString() + " " + userService.getNicknameByUserId(order_.get().getCreatedBy()));
+		}else {
+			model.setCreated("");
+		}
+		
+		if(order_.get().getApprovedAt() != null) {
+			model.setApproved(order_.get().getApprovedAt().toString() + " " + userService.getNicknameByUserId(order_.get().getApprovedBy()));
+		}else {
+			model.setApproved("");
+		}
+		
+		if(order_.get().getCanceledAt() != null) {
+			model.setCanceled(order_.get().getCanceledAt().toString() + " " + userService.getNicknameByUserId(order_.get().getCanceledBy()));
+		}else {
+			model.setCanceled("");
+		}
+		
+		return model;
+	}
+	
+	@Override
+	public PharmacySaleOrderModel cancelPharmacySaleOrderById(Long id, HttpServletRequest request ) {
+		Optional<PharmacySaleOrder> order_ = pharmacySaleOrderRepository.findById(id);
+		if(order_.isEmpty()) {
+			throw new NotFoundException("Order not found");
+		}
+		
+		if(!order_.get().getStatus().equals("PENDING")) {
+			throw new NotFoundException("Only pending orders can be canceled");
+		}
+		
+		order_.get().setStatus("CANCELED");
+		order_.get().setCanceledBy(userService.getUserId(request));
+		order_.get().setCanceledOn(dayService.getDay().getId());
+		order_.get().setCanceledAt(dayService.getTimeStamp());
+		
+		PharmacySaleOrder order = pharmacySaleOrderRepository.save(order_.get());
+		
+		PharmacySaleOrderModel model = new PharmacySaleOrderModel();
+		
+		model.setId(order.getId());
+		model.setNo(order.getNo());
+		model.setPaymentType(order.getPaymentType());
+		model.setPharmacy(order.getPharmacy());
+		model.setPharmacist(order.getPharmacist());
+		model.setPharmacyCustomer(order.getPharmacyCustomer());
+		model.setStatus(order.getStatus());
+		
+		model.setPharmacySaleOrderDetails(order.getPharmacySaleOrderDetails());
+		
+		if(order.getCreatedAt() != null) {
+			model.setCreated(order.getCreatedAt().toString() + " " + userService.getNicknameByUserId(order.getCreatedBy()));
+		}else {
+			model.setCreated("");
+		}
+		
+		if(order.getApprovedAt() != null) {
+			model.setApproved(order.getApprovedAt().toString() + " " + userService.getNicknameByUserId(order.getApprovedBy()));
+		}else {
+			model.setApproved("");
+		}
+		
+		if(order.getCanceledAt() != null) {
+			model.setCanceled(order.getCanceledAt().toString() + " " + userService.getNicknameByUserId(order.getCanceledBy()));
+		}else {
+			model.setCanceled("");
+		}
+		
+		return model;
+	}
 	
 	@Override
 	public PharmacyCustomer createPharmacyCustomer(PharmacyCustomer cust, HttpServletRequest request) {
@@ -3160,10 +3250,24 @@ public class PatientServiceImpl implements PatientService {
 		pharmacySaleOrderModel.setPharmacist(pharmacySaleOrder.getPharmacist());
 		pharmacySaleOrderModel.setPharmacyCustomer(pharmacySaleOrder.getPharmacyCustomer());
 		
+		pharmacySaleOrderModel.setPharmacySaleOrderDetails(pharmacySaleOrder.getPharmacySaleOrderDetails());
+		
 		if(pharmacySaleOrder.getCreatedAt() != null) {
 			pharmacySaleOrderModel.setCreated(pharmacySaleOrder.getCreatedAt().toString() + " " + userService.getNicknameByUserId(pharmacySaleOrder.getCreatedBy()));
 		}else {
 			pharmacySaleOrderModel.setCreated("");
+		}
+		
+		if(pharmacySaleOrder.getApprovedAt() != null) {
+			pharmacySaleOrderModel.setApproved(pharmacySaleOrder.getApprovedAt().toString() + " " + userService.getNicknameByUserId(pharmacySaleOrder.getApprovedBy()));
+		}else {
+			pharmacySaleOrderModel.setApproved("");
+		}
+		
+		if(pharmacySaleOrder.getCanceledAt() != null) {
+			pharmacySaleOrderModel.setCanceled(pharmacySaleOrder.getCanceledAt().toString() + " " + userService.getNicknameByUserId(pharmacySaleOrder.getCanceledBy()));
+		}else {
+			pharmacySaleOrderModel.setCanceled("");
 		}
 		
 		return pharmacySaleOrderModel;
@@ -3187,7 +3291,10 @@ public class PatientServiceImpl implements PatientService {
 		
 		if(order_.isEmpty()) {
 			throw new InvalidOperationException("Could not save, no order available");
-		}		
+		}
+		if(!order_.get().getStatus().equals("PENDING")) {
+			throw new InvalidOperationException("Only pending orders can be updated");
+		}
 		
 		if(order_.isPresent()) {
 			detail.setPharmacySaleOrder(order_.get());
