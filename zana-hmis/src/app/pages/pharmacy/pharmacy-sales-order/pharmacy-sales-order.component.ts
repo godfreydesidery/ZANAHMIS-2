@@ -60,6 +60,7 @@ export class PharmacySalesOrderComponent {
 
 
   pharmacyName = localStorage.getItem('selected-pharmacy-name')
+  pharmacyId = localStorage.getItem('selected-pharmacy-id')
 
   filterRecords : string = ''
 
@@ -237,12 +238,13 @@ export class PharmacySalesOrderComponent {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
     }
     this.spinner.show()
-    await this.http.post<boolean>(API_URL+'/patients/delete_pharmacy_sale_order_detail?id='+pharmacySaleDetailId, options)
+    await this.http.get<boolean>(API_URL+'/patients/delete_pharmacy_sale_order_detail?id='+pharmacySaleDetailId, options)
     .pipe(finalize(() => this.spinner.hide()))
     .toPromise()
     .then(
       data => {
         console.log(data)
+        this.getPharmacySaleOrder(this.id)
         
       }
     )
@@ -552,6 +554,48 @@ export class PharmacySalesOrderComponent {
   }
 
 
+  async archivePharmacySaleOrder(id : any){
+
+    if(!(await this.msgBox.showConfirmMessageDialog('Are you sure you want to archive this order?', 'Order will be hidden.', 'question', 'Yes, Archive', 'No, Do not archive'))){
+      return
+    }
+
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.pharmacyCustomers = []
+    this.spinner.show()
+    await this.http.get<IPharmacySaleOrder>(API_URL+'/pharmacies/pharmacy_sale_orders/archive?id='+id, options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      async (data) => {
+        this.id = data?.id
+        this.no = data!.no
+        this.status = data!.status
+        this.pharmacyCustomerId = data!.pharmacyCustomer!.id
+        this.pharmacyCustomerNo = data!.pharmacyCustomer!.no
+        this.pharmacyCustomerName = data!.pharmacyCustomer!.name
+        this.pharmacyCustomerPhone = data!.pharmacyCustomer!.phoneNo
+        this.pharmacyCustomerMode = 'Existing Customer'
+
+        this.pharmacySaleOrderDetails = data!.pharmacySaleOrderDetails
+
+        this.created = data!.created
+        this.approved = data!.approved
+        this.canceled = data!.canceled
+        console.log(data)
+      }
+    )
+    .catch(
+      error => {
+        this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+  }
+
+
   async loadPharmacySaleOrders(){
     let options = {
       headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
@@ -574,6 +618,9 @@ export class PharmacySalesOrderComponent {
     )
     
   }
+
+
+  
 
 
 
@@ -624,9 +671,17 @@ export class PharmacySalesOrderComponent {
      * Add medicine bills
      */
 
+    var size = 0
     this.pharmacySaleOrderDetails.forEach(element => {
+      size = 1
       bills.push(element.patientBill)
     })
+
+    if(size == 0){
+      alert('Invalid operation')
+      return
+    }
+
 
     this.billsToPrint = bills
     console.log(bills)
@@ -667,6 +722,8 @@ export class PharmacySalesOrderComponent {
       items.push(item)
     })
 
+
+
     
 
     this.printer.print(items, 'NA', 0, this.pharmacySaleOrder.pharmacyCustomer)
@@ -684,6 +741,36 @@ calculateTotal(){
 }
 
 
+
+
+
+
+async giveMedicine(){
+  let options = {
+    headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+  }
+
+  if(!(await this.msgBox.showConfirmMessageDialog('Are you sure you want to give medicine?', 'Medicine will be deducted from stock.', 'question', 'Yes, Give', 'No, Do not give'))){
+    return
+  }
+
+  this.spinner.show()
+  await this.http.get<boolean>(API_URL+'/patients/give_medicine?order_id='+this.id + '&pharmacy_id='+this.pharmacyId, options)
+  .pipe(finalize(() => this.spinner.hide()))
+  .toPromise()
+  .then(
+    data => {
+      this.msgBox.showSuccessMessage('Medicine given successifully')
+    }
+  )
+  .catch(
+    error => {
+      console.log(error)
+      this.msgBox.showErrorMessage(error, '')
+    }
+  )
+  this.getPharmacySaleOrder(this.id)
+}
 
 
 }

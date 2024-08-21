@@ -3115,6 +3115,63 @@ public class PatientServiceImpl implements PatientService {
 		return model;
 	}
 	
+	
+	
+	@Override
+	public PharmacySaleOrderModel archivePharmacySaleOrderById(Long id, HttpServletRequest request ) {
+		Optional<PharmacySaleOrder> order_ = pharmacySaleOrderRepository.findById(id);
+		if(order_.isEmpty()) {
+			throw new NotFoundException("Order not found");
+		}
+		
+		if(!order_.get().getStatus().equals("APPROVED")) {
+			throw new NotFoundException("Only approved orders can be archived");
+		}
+		
+		for(PharmacySaleOrderDetail d : order_.get().getPharmacySaleOrderDetails()) {
+			if(!d.getStatus().equals("GIVEN")) {
+				throw new InvalidOperationException("Only given orders can be archived");
+			}
+		}
+		
+		order_.get().setStatus("ARCHIVED");
+		
+		PharmacySaleOrder order = pharmacySaleOrderRepository.save(order_.get());
+		
+		PharmacySaleOrderModel model = new PharmacySaleOrderModel();
+		
+		model.setId(order.getId());
+		model.setNo(order.getNo());
+		model.setPaymentType(order.getPaymentType());
+		model.setPharmacy(order.getPharmacy());
+		model.setPharmacist(order.getPharmacist());
+		model.setPharmacyCustomer(order.getPharmacyCustomer());
+		model.setStatus(order.getStatus());
+		
+		model.setPharmacySaleOrderDetails(order.getPharmacySaleOrderDetails());
+		
+		if(order.getCreatedAt() != null) {
+			model.setCreated(order.getCreatedAt().toString() + " " + userService.getNicknameByUserId(order.getCreatedBy()));
+		}else {
+			model.setCreated("");
+		}
+		
+		if(order.getApprovedAt() != null) {
+			model.setApproved(order.getApprovedAt().toString() + " " + userService.getNicknameByUserId(order.getApprovedBy()));
+		}else {
+			model.setApproved("");
+		}
+		
+		if(order.getCanceledAt() != null) {
+			model.setCanceled(order.getCanceledAt().toString() + " " + userService.getNicknameByUserId(order.getCanceledBy()));
+		}else {
+			model.setCanceled("");
+		}
+		
+		return model;
+	}
+	
+	
 	@Override
 	public PharmacyCustomer createPharmacyCustomer(PharmacyCustomer cust, HttpServletRequest request) {
 		// TODO Auto-generated method stub

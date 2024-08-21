@@ -55,6 +55,11 @@ public class PharmacySaleOrderDetail {
     @OnDelete(action = OnDeleteAction.NO_ACTION)	
     private Medicine medicine;
 	
+	@ManyToOne(targetEntity = Pharmacy.class, fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "issue_pharmacy_id", nullable = true , updatable = true)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)	
+    private Pharmacy issuePharmacy;
+	
 	@OneToOne(targetEntity = PatientBill.class, fetch = FetchType.EAGER,  optional = false)
     @JoinColumn(name = "patient_bill_id", nullable = false , updatable = false)
     @OnDelete(action = OnDeleteAction.NO_ACTION)	

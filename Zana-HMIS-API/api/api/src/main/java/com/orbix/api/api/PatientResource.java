@@ -67,6 +67,8 @@ import com.orbix.api.domain.PatientVital;
 import com.orbix.api.domain.Pharmacy;
 import com.orbix.api.domain.PharmacyMedicine;
 import com.orbix.api.domain.PharmacyMedicineBatch;
+import com.orbix.api.domain.PharmacySaleOrder;
+import com.orbix.api.domain.PharmacySaleOrderDetail;
 import com.orbix.api.domain.PharmacyStockCard;
 import com.orbix.api.domain.LabTest;
 import com.orbix.api.domain.LabTestAttachment;
@@ -155,6 +157,8 @@ import com.orbix.api.repositories.PatientVitalRepository;
 import com.orbix.api.repositories.PharmacyMedicineBatchRepository;
 import com.orbix.api.repositories.PharmacyMedicineRepository;
 import com.orbix.api.repositories.PharmacyRepository;
+import com.orbix.api.repositories.PharmacySaleOrderDetailRepository;
+import com.orbix.api.repositories.PharmacySaleOrderRepository;
 import com.orbix.api.repositories.PharmacyStockCardRepository;
 import com.orbix.api.repositories.PrescriptionBatchRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
@@ -249,6 +253,9 @@ public class PatientResource {
 	private final PatientVitalRepository patientVitalRepository;
 	
 	private final ClinicianPerformanceService clinicianPerformanceService;
+	
+	private final PharmacySaleOrderRepository pharmacySaleOrderRepository;
+	private final PharmacySaleOrderDetailRepository pharmacySaleOrderDetailRepository;
 	
 	
 	@GetMapping("/patients")
@@ -3598,6 +3605,8 @@ public class PatientResource {
 		return ResponseEntity.created(uri).body(true);
 	}
 	
+	
+	
 	@GetMapping("/patients/get_doctor_inpatient_list") 
 	public ResponseEntity<List<Admission>> getDoctorInpatientList(
 			HttpServletRequest request){
@@ -6190,6 +6199,214 @@ public class PatientResource {
       //}
       
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@GetMapping("/patients/give_medicine")
+	public boolean giveMedicine(
+			@RequestParam(name = "pharmacy_id") Long pharmacyId, 
+			@RequestParam(name = "order_id") Long orderId, 
+			HttpServletRequest request) {
+		
+		boolean success = true;
+		
+		Optional<Pharmacy> pharmacy_ = pharmacyRepository.findById(pharmacyId);
+		if(pharmacy_.isEmpty()) {
+			throw new NotFoundException("Pharmacy not found");
+		}
+		
+		Optional<PharmacySaleOrder> order_ = pharmacySaleOrderRepository.findById(orderId);
+		if(order_.isEmpty()) {
+			throw new NotFoundException("Order not found");
+		}
+		
+		if(!order_.get().getStatus().equals("APPROVED")) {
+			throw new InvalidOperationException("Order not approved");
+		}
+		
+		List<PharmacySaleOrderDetail> details = order_.get().getPharmacySaleOrderDetails();
+		
+		for(PharmacySaleOrderDetail detail : details) {
+			Optional<PharmacySaleOrderDetail> detail_ = pharmacySaleOrderDetailRepository.findById(detail.getId());
+			if(detail_.isEmpty()) {
+				throw new NotFoundException("Detail with id "+detail.getId().toString()+" not found in database");
+			}
+			
+			if(!detail_.get().getStatus().equals("NOT-GIVEN")) {
+				success = false;
+				throw new InvalidOperationException("Could not issue medicine. Detail with id "+detail.getId().toString()+" is not a pending");
+			}
+			
+			detail.setIssued(detail.getQty());
+			
+			if(detail_.get().getBalance() > detail.getIssued() || detail.getIssued() <= 0) {
+				throw new InvalidOperationException("Invalid issue value in "+detail.getMedicine().getName());
+			}
+			
+			if(detail.getIssued() != detail_.get().getQty()) {
+				throw new InvalidOperationException("You can only issue the specified qty");
+			}
+			detail_.get().setIssued(detail.getIssued());
+			detail_.get().setBalance(detail_.get().getBalance() - detail.getIssued());
+						
+			detail_.get().setStatus("GIVEN");
+			detail_.get().setIssuePharmacy(pharmacy_.get());
+			
+			detail_.get().setApprovedBy(userService.getUser(request).getId());
+			detail_.get().setApprovedOn(dayService.getDay().getId());
+			detail_.get().setApprovedAt(dayService.getTimeStamp());
+			
+			pharmacySaleOrderDetailRepository.save(detail_.get());
+			
+			PharmacyMedicine pharmacyMedicine = pharmacyMedicineRepository.findByPharmacyAndMedicine(pharmacy_.get(), detail_.get().getMedicine()).get();
+			
+			Pharmacy pharmacy = pharmacyMedicine.getPharmacy();
+			Medicine medicine = pharmacyMedicine.getMedicine();
+			if(pharmacyMedicine.getStock() < detail_.get().getQty()) {
+				throw new InvalidOperationException("Can not issue, insufficient stock in : "+detail_.get().getMedicine().getName());
+			}
+			
+			double newStock = pharmacyMedicine.getStock() - detail_.get().getQty();
+			
+			pharmacyMedicine.setStock(newStock);
+			pharmacyMedicineRepository.save(pharmacyMedicine);
+			
+			PharmacyStockCard pharmacyStockCard = new PharmacyStockCard();
+			pharmacyStockCard.setMedicine(medicine);
+			pharmacyStockCard.setPharmacy(pharmacy);
+			pharmacyStockCard.setQtyIn(0);
+			pharmacyStockCard.setQtyOut(detail.getIssued());
+			pharmacyStockCard.setBalance(newStock);
+			pharmacyStockCard.setReference("Issued in sale: id " + detail_.get().getId().toString());
+			
+			pharmacyStockCard.setCreatedBy(userService.getUserId(request));
+			pharmacyStockCard.setCreatedOn(dayService.getDayId());
+			pharmacyStockCard.setCreatedAt(dayService.getTimeStamp());
+			
+			pharmacyStockCardRepository.save(pharmacyStockCard);
+			
+			
+			
+			
+			/*for(StoreToPharmacyBatch batch : detail.getStoreToPharmacyBatches()) {
+				
+				PharmacyMedicineBatch pharmacyMedicineBatch = new PharmacyMedicineBatch();
+				pharmacyMedicineBatch.setNo(batch.getNo());
+				pharmacyMedicineBatch.setMedicine(batch.getStoreToPharmacyRNDetail().getMedicine());
+				pharmacyMedicineBatch.setManufacturedDate(batch.getManufacturedDate());
+				pharmacyMedicineBatch.setExpiryDate(batch.getExpiryDate());
+				pharmacyMedicineBatch.setQty(batch.getPharmacySKUQty());
+				pharmacyMedicineBatch.setPharmacy(receiveNote.getPharmacy());
+				
+				pharmacyMedicineBatchRepository.save(pharmacyMedicineBatch);
+			}*/
+			
+			
+			
+			//review this section later
+			
+			List<PharmacyMedicineBatch> pharmacyMedicineBatches = pharmacyMedicineBatchRepository.findAllByPharmacyAndMedicineAndQtyGreaterThan(pharmacy, medicine, 0);
+			
+			//deductBatch(pharmacyMedicineBatches, prescription_.get(), detail.getIssued());
+			
+		}
+		
+		return success;
+	}
+	
+	
+	
+	
+	
+	
+	
+	@GetMapping("/patients/delete_pharmacy_sale_order_detail")
+	public ResponseEntity<Boolean>deleteSaleDetail(
+			@RequestParam Long id, 
+			HttpServletRequest request){
+		Optional<PharmacySaleOrderDetail> pr = pharmacySaleOrderDetailRepository.findById(id);
+		if(!(pr.get().getStatus().equals("PENDING") || pr.get().getStatus().equals("NOT-GIVEN"))) {
+			throw new InvalidOperationException("Could not delete, only a PENDING detail can be deleted");
+		}
+		PharmacySaleOrderDetail detail = pr.get();
+		
+		PatientBill patientBill = patientBillRepository.findById(pr.get().getPatientBill().getId()).get();
+		
+		if(!patientBill.getStatus().equals("UNPAID")) {
+			throw new InvalidOperationException("Only unpaid detail can be deleted");
+		}
+		
+		Optional<PatientPaymentDetail> pd = patientPaymentDetailRepository.findByPatientBill(patientBill);
+		
+		if(pd.isPresent() && pd.get().getStatus().equals("GIVEN")) {
+			throw new InvalidOperationException("Medicine already given");
+		}
+		
+		if(pd.isPresent() && pd.get().getStatus().equals("GIVEN")) {
+			
+			//disable deleting a paid test first, in the mean time
+			//throw new InvalidOperationException("Can not delete a paid prescription, please contact system administrator");
+			
+			/*PatientCreditNote patientCreditNote = new PatientCreditNote();
+			patientCreditNote.setAmount(pd.get().getPatientBill().getAmount());
+			patientCreditNote.setPatient(patientBill.getPatient());
+			patientCreditNote.setReference("Prescription canceled");
+			patientCreditNote.setStatus("PENDING");
+			patientCreditNote.setNo("NA");
+			patientCreditNote = patientCreditNoteRepository.save(patientCreditNote);
+			patientCreditNote.setNo(patientCreditNote.getId().toString());
+			patientCreditNote = patientCreditNoteRepository.save(patientCreditNote);*/
+			
+			PatientCreditNote patientCreditNote = new PatientCreditNote();
+			patientCreditNote.setAmount(pd.get().getPatientBill().getAmount());
+			patientCreditNote.setPatient(pd.get().getPatientBill().getPatient());
+			patientCreditNote.setReference("Canceled Sale Detail");
+			patientCreditNote.setStatus("PENDING");
+			patientCreditNote.setNo(patientCreditNoteService.requestPatientCreditNoteNo().getNo());
+			
+			patientCreditNote.setCreatedBy(userService.getUserId(request));
+			patientCreditNote.setCreatedOn(dayService.getDayId());
+			patientCreditNote.setCreatedAt(dayService.getTimeStamp());
+			
+			patientCreditNote = patientCreditNoteRepository.save(patientCreditNote);
+		}
+		Optional<PatientInvoiceDetail> i = patientInvoiceDetailRepository.findByPatientBill(patientBill);
+		/**
+		 * If there is a patientInvoice detail associated with this patientBill, delete it
+		 */
+		if(i.isPresent()) {			
+			patientInvoiceDetailRepository.delete(i.get());
+			PatientInvoice patientInvoice = i.get().getPatientInvoice();
+			int j = 0;
+			for(PatientInvoiceDetail d : patientInvoice.getPatientInvoiceDetails()) {
+				j = j++;
+			}
+			if(j == 0) {
+				patientInvoiceRepository.delete(patientInvoice);
+			}			
+		}
+		if(pd.isPresent()) {
+			//disable deleting a paid test first, in the mean time
+			//throw new InvalidOperationException("Can not delete a paid prescription, please contact system administrator");
+			patientPaymentDetailRepository.delete(pd.get());
+		}
+		
+		pharmacySaleOrderDetailRepository.delete(detail);
+		patientBillRepository.delete(patientBill);
+		
+		URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/zana-hmis-api/patients/delete_prescription").toUriString());
+		return ResponseEntity.created(uri).body(true);
+	}
+	
+	
+	
 	
 	
 }
