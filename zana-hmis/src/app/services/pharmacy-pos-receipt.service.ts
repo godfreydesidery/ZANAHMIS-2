@@ -84,6 +84,7 @@ export class PharmacyPosReceiptService {
               headerRows : 0,
               widths : [200],
               body : [
+                [{text : receiptNo, fontSize : 8}],
                 [{text : pharmacyCustomer?.name, fontSize : 8}],
                 [{text : pharmacyCustomer?.no, fontSize : 8}],
                 [{text : pharmacyCustomer?.address, fontSize : 8}],
@@ -98,7 +99,7 @@ export class PharmacyPosReceiptService {
               headerRows : 0,
               widths : [200],
               body : [
-                [{text : 'Service Receipt', alignment : 'center', fontSize : 9, bold : true}],
+                [{text : 'Sales Receipt', alignment : 'center', fontSize : 9, bold : true}],
               ]
             }
           },      

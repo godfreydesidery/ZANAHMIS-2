@@ -269,11 +269,14 @@ export class PharmacySalesOrderComponent {
       data => {
         console.log(data)
         this.pharmacySaleOrderDetails = data!
+
+        this.calculateTotal()
       }
     )
     .catch(
       (error) => {
         this.msgBox.showErrorMessage(error, 'Could not load sales')
+        this.calculateTotal()
       }
     )
     
@@ -502,7 +505,10 @@ export class PharmacySalesOrderComponent {
         this.canceled = data!.canceled
 
         this.pharmacySaleOrder = data!
+        
+        this.calculateTotal()
       }
+      
     )
     .catch(
       error => {
@@ -726,7 +732,7 @@ export class PharmacySalesOrderComponent {
 
     
 
-    this.printer.print(items, 'NA', 0, this.pharmacySaleOrder.pharmacyCustomer)
+    this.printer.print(items, 'Order#: '+this.pharmacySaleOrder!.no, 0, this.pharmacySaleOrder.pharmacyCustomer)
 
   }
 
@@ -761,6 +767,7 @@ async giveMedicine(){
   .then(
     data => {
       this.msgBox.showSuccessMessage('Medicine given successifully')
+      this.clearPharmacyOrder()
     }
   )
   .catch(
@@ -769,7 +776,6 @@ async giveMedicine(){
       this.msgBox.showErrorMessage(error, '')
     }
   )
-  this.getPharmacySaleOrder(this.id)
 }
 
 

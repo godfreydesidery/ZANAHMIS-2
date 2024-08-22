@@ -11,7 +11,7 @@
         <div class="col-sm-12">
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading">
-                    <button class="btn btn-primary btn-outline" (click)="loadPharmacySaleOrders()" data-toggle="modal" data-target="#list-modal"><i class="glyphicon glyphicon-list"></i> List</button>
+                    <button class="btn btn-primary btn-outline" (click)="loadPharmacySaleOrders()" data-toggle="modal" data-target="#list-modal"><i class="glyphicon glyphicon-list"></i>Sales List</button>
                     <button class="btn btn-primary btn-outline" (click)="clearPharmacyOrder()">New</button>
                     <button class="btn btn-primary btn-outline" (click)="cancelPharmacySaleOrder(id)">Cancel</button>
                     <button class="btn btn-primary btn-outline" (click)="archivePharmacySaleOrder(id)">Archive</button>
@@ -207,8 +207,9 @@
                                         </table>    
                                     </div>
                                 </div>
-                                <button class="btn btn-success" (click)="calculateTotal()" data-toggle="modal" data-target="#confirm-payment-modal" style="margin-left: 30px;">Pay</button>
-                                <button class="btn btn-success" (click)="giveMedicine()" style="margin-left: 30px;">Give Medicine</button>
+                                <span style="font-weight: bold; color: rgb(51, 11, 11); font-size: large;"> Total Amount: {{total | currency:'':''}}</span>
+                                <button class="btn btn-success" *ngIf="status === 'PENDING'" (click)="calculateTotal()" data-toggle="modal" data-target="#confirm-payment-modal" style="margin-left: 30px;">Pay</button>
+                                <button class="btn btn-success pull-right" *ngIf="status === 'APPROVED'" (click)="giveMedicine()" style="margin-left: 30px;">Give Medicine</button>
                             </div>
                         </div>
 
@@ -260,7 +261,7 @@
                             <th>Order#</th>
                             <th>Customer#</th>
                             <th>Name</th>
-                            <th>Amount</th>
+                            <!--<th>Amount</th>-->
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -270,7 +271,7 @@
                                 <td>{{order!.no}}</td>
                                 <td>{{order!.pharmacyCustomer!.no}}</td>
                                 <td>{{order!.pharmacyCustomer!.name}}</td>
-                                <td style="text-align: right;">25,000.00</td>
+                                <!--<td style="text-align: right;">25,000.00</td>-->
                                 <td>{{order!.status}}</td>
                                 <td><button class="btn btn-success" (click)="getPharmacySaleOrder(order.id)" data-dismiss="modal">Select</button></td>
                             </tr>
@@ -319,7 +320,7 @@
                         <span>Change</span>
                     </div>
                     <div class="col-sm-6">
-                        <span class="form-control" style="text-align: right;"><b>{{amountReceived - total | currency:'':''}}</b></span>
+                        <span class="form-control" style="text-align: right;"><b *ngIf="amountReceived - total >= 0">{{amountReceived - total | currency:'':''}}</b></span>
                     </div>
                 </div>
             </div>
