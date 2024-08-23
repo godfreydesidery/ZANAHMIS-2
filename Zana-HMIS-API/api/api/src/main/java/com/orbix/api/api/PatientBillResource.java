@@ -372,7 +372,18 @@ public class PatientBillResource {
 			pharmacySaleOrder.setApprovedOn(dayService.getDay().getId());
 			pharmacySaleOrder.setApprovedAt(dayService.getTimeStamp());
 			
-			pharmacySaleOrderRepository.save(pharmacySaleOrder);
+			pharmacySaleOrder = pharmacySaleOrderRepository.save(pharmacySaleOrder);
+			
+			for(PharmacySaleOrderDetail det : pharmacySaleOrder.getPharmacySaleOrderDetails()) {
+				det.setPayStatus("PAID");
+				
+				det.setSoldBy(userService.getUser(request).getId());
+				det.setSoldOn(dayService.getDay().getId());
+				det.setSoldAt(dayService.getTimeStamp());
+				
+				pharmacySaleOrderDetailRepository.save(det);
+			}
+			
 		}
 		
 		if(amount != totalAmount) {

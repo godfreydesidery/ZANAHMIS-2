@@ -347,10 +347,12 @@ export class AppComponent {
         {path : 'fast-moving-drugs-report', loadComponent : () => import('./pages/pharmacy/reports/fast-moving-drugs/fast-moving-drugs.component').then(m => m.FastMovingDrugsComponent), canActivate: [AuthGuard]},
         {path : 'slow-moving-drugs-report', loadComponent : () => import('./pages/pharmacy/reports/slow-moving-drugs/slow-moving-drugs.component').then(m => m.SlowMovingDrugsComponent), canActivate: [AuthGuard]},
         {path : 'pharmacy-stock-card-report', loadComponent : () => import('./pages/pharmacy/reports/pharmacy-stock-card-report/pharmacy-stock-card-report.component').then(m => m.PharmacyStockCardReportComponent), canActivate: [AuthGuard]},
+        {path : 'pharmacy-sales-report', loadComponent : () => import('./pages/pharmacy/reports/pharmacy-sales-report/pharmacy-sales-report.component').then(m => m.PharmacySalesReportComponent), canActivate: [AuthGuard]},
         {path : 'pharmacy-to-pharmacy-r-o-list', loadComponent : () => import('./pages/pharmacy/pharmacy-to-pharmacy-r-o-list/pharmacy-to-pharmacy-r-o-list.component').then(m => m.PharmacyToPharmacyROListComponent), canActivate: [AuthGuard]},
         {path : 'pharmacy-to-pharmacy-t-o', loadComponent : () => import('./pages/pharmacy/pharmacy-to-pharmacy-t-o/pharmacy-to-pharmacy-t-o.component').then(m => m.PharmacyToPharmacyTOComponent), canActivate: [AuthGuard]},
         {path : 'pharmacy-sales-order-list', loadComponent : () => import('./pages/pharmacy/pharmacy-sales-order-list/pharmacy-sales-order-list.component').then(m => m.PharmacySalesOrderListComponent), canActivate: [AuthGuard]},
         {path : 'pharmacy-sales-order', loadComponent : () => import('./pages/pharmacy/pharmacy-sales-order/pharmacy-sales-order.component').then(m => m.PharmacySalesOrderComponent), canActivate: [AuthGuard]},
+        
       )
     }
     loadCashierModule(){
@@ -518,6 +520,8 @@ export class AppComponent {
         {path : 'procedure-report', loadComponent : () => import('./pages/admin/reports/procedure-report/procedure-report.component').then(m => m.ProcedureReportComponent), canActivate: [AuthGuard]},
         {path : 'doctor-to-radiology-report', loadComponent : () => import('./pages/admin/reports/doctor-to-radiology-report/doctor-to-radiology-report.component').then(m => m.DoctorToRadiologyReportComponent), canActivate: [AuthGuard]},
         {path : 'doctor-to-laboratory-report', loadComponent : () => import('./pages/admin/reports/doctor-to-laboratory-report/doctor-to-laboratory-report.component').then(m => m.DoctorToLaboratoryReportComponent), canActivate: [AuthGuard]},
+
+        {path : 'pharmacy-sales-report', loadComponent : () => import('./pages/pharmacy/reports/pharmacy-sales-report/pharmacy-sales-report.component').then(m => m.PharmacySalesReportComponent), canActivate: [AuthGuard]},
 
       )
     }

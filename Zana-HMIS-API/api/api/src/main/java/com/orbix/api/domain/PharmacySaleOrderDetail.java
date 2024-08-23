@@ -117,4 +117,10 @@ public class PharmacySaleOrderDetail {
 	@Column(name = "approved_on_day_id", nullable = true , updatable = true)
     private Long approvedOn;
 	private LocalDateTime approvedAt;
+	
+	@Column(name = "sold_by_user_id", nullable = true , updatable = true)
+    private Long soldBy;
+	@Column(name = "sold_on_day_id", nullable = true , updatable = true)
+    private Long soldOn;
+	private LocalDateTime soldAt;
 }

@@ -207,8 +207,8 @@
                                         </table>    
                                     </div>
                                 </div>
-                                <span style="font-weight: bold; color: rgb(51, 11, 11); font-size: large;"> Total Amount: {{total | currency:'':''}}</span>
-                                <button class="btn btn-success" *ngIf="status === 'PENDING'" (click)="calculateTotal()" data-toggle="modal" data-target="#confirm-payment-modal" style="margin-left: 30px;">Pay</button>
+                                <span style="font-weight: bold; color: rgb(133, 3, 3); font-size: large;"> Total Amount: {{total | currency:'':''}}</span>
+                                <button class="btn btn-success" *ngIf="status === 'PENDING' && pharmacySaleOrderDetails.length > 0" (click)="calculateTotal()" data-toggle="modal" data-target="#confirm-payment-modal" style="margin-left: 30px;">Pay</button>
                                 <button class="btn btn-success pull-right" *ngIf="status === 'APPROVED'" (click)="giveMedicine()" style="margin-left: 30px;">Give Medicine</button>
                             </div>
                         </div>

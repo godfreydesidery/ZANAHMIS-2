@@ -482,6 +482,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	
 	@Override
 	public String getNicknameByUserId(Long id) {
+		if(id == null) {
+			return "";
+		}
 		return userRepository.findById(id).get().getNickname();
 	}
 

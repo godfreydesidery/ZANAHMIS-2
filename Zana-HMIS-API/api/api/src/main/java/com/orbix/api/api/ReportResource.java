@@ -43,6 +43,7 @@ import com.orbix.api.domain.Patient;
 import com.orbix.api.domain.PatientBill;
 import com.orbix.api.domain.PatientInvoice;
 import com.orbix.api.domain.PatientInvoiceDetail;
+import com.orbix.api.domain.PharmacySaleOrderDetail;
 import com.orbix.api.domain.PharmacyStockCard;
 import com.orbix.api.domain.Prescription;
 import com.orbix.api.domain.Procedure;
@@ -96,6 +97,7 @@ import com.orbix.api.repositories.PatientBillRepository;
 import com.orbix.api.repositories.PatientInvoiceDetailRepository;
 import com.orbix.api.repositories.PatientInvoiceRepository;
 import com.orbix.api.repositories.PatientRepository;
+import com.orbix.api.repositories.PharmacySaleOrderDetailRepository;
 import com.orbix.api.repositories.PharmacyStockCardRepository;
 import com.orbix.api.repositories.PrescriptionRepository;
 import com.orbix.api.repositories.ProcedureRepository;
@@ -156,6 +158,8 @@ public class ReportResource {
 	private final ClinicianPerformanceRepository clinicianPerformanceRepository;
 	private final InsurancePlanRepository insurancePlanRepository;
 	private final PatientInvoiceRepository patientInvoiceRepository;
+	
+	private final PharmacySaleOrderDetailRepository pharmacySaleOrderDetailRepository;
 	
 	@PostMapping("/reports/consultation_report")
 	public ResponseEntity<List<Consultation>>getConsultationReport(
@@ -1525,6 +1529,31 @@ public class ReportResource {
 	
 	
 	
+	@PostMapping("/reports/pharmacy_sales_report")
+	public ResponseEntity<List<PharmacySalesReport>>getPharmacyReport(
+			@RequestBody DayOnlyReportArgs args,
+			HttpServletRequest request){
+		
+		List<PharmacySalesReport> report = new ArrayList<>();
+		PharmacySalesReport reportDetail;
+		
+		List<PharmacySaleOrderDetail> details = pharmacySaleOrderDetailRepository.findAllByPayStatusAndCreatedAtBetween("PAID", args.getFrom().atStartOfDay(), args.getTo().atStartOfDay().plusDays(1));
+		
+		for(PharmacySaleOrderDetail d : details) {
+			reportDetail = new PharmacySalesReport();
+			reportDetail.setCustomerName(d.getPharmacySaleOrder().getPharmacyCustomer().getName());
+			reportDetail.setCustomerPhone(d.getPharmacySaleOrder().getPharmacyCustomer().getPhoneNo());
+			reportDetail.setCustomerAddress(d.getPharmacySaleOrder().getPharmacyCustomer().getAddress());
+			reportDetail.setMedicineName(d.getMedicine().getName());
+			reportDetail.setQty(d.getQty());
+			reportDetail.setAmount(d.getPatientBill().getAmount());
+			reportDetail.setSold(userService.getNicknameByUserId(d.getSoldBy()));
+			
+			report.add(reportDetail);
+		}
+		return ResponseEntity.ok().body(report);
+	}
+	
 }
 
 @Data
@@ -1635,6 +1664,12 @@ class RevenueReportArgs{
 }
 
 @Data
+class DayOnlyReportArgs {
+	LocalDate from;
+	LocalDate to;
+}
+
+@Data
 class LClinicianPerformanceReport{
 	String name;
 	int total;
@@ -1697,5 +1732,16 @@ class IPDReport{
 	double invoice;
 	double paid;
 	double balance;
+}
+
+@Data
+class PharmacySalesReport{
+	String customerName;
+	String customerPhone;
+	String customerAddress;
+	String medicineName;
+	double qty;
+	double amount;
+	String sold;	
 }
 

@@ -1,5 +1,6 @@
 package com.orbix.api.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,5 +15,8 @@ public interface PharmacySaleOrderDetailRepository extends JpaRepository<Pharmac
 	List<PharmacySaleOrderDetail> findAllByPharmacySaleOrder(PharmacySaleOrder pharmacySaleOrder);
 
 	Optional<PharmacySaleOrderDetail> findByPatientBill(PatientBill bill);
+
+	List<PharmacySaleOrderDetail> findAllByPayStatusAndCreatedAtBetween(String string, LocalDateTime atStartOfDay,
+			LocalDateTime plusDays);
 
 }
