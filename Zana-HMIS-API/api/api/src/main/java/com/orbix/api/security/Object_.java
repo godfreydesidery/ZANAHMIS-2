@@ -75,4 +75,7 @@ public class Object_ {
 	public static String DAY = "DAY";
 	public static String SUPPLIER = "SUPPLIER";
 	
+	public static String PHARMACY_PATIENTS = "PHARMACY_PATIENTS-ALLOW";
+	public static String PHARMACY_INVENTORY = "PHARMACY_INVENTORY-ALLOW";
+	public static String PHARMACY_SALES = "PHARMACY_SALES-ALLOW";
 }

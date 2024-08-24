@@ -110,7 +110,7 @@
                                         <h4>Search Medicine (Enter 2 Characters to search)</h4>
                                         <input type="text" class="form-control" [(ngModel)]="medicineName" (ngModelChange)="loadMedicinesLike($event)">
                                         <div class="row"  *ngIf="medicines.length > 0">
-                                            <select class="form-control" multiple="multiple" style="position: absolute;">
+                                            <select class="form-control" multiple="multiple" style="position: absolute; z-index: 2;">
                                                 <option *ngFor="let med of medicines" (click)="getMedicine(med.id)" style="height: 1cm; cursor: pointer; font-size: large;">{{med.name}}</option>
                                             </select>
                                         </div>

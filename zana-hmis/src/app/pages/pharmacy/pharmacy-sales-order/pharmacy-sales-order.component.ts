@@ -97,6 +97,7 @@ export class PharmacySalesOrderComponent {
 
 
   async ngOnInit(): Promise<void> {
+    this.autoArchivePharmacySaleOrders()
     await this.loadPharmacist()
   }
 
@@ -363,7 +364,13 @@ export class PharmacySalesOrderComponent {
     .then(
       (data) => {
 
-        this.pharmacySaleOrder = data!
+
+        this.clearPharmacySaleOrderDetail()
+        this.msgBox.showSuccessMessage('Sale Saved successifully')
+        
+        this.getPharmacySaleOrder(data!.id)
+
+        /*this.pharmacySaleOrder = data!
 
         this.id = data?.id
         this.no = data!.no
@@ -375,13 +382,11 @@ export class PharmacySalesOrderComponent {
         this.pharmacyCustomerName = data!.pharmacyCustomer!.name
         this.pharmacyCustomerPhone = data!.pharmacyCustomer!.phoneNo
 
-        this.pharmacySaleOrderDetails = data!.pharmacySaleOrderDetails
+        this.pharmacySaleOrderDetails = data!.pharmacySaleOrderDetails*/
 
-        this.pharmacySaleOrder = data!
 
         //this.loadPharmacySaleOrderDetails(data!.id)
-        this.clearPharmacySaleOrderDetail()
-        this.msgBox.showSuccessMessage('Sale Saved successifully')
+        
         
       }
     )
@@ -596,6 +601,26 @@ export class PharmacySalesOrderComponent {
     .catch(
       error => {
         this.msgBox.showErrorMessage(error, '')
+        console.log(error)
+      }
+    )
+  }
+
+
+  autoArchivePharmacySaleOrders(){
+    let options = {
+      headers: new HttpHeaders().set('Authorization', 'Bearer '+this.auth.user.access_token)
+    }
+    this.spinner.show()
+    this.http.get<null>(API_URL+'/pharmacies/pharmacy_sale_orders/archive_all', options)
+    .pipe(finalize(() => this.spinner.hide()))
+    .toPromise()
+    .then(
+      () => {}       
+    )
+    .catch(
+      error => {
+        //this.msgBox.showErrorMessage(error, '')
         console.log(error)
       }
     )

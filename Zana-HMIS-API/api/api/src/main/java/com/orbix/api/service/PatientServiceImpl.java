@@ -14,6 +14,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -3169,6 +3170,62 @@ public class PatientServiceImpl implements PatientService {
 		}
 		
 		return model;
+	}
+	
+	
+	@Override
+	public void archivePharmacySaleOrders(HttpServletRequest request ) {
+		List<String> statuses = new ArrayList<>();
+		statuses.add("APPROVED");
+		//statuses.add("PENDING");
+		List<PharmacySaleOrder> orders = pharmacySaleOrderRepository.findAllByStatusIn(statuses);
+		
+		for(PharmacySaleOrder order : orders) {
+			boolean isToArchive = true;
+			long difference = ChronoUnit.HOURS.between(order.getCreatedAt(), dayService.getTimeStamp());
+			if(difference >= 24) {
+				if(!(order.getStatus().equals("APPROVED"))) {
+					isToArchive = false;
+				}
+				if(order.getStatus().equals("APPROVED")) {
+					for(PharmacySaleOrderDetail d : order.getPharmacySaleOrderDetails()) {
+						if(!d.getStatus().equals("GIVEN")) {
+							isToArchive = false;
+							break;
+						}
+					}
+				}
+				if(isToArchive == true) {
+					order.setStatus("ARCHIVED");
+					pharmacySaleOrderRepository.save(order);
+				}
+			}
+		}
+		
+	}
+	
+	@Override
+	public void cancelPharmacySaleOrders(HttpServletRequest request ) {
+		List<String> statuses = new ArrayList<>();
+		statuses.add("PENDING");
+		List<PharmacySaleOrder> orders = pharmacySaleOrderRepository.findAllByStatusIn(statuses);
+		
+		for(PharmacySaleOrder order : orders) {
+			long difference = ChronoUnit.HOURS.between(order.getCreatedAt(), dayService.getTimeStamp());
+			if(difference >= 24) {
+				if(order.getStatus().equals("PENDING")) {
+					order.setStatus("CANCELED");
+					order.setComments("Autocanceled after expiry");
+					
+					order.setCanceledBy(userService.getUserId(request));
+					order.setCanceledOn(dayService.getDay().getId());
+					order.setCanceledAt(dayService.getTimeStamp());
+					
+					pharmacySaleOrderRepository.save(order);
+				}
+			}
+		}
+		
 	}
 	
 	

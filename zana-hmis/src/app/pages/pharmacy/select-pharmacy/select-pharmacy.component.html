@@ -11,19 +11,19 @@
         <div class="col-sm-12">
             <div class="panel panel-bd lobidrag">
                 <div class="panel-heading" *ngIf="selectedPharmacyName != ''">
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-outpatient-list">Outpatient List</button>
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-inpatient-list">Inpatient List</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-outpatient-list" *ngIf="grant(['PHARMACY_PATIENTS-ALLOW'])">Outpatient List</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-inpatient-list" *ngIf="grant(['PHARMACY_PATIENTS-ALLOW'])">Inpatient List</button>
                     <!--<button class="btn btn-primary btn-outline" routerLink="/pharmacy-outsider-list">Outsider List</button>--> 
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-medicine-stock-status">Stock Status</button> | 
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-store-r-o">Request From Store</button>
-                    <button class="btn btn-primary btn-outline" routerLink="/store-to-pharmacy-r-n">Receive From Store</button> |
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-medicine-stock-status" *ngIf="grant(['PHARMACY_INVENTORY-ALLOW'])">Stock Status</button> | 
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-store-r-o" *ngIf="grant(['PHARMACY_INVENTORY-ALLOW'])">Request From Store</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/store-to-pharmacy-r-n" *ngIf="grant(['PHARMACY_INVENTORY-ALLOW'])">Receive From Store</button> |
 
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-o-list"><i class="glyphicon glyphicon-list"></i>Order List from Pharmacies</button>
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-o">Request From Pharmacy</button>
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-n">Receive From Pharmacy</button> |
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-o-list" *ngIf="grant(['PHARMACY_INVENTORY-ALLOW'])"><i class="glyphicon glyphicon-list"></i>Order List from Pharmacies</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-o" *ngIf="grant(['PHARMACY_INVENTORY-ALLOW'])">Request From Pharmacy</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-to-pharmacy-r-n" *ngIf="grant(['PHARMACY_INVENTORY-ALLOW'])">Receive From Pharmacy</button> |
 
                     <!--<button class="btn btn-primary btn-outline" routerLink="/pharmacy-sales-order-list">Sales Order List</button>-->
-                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-sales-order">Sales Order</button>
+                    <button class="btn btn-primary btn-outline" routerLink="/pharmacy-sales-order" *ngIf="grant(['PHARMACY_SALES-ALLOW'])">Sales Order</button>
 
 
 

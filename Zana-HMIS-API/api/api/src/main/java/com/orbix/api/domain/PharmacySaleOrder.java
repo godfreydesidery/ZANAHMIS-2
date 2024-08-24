@@ -47,6 +47,7 @@ public class PharmacySaleOrder {
 	//private String membershipNo;
 	@NotBlank
 	private String status;
+	private String comments;
 	//private boolean followUp = false;
 	
 	/**

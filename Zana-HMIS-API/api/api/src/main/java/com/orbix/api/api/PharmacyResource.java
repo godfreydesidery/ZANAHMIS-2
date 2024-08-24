@@ -265,6 +265,13 @@ public class PharmacyResource {
 		return ResponseEntity.ok().body(patientService.archivePharmacySaleOrderById(id, request));
 	}
 	
+	@GetMapping("/pharmacies/pharmacy_sale_orders/archive_all")
+	public void archivePharmacySalesOrders(
+			HttpServletRequest request){
+		patientService.archivePharmacySaleOrders(request);
+		patientService.cancelPharmacySaleOrders(request);
+	}
+	
 	@GetMapping("/pharmacies/pharmacy_customers")
 	public ResponseEntity<List<PharmacyCustomer>>getPharmacyCustomers(HttpServletRequest request){
 		return ResponseEntity.ok().body(pharmacyCustomerRepository.findAll());

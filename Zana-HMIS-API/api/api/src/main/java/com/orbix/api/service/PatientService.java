@@ -87,6 +87,8 @@ public interface PatientService {
 	
 	PharmacySaleOrderModel cancelPharmacySaleOrderById(Long id, HttpServletRequest request);
 	PharmacySaleOrderModel archivePharmacySaleOrderById(Long id, HttpServletRequest request);
+	void cancelPharmacySaleOrders(HttpServletRequest request);
+	void archivePharmacySaleOrders(HttpServletRequest request);
 	
 	
 	PharmacyCustomer createPharmacyCustomer(PharmacyCustomer pharmacyCustomer, HttpServletRequest request);

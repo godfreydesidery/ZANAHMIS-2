@@ -34,6 +34,8 @@ public class Operation {
 	 public static String VERIFY = "VERIFY";
 	 public static String APPROVE = "APPROVE";
 	 public static String ARCHIVE = "ARCHIVE";
+	 public static String ALLOW = "ALLOW";
+	 //public static String DENY = "DENY";
 			 
 	 
 	 

@@ -167,7 +167,7 @@
                         </a>
                         <ul class="treeview-menu">
                             <li><a routerLink="/select-pharmacy">Select Pharmacy</a></li>
-                            <li class="treeview">
+                            <li class="treeview" *ngIf="grant(['PHARMACY_INVENTORY-ALLOW'])">
                                 <a href="#">
                                     <i class="fa fa-file-text"></i><span>Reports</span>
                                     <span class="pull-right-container">
@@ -453,8 +453,8 @@
                           <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a routerLink="/management-dashboard">Management Dashboard</a></li>
-                            <li><a routerLink="/payroll">Payroll</a></li>
+                            <!--<li><a routerLink="/management-dashboard">Management Dashboard</a></li> temp-->
+                            <!--<li><a routerLink="/payroll">Payroll</a></li> temp-->
 
 
                             <li class="treeview">
@@ -463,12 +463,14 @@
                                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a routerLink="/doctors-reports">Doctors Report</a></li>
+                                    <!--<li><a routerLink="/doctors-reports">Doctors Report</a></li>
                                     <li><a routerLink="/collections-report">Collections Report</a></li>
                                     <li><a routerLink="/revenue-report">Revenue Report</a></li>
                                     <li><a routerLink="/ipd-report">IPD Report</a></li>
-                                    <li><a routerLink="/patient-report">Patient Report</a></li>
+                                    <li><a routerLink="/patient-report">Patient Report</a></li> temp-->
                                     <li><a routerLink="/pharmacy-sales-report">Pharmacy Sales Report</a></li>
+                                    
+                                    
                                     <!--<li><a routerLink="/patient-direct-pending-invoices">Patient Invoices</a></li>-->
                                     <!--<li><a routerLink="/patient-insurance-pending-invoices">Insurance Invoices</a></li>-->
                                     <!--<li><a href="patient-wise-report.html">Patient wise Report</a></li>
@@ -479,18 +481,7 @@
                             </li>
 
 
-
-
-                            
-
-
-
-
-
-
-
-
-                            <li class="treeview">
+                            <!--<li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-file-text"></i><span>Laboratory Reports</span>
                                     <span class="pull-right-container">
@@ -502,7 +493,7 @@
                                     <li><a routerLink="/lab-test-statistics-report">Test Statistics Report</a></li>
                                     <li><a routerLink="/lab-sample-collection-report">Sample Collection Report</a></li>
                                 </ul>
-                            </li>
+                            </li> temp-->
                             <li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-file-text"></i><span>Pharmacy Reports</span>
@@ -542,7 +533,7 @@
                                     <li><a routerLink="/goods-received-note-report">GRN Report</a></li>
                                 </ul>
                             </li>
-                            <li class="treeview">
+                            <!--<li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-file-text"></i><span>Admin Reports</span>
                                     <span class="pull-right-container">
@@ -555,7 +546,7 @@
                                     <li><a routerLink="/doctor-to-radiology-report">Doctor to Radiology Report</a></li>
                                     <li><a routerLink="/doctor-to-laboratory-report">Doctor to Laboratory Report</a></li>
                                 </ul>
-                            </li>
+                            </li> temp-->
                         </ul>
                     </li>
                 </ul>
