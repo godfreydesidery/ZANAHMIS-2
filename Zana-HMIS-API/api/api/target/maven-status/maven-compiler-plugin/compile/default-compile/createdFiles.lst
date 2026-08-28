@@ -259,6 +259,7 @@ com\orbix\api\domain\WardBed.class
 com\orbix\api\api\ConsumableResource.class
 com\orbix\api\service\ExternalMedicalProviderServiceImpl.class
 com\orbix\api\service\GoodsReceivedNoteService.class
+com\orbix\api\service\PatientServiceImpl.class
 com\orbix\api\api\ProcedureReportArgs.class
 com\orbix\api\domain\Clinician.class
 com\orbix\api\api\ManagementResource.class
