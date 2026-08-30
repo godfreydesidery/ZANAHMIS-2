@@ -119,6 +119,8 @@ export class PharmacyPosReceiptService {
               body : [
                 [{text : '=============================='}],
                 [{text : 'Served By : '+ localStorage.getItem('user-name'), fontSize : 9, alignment : 'left'}],
+                [{text : 'Date : ' + this.datePipe.transform(new Date(), 'dd/MM/yyyy'), fontSize : 9, alignment : 'left'}],
+                [{text : 'Time : ' + this.datePipe.transform(new Date(), 'HH:mm:ss'), fontSize : 9, alignment : 'left'}],
                 [{text : 'Developed By @Zana Systems', fontSize : 10, bold : true, alignment : 'center'}],
                 [{text : '***End of Receipt***', fontSize : 9, alignment : 'center'}]
               ]

@@ -2,26 +2,68 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.6.
 
+Run these from the `zana-hmis` folder.
+
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+```bash
+npm start
+```
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Same as `ng serve`. Navigate to `http://localhost:4200/`. The application reloads when you change source files.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Production:
+
+```bash
+npm run build
+```
+
+Same as `ng build`. Uses the default production configuration. Artifacts go in `dist/`.
+
+Development:
+
+```bash
+ng build --configuration development
+```
+
+Watch (rebuilds on change, development configuration):
+
+```bash
+npm run watch
+```
+
+Same as `ng build --watch --configuration development`.
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm test
+```
+
+Same as `ng test`. Runs unit tests via [Karma](https://karma-runner.github.io).
+
+## Code scaffolding
+
+```bash
+ng generate component component-name
+```
+
+You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+ng e2e
+```
+
+You need to first add a package that implements end-to-end testing capabilities.
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```bash
+ng help
+```
+
+See the [Angular CLI Overview and Command Reference](https://angular.io/cli).
