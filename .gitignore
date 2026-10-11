@@ -16,6 +16,12 @@ target/
 .idea/
 *.iml
 
+# VS Code
+.vscode/
+
+# CKEditor demo pages (not used by the app)
+/zana-hmis/src/assets/plugins/ckeditor/samples/
+
 # Logs
 *.log
 
