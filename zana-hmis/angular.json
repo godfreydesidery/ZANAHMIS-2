@@ -86,7 +86,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "media",
+              "outputHashing": "all",
               "buildOptimizer": true,
               "optimization": true,
               "vendorChunk": false
