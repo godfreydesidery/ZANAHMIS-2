@@ -37,7 +37,11 @@
               "src/styles-local.scss"
             ],
             "styles": [
-              "src/styles.scss"
+              {
+                "input": "src/styles.scss",
+                "bundleName": "styles",
+                "inject": false
+              }
             ],
             "scripts": [
               "src/assets/plugins/jQuery/jquery-1.12.4.min.js",
@@ -86,7 +90,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "media",
+              "outputHashing": "all",
               "buildOptimizer": true,
               "optimization": true,
               "vendorChunk": false
