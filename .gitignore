@@ -1,0 +1,26 @@
+# Maven build output
+target/
+*.class
+
+# Eclipse
+.metadata/
+.settings/
+.classpath
+.project
+.factorypath
+
+# IntelliJ
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Office lock/temp files
+~$*
+~WRL*.tmp
+
+# Node / Angular (also covered in zana-hmis/.gitignore)
+node_modules/
+/zana-hmis/dist/
+.angular/
